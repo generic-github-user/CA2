@@ -13,6 +13,8 @@
 // randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 500 > sort area desc > write area.txt, save area.ca2
 // snowflake > trace cgol > select -n 20 > write backtracking.txt
 
+int compute;
+
 // Clip an integer to a range (modify in-place)
 int bound(int* x, int a, int b) {
 	if (*x < a) { *x = a; }
@@ -85,18 +87,24 @@ int main() {
 	int grid[30][30];
 	int prev[30][30];
 	int neighbors = 0;
+	compute = 0;
 	int c, d;
 
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
 			grid[x][y] = rand() % 2;
+			compute ++;
 		}
 	}
 	for (int i=0; i<200; i++) {
 		printf("Simulating frame %i \n", i+1);
+		printf("Total compute: %i \n", compute);
+		printf("\n");
+
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
 				prev[x][y] = grid[x][y];
+				compute ++;
 			}
 		}
 		for (int x=0; x<30; x++) {
@@ -113,6 +121,7 @@ int main() {
 								neighbors += prev[c][d];
 							}
 						}
+						compute ++;
 					}
 				}
 				if (neighbors == 3) { grid[x][y] = 1; }
@@ -125,6 +134,7 @@ int main() {
 			}
 			printf("\n");
 		}
+		printf("\n");
 		fflush(stdout);
 		usleep(100000);
 	}
