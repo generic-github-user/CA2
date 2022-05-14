@@ -65,6 +65,18 @@ struct array new_array(int rank, int* shape) {
 	return a;
 };
 
+int get_coord(struct array a, struct vector z) {
+	return z.x * a.shape[0] + z.y;
+}
+
+int array_get(struct array a, struct vector z) {
+	return a.data[get_coord(a, z)];
+}
+
+void array_set(struct array a, struct vector z, int value) {
+	a.data[get_coord(a, z)] = value;
+}
+
 //struct array array_and(struct array a1, struct array a2) {
 
 // struct array map_array(struct array a
@@ -84,15 +96,20 @@ int main() {
 	// Set random seed
 	srand(time(NULL));
 
-	int grid[30][30];
-	int prev[30][30];
+	int w = 30;
+	int h = 30;
+	// int grid[w][h];
+	// int prev[w][h];
+	int shape[2] = {30, 30};
+	struct array grid = new_array(2, shape);
+	struct array prev = new_array(2, shape);
 	int neighbors = 0;
 	compute = 0;
 	int c, d;
 
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			grid[x][y] = rand() % 2;
+			array_set(grid, vec(x, y), rand() % 2);
 			compute ++;
 		}
 	}
@@ -103,7 +120,8 @@ int main() {
 
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
-				prev[x][y] = grid[x][y];
+				struct vector v = vec(x, y);
+				array_set(prev, v, array_get(grid, v));
 				compute ++;
 			}
 		}
@@ -118,19 +136,19 @@ int main() {
 							//bound(&c, 0, 29);
 							//bound(&d, 0, 29);
 							if (c >= 0 && c <= 29 && d >= 0 && d <= 29) {
-								neighbors += prev[c][d];
+								neighbors += array_get(prev, vec(c, d));
 							}
 						}
 						compute ++;
 					}
 				}
-				if (neighbors == 3) { grid[x][y] = 1; }
-				if (neighbors < 2 || neighbors > 3) { grid[x][y] = 0; }
+				if (neighbors == 3) { array_set(grid, vec(x, y), 1); }
+				if (neighbors < 2 || neighbors > 3) { array_set(grid, vec(x, y), 0); }
 			}
 		}
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
-				printf(grid[x][y] ? "*" : " ");
+				printf(array_get(grid, vec(x, y)) ? "*" : " ");
 			}
 			printf("\n");
 		}
