@@ -10,6 +10,9 @@ int bound(int* x, int a, int b) {
 }
 
 int main() {
+	printf("ca.c loaded successfully");
+	srand(time(NULL));
+
 	int grid[30][30];
 	int prev[30][30];
 	int neighbors = 0;
@@ -21,6 +24,7 @@ int main() {
 		}
 	}
 	for (int i=0; i<200; i++) {
+		printf("Simulating frame %i \n", i+1);
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
 				prev[x][y] = grid[x][y];
