@@ -16,6 +16,43 @@ struct vector {
 struct vector vec(int x, int y) {
 	return (struct vector) { x, y };
 }
+
+struct array {
+	int rank;
+	int* shape;
+	int size;
+	int* data;
+};
+
+
+struct array fill_array(struct array a, int value) {
+	for (int i=0; i<a.size; i++) {
+		a.data[i] = value;
+		compute ++;
+	}
+	return a;
+}
+
+struct array new_array(int rank, int* shape) {
+	// int rank = sizeof(shape);
+	// int* size = malloc(sizeof(int));
+	int size = 1;
+	for(int i=0; i<rank; i++) {
+		size *= shape[i];
+		compute ++;
+	}
+	printf("Initalizing array with size %i \n", size);
+	//int data[size] = {0};
+	//int data[size];
+	int* data = calloc(size, sizeof(int));
+	struct array a = { rank, shape, size, data };
+	fill_array(a, 0);
+	return a;
+};
+
+//struct array array_and(struct array a1, struct array a2) {
+
+// struct array map_array(struct array a
 int main() {
 	printf("ca.c loaded successfully");
 	srand(time(NULL));
