@@ -62,6 +62,14 @@ struct array new_array(int rank, int* shape) {
 //struct array array_and(struct array a1, struct array a2) {
 
 // struct array map_array(struct array a
+struct state {
+
+};
+
+struct simulation {
+
+};
+
 int main() {
 	printf("ca.c loaded successfully");
 	srand(time(NULL));
