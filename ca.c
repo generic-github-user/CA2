@@ -9,6 +9,13 @@ int bound(int* x, int a, int b) {
 	if (*x > b) { *x = b; }
 }
 
+struct vector {
+	int x, y;
+};
+
+struct vector vec(int x, int y) {
+	return (struct vector) { x, y };
+}
 int main() {
 	printf("ca.c loaded successfully");
 	srand(time(NULL));
