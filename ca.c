@@ -3,6 +3,15 @@
 #include <unistd.h>
 #include <time.h>
 
+// Example commands
+
+// randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 50 > sort population desc > write test.txt, save test.ca2
+// abbr DEFAULT "limit compute 10e9 time 60"
+// abbr activity "accumulate difference time"
+// randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 50 > sort activity desc > write activity.txt, save activity.ca2
+// randomstate -wh 50 -t torus, randomrule -n 100 -c totalistic -r 1 > simulate $ -i 100 > write sample.txt
+// randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 500 > sort area desc > write area.txt, save area.ca2
+// snowflake > trace cgol > select -n 20 > write backtracking.txt
 
 int bound(int* x, int a, int b) {
 	if (*x < a) { *x = a; }
