@@ -13,11 +13,13 @@
 // randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 500 > sort area desc > write area.txt, save area.ca2
 // snowflake > trace cgol > select -n 20 > write backtracking.txt
 
+// Clip an integer to a range (modify in-place)
 int bound(int* x, int a, int b) {
 	if (*x < a) { *x = a; }
 	if (*x > b) { *x = b; }
 }
 
+// A vector or coordinate
 struct vector {
 	int x, y;
 };
@@ -26,6 +28,7 @@ struct vector vec(int x, int y) {
 	return (struct vector) { x, y };
 }
 
+// A general array struct for multidimensional arrays
 struct array {
 	int rank;
 	int* shape;
@@ -33,7 +36,7 @@ struct array {
 	int* data;
 };
 
-
+// Fill an array with a value
 struct array fill_array(struct array a, int value) {
 	for (int i=0; i<a.size; i++) {
 		a.data[i] = value;
@@ -42,6 +45,7 @@ struct array fill_array(struct array a, int value) {
 	return a;
 }
 
+// Initialize an array struct
 struct array new_array(int rank, int* shape) {
 	// int rank = sizeof(shape);
 	// int* size = malloc(sizeof(int));
@@ -62,16 +66,20 @@ struct array new_array(int rank, int* shape) {
 //struct array array_and(struct array a1, struct array a2) {
 
 // struct array map_array(struct array a
+
+// A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
 
 };
 
+// A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 
 };
 
 int main() {
 	printf("ca.c loaded successfully");
+	// Set random seed
 	srand(time(NULL));
 
 	int grid[30][30];
