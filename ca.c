@@ -3,6 +3,14 @@
 #include <unistd.h>
 #include <time.h>
 
+#define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
+	type output = init;\
+	for (int i=0; i<a.size; i++) {\
+		output = output op a.data[i];\
+	}\
+	return output;\
+}
+
 // Example commands
 
 // randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 50 > sort population desc > write test.txt, save test.ca2
@@ -77,9 +85,24 @@ void array_set(struct array a, struct vector z, int value) {
 	a.data[get_coord(a, z)] = value;
 }
 
+// struct array array_from(int rank, int* shape, void* values) {
+
+
 //struct array array_and(struct array a1, struct array a2) {
 
-// struct array map_array(struct array a
+// void map_array(struct array a, )
+
+void* reduce_array(struct array a, void* (F)(void*, void*), void* init) {
+	void* output = init;
+	for (int i=0; i<a.size; i++) {
+		output = F(output, &a.data[i]);
+	}
+	return output;
+}
+
+// void* sum(int a, int b) { return (void*) a + b; }
+// int array_sum(struct array a) { return (int) reduce_array(a, sum, 0); }
+ARRAY_REDUCE(array_sum, int, +, 0)
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
@@ -116,6 +139,7 @@ int main() {
 	for (int i=0; i<200; i++) {
 		printf("Simulating frame %i \n", i+1);
 		printf("Total compute: %i \n", compute);
+		printf("Population: %i \n", array_sum(grid));
 		printf("\n");
 
 		for (int x=0; x<30; x++) {
