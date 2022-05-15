@@ -263,6 +263,12 @@ void printx(int level) {
 	// printf(
 }
 
+void write_state(struct state s, FILE* fptr) {
+	char* summary = state_summary(s);
+	fprintf(fptr, "%s", summary);
+	free(summary);
+}
+
 int main() {
 	printf("ca.c loaded successfully \n");
 	// Set random seed
@@ -327,9 +333,13 @@ int main() {
 				printf("Writing to output file [%s] \n", opt);
 				FILE* outfile = fopen(opt, "w");
 				if (strcmp(selection_type, "state") == 0) {
-					char* summary = state_summary(state_selection);
-					fprintf(outfile, "%s", summary);
-					free(summary);
+					write_state(state_selection, outfile);
+				}
+				else if (strcmp(selection_type, "state_set") == 0) {
+					for (int j=0; j<opt_num; j++) {
+						write_state(stateset_selection[j], outfile);
+						fprintf(outfile, "\n\n");
+					}
 				}
 				fclose(outfile);
 				complete = 1;
