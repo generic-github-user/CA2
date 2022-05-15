@@ -188,50 +188,47 @@ int count_neighbors(struct state source, int x, int y) {
 	return neighbors;
 }
 
-int main() {
-	printf("ca.c loaded successfully \n");
-	// Set random seed
-	srand(time(NULL));
 
-	int w = 30;
-	int h = 30;
-	int shape[2] = {30, 30};
-	struct state grid = random_state(shape);
-	struct state prev = {new_array(2, shape)};
+
+void step(struct state s, struct state p, int i) {
+
 	int neighbors = 0;
-	compute = 0;
-	int c, d;
-
-	for (int i=0; i<0; i++) {
-		printf("Simulating frame %i \n", i+1);
-		printf("Total compute: %i \n", compute);
-		printf("Population: %i \n", array_sum(grid.data));
-		printf("\n");
-
-		for (int x=0; x<30; x++) {
-			for (int y=0; y<30; y++) {
-				struct vector v = vec(x, y);
-				array_set(prev.data, v, array_get(grid.data, v));
-				compute ++;
-			}
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			array_set(s.data, vec(x, y), array_get(p.data, vec(x, y)));
+			compute ++;
 		}
-		for (int x=0; x<30; x++) {
-			for (int y=0; y<30; y++) {
-				neighbors = count_neighbors(grid, x, y);
-				if (neighbors == 3) { array_set(grid.data, vec(x, y), 1); }
-				if (neighbors < 2 || neighbors > 3) { array_set(grid.data, vec(x, y), 0); }
-			}
-		}
-		for (int x=0; x<30; x++) {
-			for (int y=0; y<30; y++) {
-				printf(array_get(grid.data, vec(x, y)) ? "*" : " ");
-			}
-			printf("\n");
-		}
-		printf("\n");
-		fflush(stdout);
-		usleep(100000);
 	}
+	printf("Simulating frame %i \n", i+1);
+	printf("Total compute: %i \n", compute);
+	printf("Population: %i \n", array_sum(s.data));
+	printf("\n");
+
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			neighbors = count_neighbors(p, x, y);
+			if (neighbors == 3) { array_set(s.data, vec(x, y), 1); }
+			if (neighbors < 2 || neighbors > 3) { array_set(s.data, vec(x, y), 0); }
+		}
+	}
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			printf(array_get(s.data, vec(x, y)) ? "*" : " ");
+		}
+		printf("\n");
+	}
+//	for (int x=0; x<30; x++) {
+//		for (int y=0; y<30; y++) {
+//			struct vector v = vec(x, y);
+//			array_set(p.data, v, array_get(s.data, v));
+//			compute ++;
+//		}
+//	}
+
+	printf("\n");
+	fflush(stdout);
+	usleep(500000);
+}
 
 void simulate(struct simulation sim, int n) {
 	int w = 30;
@@ -244,6 +241,14 @@ void simulate(struct simulation sim, int n) {
 		sim.time ++;
 	}
 }
+
+int main() {
+	printf("ca.c loaded successfully \n");
+	// Set random seed
+	srand(time(NULL));
+	
+	compute = 0;
+
 	char input[200];
 	fgets(input, 200, stdin);
 	char* token = strtok(input, " ");
