@@ -59,7 +59,6 @@ struct array fill_array(struct array a, int value) {
 
 // Initialize an array struct
 struct array new_array(int rank, int* shape) {
-	// int rank = sizeof(shape);
 	// int* size = malloc(sizeof(int));
 	int size = 1;
 	for(int i=0; i<rank; i++) {
@@ -139,7 +138,6 @@ char* state_summary(struct state s) {
 	int i = 0;
 	for (int x=0; x<s.data.shape[0]; x++) {
 		for (int y=0; y<s.data.shape[1]; y++) {
-			//char c = array_get(s, vec(x, y)) ? '*' : ' ';
 			char c = array_get(s.data, vec(x, y)) ? '#' : ' ';
 			output[i] = c;
 			i ++;
@@ -161,8 +159,6 @@ int count_neighbors(struct state source, int x, int y) {
 			if (a!=0 || b!=0) {
 				c = x+a;
 				d = y+b;
-				//bound(&c, 0, 29);
-				//bound(&d, 0, 29);
 				if (c >= 0 && c <= 29 && d >= 0 && d <= 29) {
 					neighbors += array_get(source.data, vec(c, d));
 				}
@@ -180,10 +176,7 @@ int main() {
 
 	int w = 30;
 	int h = 30;
-	// int grid[w][h];
-	// int prev[w][h];
 	int shape[2] = {30, 30};
-	//struct array grid = new_array(2, shape);
 	struct state grid = random_state(shape);
 	struct state prev = {new_array(2, shape)};
 	int neighbors = 0;
