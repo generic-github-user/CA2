@@ -124,6 +124,25 @@ struct array random_state(int* shape) {
 	}
 	return result;
 }
+
+char* state_summary(struct array s) {
+	// temporary
+	char* output = calloc(s.size+s.shape[0]+1, sizeof(char));
+	int i = 0;
+	for (int x=0; x<s.shape[0]; x++) {
+		for (int y=0; y<s.shape[1]; y++) {
+			char c = array_get(s, vec(x, y)) ? '*' : ' ';
+			output[i] = c;
+			i ++;
+		}
+		output[i] = '\n';
+		i ++;
+	}
+	output[i] = '\0';
+	return output;
+}
+	
+
 int main() {
 	printf("ca.c loaded successfully");
 	// Set random seed
