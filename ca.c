@@ -4,6 +4,10 @@
 #include <time.h>
 #include <string.h>
 
+// TODO: provide tools for mutating patterns
+// TODO: log files
+// TODO: add support for long-term experiment databases
+
 // Create a statically typed function that reduces an array to a single value
 #define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
 	type output = init;\
@@ -122,7 +126,7 @@ struct state {
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 	struct state* states;
-	int time, steps;
+	int time, steps, compute;
 };
 
 // should s be a state pointer?
@@ -130,8 +134,11 @@ struct simulation new_simulation(struct state s, int steps) {
 	struct simulation sim;
 	sim.states = (struct state*) calloc(steps, sizeof(struct state));
 	sim.states[0] = s;
+
 	sim.time = 1;
 	sim.steps = steps;
+	sim.compute = 0;
+//
 //	printf("Created new simulation
 	return sim;
 }
@@ -169,7 +176,7 @@ int inrange(int x, int n, int m) {
 }
 
 // Count neighbor cells given a state and coordinate
-int count_neighbors(struct state source, int x, int y) {
+int count_neighbors(struct state source, int x, int y, int* cc) {
 	int neighbors = 0;
 	int c, d;
 	for (int a=-1; a<=1; a++) {
@@ -183,6 +190,7 @@ int count_neighbors(struct state source, int x, int y) {
 				}
 			}
 			compute ++;
+			*cc ++;
 		}
 	}
 	return neighbors;
@@ -200,7 +208,7 @@ void print_state(struct state s) {
 	}
 }
 
-void step(struct state s, struct state p, int i, int show) {
+void step(struct state s, struct state p, int i, int show, int* cc) {
 	if (show) {
 		printf("Simulating frame %i \n", i+1);
 	}
@@ -209,12 +217,14 @@ void step(struct state s, struct state p, int i, int show) {
 		for (int y=0; y<30; y++) {
 			array_set(s.data, vec(x, y), array_get(p.data, vec(x, y)));
 			compute ++;
+			*cc ++;
 		}
 	}
 
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			neighbors = count_neighbors(p, x, y);
+			neighbors = count_neighbors(p, x, y, cc);
+			*cc ++;
 			if (neighbors == 3) { array_set(s.data, vec(x, y), 1); }
 			if (neighbors < 2 || neighbors > 3) { array_set(s.data, vec(x, y), 0); }
 		}
@@ -243,7 +253,7 @@ void simulate(struct simulation sim, int n, int show) {
 	for (int i=0; i<n-1; i++) {
 		struct state p = sim.states[sim.time-1];
 		sim.states[sim.time] = (struct state) {new_array(2, p.data.shape)};
-		step(sim.states[sim.time], p, i, show);
+		step(sim.states[sim.time], p, i, show, &sim.compute);
 
 		sim.time ++;
 		int q = 20 * ((double) i / (double) n);
@@ -251,8 +261,10 @@ void simulate(struct simulation sim, int n, int show) {
 			printf("#");
 			prog = q;
 		}
+		sim.compute ++;
 	}
 	printf("]\n");
+	printf("Simulation complete; compute usage was %i", sim.compute);
 }
 
 //void printx(int level, char* fmt, ...) {
