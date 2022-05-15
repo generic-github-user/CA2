@@ -188,10 +188,20 @@ int count_neighbors(struct state source, int x, int y) {
 	return neighbors;
 }
 
+void print_state(struct state s) {
+	printf("Total compute: %i \n", compute);
+	printf("Population: %i \n", array_sum(s.data));
+	printf("\n");
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			printf(array_get(s.data, vec(x, y)) ? "*" : " ");
+		}
+		printf("\n");
+	}
+}
 
-
-void step(struct state s, struct state p, int i) {
-
+void step(struct state s, struct state p, int i, int show) {
+	printf("Simulating frame %i \n", i+1);
 	int neighbors = 0;
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
@@ -199,10 +209,6 @@ void step(struct state s, struct state p, int i) {
 			compute ++;
 		}
 	}
-	printf("Simulating frame %i \n", i+1);
-	printf("Total compute: %i \n", compute);
-	printf("Population: %i \n", array_sum(s.data));
-	printf("\n");
 
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
@@ -211,12 +217,6 @@ void step(struct state s, struct state p, int i) {
 			if (neighbors < 2 || neighbors > 3) { array_set(s.data, vec(x, y), 0); }
 		}
 	}
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
-			printf(array_get(s.data, vec(x, y)) ? "*" : " ");
-		}
-		printf("\n");
-	}
 //	for (int x=0; x<30; x++) {
 //		for (int y=0; y<30; y++) {
 //			struct vector v = vec(x, y);
@@ -224,20 +224,23 @@ void step(struct state s, struct state p, int i) {
 //			compute ++;
 //		}
 //	}
+	if (show) {
+		print_state(s);
+	}
 
 	printf("\n");
 	fflush(stdout);
 	usleep(500000);
 }
 
-void simulate(struct simulation sim, int n) {
+void simulate(struct simulation sim, int n, int show) {
 	int w = 30;
 	int h = 30;
 	int shape[2] = {30, 30};
 	for (int i=0; i<n-1; i++) {
 		struct state p = sim.states[sim.time-1];
 		sim.states[sim.time] = (struct state) {new_array(2, p.data.shape)};
-		step(sim.states[sim.time], p, i);
+		step(sim.states[sim.time], p, i, show);
 		sim.time ++;
 	}
 }
@@ -262,6 +265,7 @@ int main() {
 	char* opt;
 	int opt_shape[2] = {30, 30};
 	int opt_iterations = 100;
+	int opt_print = 0;
 
 	int complete = 0;
 
@@ -298,7 +302,7 @@ int main() {
 				if (strcmp(selection_type, "state") == 0) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
-					simulate(sim_selection, opt_iterations);
+					simulate(sim_selection, opt_iterations, opt_print);
 				}
 				complete = 1;
 			}
