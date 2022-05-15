@@ -275,6 +275,7 @@ int main() {
 	char* token = strtok(input, " ");
 	char* command;
 	char* option;
+	char optionc = '\0';
 
 	struct state state_selection;
 	struct state* stateset_selection;
@@ -364,6 +365,25 @@ int main() {
 			printx(2);
 			printf("Found command %s \n", command);
 		}
+		else if (token[0] == '-') {
+//			switch (token[1]) {
+//				case 'n': 
+			optionc = token[1];
+		}
+		else if (optionc != '\0') {
+			switch (optionc) {
+				case 'n': {
+					opt_num = atoi(token);
+					optionc = '\0';
+					break;
+				}
+				case 'i': {
+					opt_iterations = atoi(token);
+					optionc = '\0';
+					break;
+				}
+			}
+		}
 		else {
 			printx(2);
 			printf("Found unlabeled option \n");
@@ -372,7 +392,7 @@ int main() {
 		}
 		
 		// if (strcmp(command, "randomstate") == 0) {
-			
+		
 		token = strtok(NULL, " ");
 		usleep(200000);
 	} while (!complete);
