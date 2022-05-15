@@ -204,4 +204,56 @@ int main() {
 		fflush(stdout);
 		usleep(100000);
 	}
+	char input[200];
+	fgets(input, 200, stdin);
+	char* token = strtok(input, " ");
+	char* command;
+	char* option;
+
+	struct array state_selection;
+	char* selection_type;
+
+	char* opt;
+	int opt_shape[2] = {30, 30};
+
+	int complete = 0;
+
+	do {
+		printf("Handling token %s \n", token);
+		if (token == NULL || strcmp(token, ">") == 0) {
+			if (strcmp(command, "randomstate") == 0) {
+				printf("Generating random state \n");
+				state_selection = random_state(opt_shape);
+				selection_type = "state";
+			}
+			else if (strcmp(command, "write") == 0) {
+				printf("Writing to output file %s \n", opt);
+				FILE* outfile = fopen(opt, "w");
+				if (strcmp(selection_type, "state") == 0) {
+					char* summary = state_summary(state_selection);
+					fprintf(outfile, "%s", summary);
+					free(summary);
+				}
+				fclose(outfile);
+				complete = 1;
+			}
+			else {
+				printf("Command not recognized \n");
+				complete = 1;
+				exit(1);
+			}
+		}
+		else if (strcmp(token, "randomstate") == 0 || strcmp(token, "write") == 0) {
+			command = strdup(token);
+		}
+		else {
+			opt = strdup(token);
+			opt[strcspn(opt, "\n")] = 0;
+		}
+		
+		// if (strcmp(command, "randomstate") == 0) {
+			
+		token = strtok(NULL, " ");
+	} while (!complete);
+	printf("Processing command...\n");
 }
