@@ -104,10 +104,13 @@ void* reduce_array(struct array a, void* (F)(void*, void*), void* init) {
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(struct array a) { return (int) reduce_array(a, sum, 0); }
 ARRAY_REDUCE(array_sum, int, +, 0)
+double array_mean(struct array a) {
+	return array_sum(a) / a.size;
+}
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
-
+	struct array data;
 };
 
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
@@ -115,25 +118,25 @@ struct simulation {
 
 };
 
-struct array random_state(int* shape) {
-	struct array result = new_array(2, shape);
+struct state random_state(int* shape) {
+	struct state result = {new_array(2, shape)};
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
-			array_set(result, vec(x, y), rand() % 2);
+			array_set(result.data, vec(x, y), rand() % 2);
 			compute ++;
 		}
 	}
 	return result;
 }
 
-char* state_summary(struct array s) {
+char* state_summary(struct state s) {
 	// temporary
-	char* output = calloc(s.size+s.shape[0]+1, sizeof(char));
+	char* output = calloc(s.data.size+s.data.shape[0]+1, sizeof(char));
 	int i = 0;
-	for (int x=0; x<s.shape[0]; x++) {
-		for (int y=0; y<s.shape[1]; y++) {
+	for (int x=0; x<s.data.shape[0]; x++) {
+		for (int y=0; y<s.data.shape[1]; y++) {
 			//char c = array_get(s, vec(x, y)) ? '*' : ' ';
-			char c = array_get(s, vec(x, y)) ? '#' : ' ';
+			char c = array_get(s.data, vec(x, y)) ? '#' : ' ';
 			output[i] = c;
 			i ++;
 		}
@@ -144,7 +147,7 @@ char* state_summary(struct array s) {
 	return output;
 }
 
-int count_neighbors(struct array source, int x, int y) {
+int count_neighbors(struct state source, int x, int y) {
 	int neighbors = 0;
 	int c, d;
 	for (int a=-1; a<=1; a++) {
@@ -155,7 +158,7 @@ int count_neighbors(struct array source, int x, int y) {
 				//bound(&c, 0, 29);
 				//bound(&d, 0, 29);
 				if (c >= 0 && c <= 29 && d >= 0 && d <= 29) {
-					neighbors += array_get(source, vec(c, d));
+					neighbors += array_get(source.data, vec(c, d));
 				}
 			}
 			compute ++;
@@ -175,8 +178,8 @@ int main() {
 	// int prev[w][h];
 	int shape[2] = {30, 30};
 	//struct array grid = new_array(2, shape);
-	struct array grid = random_state(shape);
-	struct array prev = new_array(2, shape);
+	struct state grid = random_state(shape);
+	struct state prev = {new_array(2, shape)};
 	int neighbors = 0;
 	compute = 0;
 	int c, d;
@@ -184,26 +187,26 @@ int main() {
 	for (int i=0; i<0; i++) {
 		printf("Simulating frame %i \n", i+1);
 		printf("Total compute: %i \n", compute);
-		printf("Population: %i \n", array_sum(grid));
+		printf("Population: %i \n", array_sum(grid.data));
 		printf("\n");
 
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
 				struct vector v = vec(x, y);
-				array_set(prev, v, array_get(grid, v));
+				array_set(prev.data, v, array_get(grid.data, v));
 				compute ++;
 			}
 		}
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
 				neighbors = count_neighbors(grid, x, y);
-				if (neighbors == 3) { array_set(grid, vec(x, y), 1); }
-				if (neighbors < 2 || neighbors > 3) { array_set(grid, vec(x, y), 0); }
+				if (neighbors == 3) { array_set(grid.data, vec(x, y), 1); }
+				if (neighbors < 2 || neighbors > 3) { array_set(grid.data, vec(x, y), 0); }
 			}
 		}
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
-				printf(array_get(grid, vec(x, y)) ? "*" : " ");
+				printf(array_get(grid.data, vec(x, y)) ? "*" : " ");
 			}
 			printf("\n");
 		}
@@ -217,7 +220,7 @@ int main() {
 	char* command;
 	char* option;
 
-	struct array state_selection;
+	struct state state_selection;
 	char* selection_type;
 
 	char* opt;
