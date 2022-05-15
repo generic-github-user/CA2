@@ -139,14 +139,16 @@ char* state_summary(struct state s) {
 	for (int x=0; x<s.data.shape[0]; x++) {
 		for (int y=0; y<s.data.shape[1]; y++) {
 			char c = array_get(s.data, vec(x, y)) ? '#' : ' ';
-			output[i] = c;
-			i ++;
+			output[i++] = c;
 		}
-		output[i] = '\n';
-		i ++;
+		output[i++] = '\n';
 	}
-	output[i] = '\0';
+	output[i++] = '\0';
 	return output;
+}
+
+int inrange(int x, int n, int m) {
+	return x >= n && x <= m;
 }
 
 // Count neighbor cells given a state and coordinate
@@ -159,7 +161,7 @@ int count_neighbors(struct state source, int x, int y) {
 			if (a!=0 || b!=0) {
 				c = x+a;
 				d = y+b;
-				if (c >= 0 && c <= 29 && d >= 0 && d <= 29) {
+				if (inrange(c, 0, 29) && inrange(d, 0, 29)) {
 					neighbors += array_get(source.data, vec(c, d));
 				}
 			}
