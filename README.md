@@ -13,3 +13,11 @@ This is a non-exhaustive list of commands that can be run in the tool's interact
 - `save [path]`
 - `abbr short long`: Create an abbreviation that will be expanded before a command is run, similar to preprocessor directives and macros in C
 - `help`: Display this list
+
+Here are descriptions of the `[types]` used in the above command descriptions:
+
+- `int`: A simple integer; restrictions on the range of the number may be present for specific commands/options
+- `rule`: A named cellular automata rule, like `cgol`
+- `property`: One of population, volume, density
+- `path`: A filepath (both relative and absolute are allowed)
+
