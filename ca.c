@@ -256,25 +256,34 @@ int main() {
 	char* option;
 
 	struct state state_selection;
+	struct simulation sim_selection;
 	char* selection_type;
 
 	char* opt;
 	int opt_shape[2] = {30, 30};
+	int opt_iterations = 100;
 
 	int complete = 0;
 
 	// Handle command input
 	printf("Processing command...\n");
 	do {
-		printf("Handling token %s \n", token);
+		if (token != NULL) {
+			token[strcspn(token, "\n")] = 0;
+		}
+		printf("Handling token [%s] \n", token);
 		if (token == NULL || strcmp(token, ">") == 0) {
+			if (command == NULL) {
+				printf("No command set \n");
+			}
+
 			if (strcmp(command, "randomstate") == 0) {
 				printf("Generating random state \n");
 				state_selection = random_state(opt_shape);
 				selection_type = "state";
 			}
 			else if (strcmp(command, "write") == 0) {
-				printf("Writing to output file %s \n", opt);
+				printf("Writing to output file [%s] \n", opt);
 				FILE* outfile = fopen(opt, "w");
 				if (strcmp(selection_type, "state") == 0) {
 					char* summary = state_summary(state_selection);
@@ -284,16 +293,28 @@ int main() {
 				fclose(outfile);
 				complete = 1;
 			}
+			else if (strcmp(command, "simulate") == 0) {
+				printf("Executing simulation \n");
+				if (strcmp(selection_type, "state") == 0) {
+					sim_selection = new_simulation(state_selection, opt_iterations);
+					selection_type = "simulation";
+					simulate(sim_selection, opt_iterations);
+				}
+				complete = 1;
+			}
 			else {
 				printf("Command not recognized \n");
 				complete = 1;
 				exit(1);
 			}
 		}
-		else if (strcmp(token, "randomstate") == 0 || strcmp(token, "write") == 0) {
+		else if (strcmp(token, "randomstate") == 0 || strcmp(token, "write") == 0 || strcmp(token, "simulate") == 0) {
 			command = strdup(token);
+			command[strcspn(command, "\n")] = 0;
+			printf("Found command %s \n", command);
 		}
 		else {
+			printf("Found unlabeled option \n");
 			opt = strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
@@ -301,5 +322,6 @@ int main() {
 		// if (strcmp(command, "randomstate") == 0) {
 			
 		token = strtok(NULL, " ");
+		usleep(500000);
 	} while (!complete);
 }
