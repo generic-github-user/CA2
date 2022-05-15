@@ -40,6 +40,10 @@ struct vector vec(int x, int y) {
 	return (struct vector) { x, y };
 }
 
+struct manifold {
+
+};
+
 // A general array struct for multidimensional arrays
 struct array {
 	int rank;
@@ -76,6 +80,7 @@ struct array new_array(int rank, int* shape) {
 
 // Convert a series of indices to a corresponding memory address in the internal representation of the array data
 int get_coord(struct array a, struct vector z) {
+	// ?
 	return z.x * a.shape[0] + z.y;
 }
 
@@ -117,6 +122,7 @@ struct state {
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 	struct state* states;
+	int time, steps;
 };
 
 // Generate a random state
