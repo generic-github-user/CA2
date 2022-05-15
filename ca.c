@@ -4,6 +4,7 @@
 #include <time.h>
 #include <string.h>
 
+// Create a statically typed function that reduces an array to a single value
 #define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
 	type output = init;\
 	for (int i=0; i<a.size; i++) {\
@@ -74,6 +75,7 @@ struct array new_array(int rank, int* shape) {
 	return a;
 };
 
+// Convert a series of indices to a corresponding memory address in the internal representation of the array data
 int get_coord(struct array a, struct vector z) {
 	return z.x * a.shape[0] + z.y;
 }
@@ -115,9 +117,10 @@ struct state {
 
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
-
+	struct state* states;
 };
 
+// Generate a random state
 struct state random_state(int* shape) {
 	struct state result = {new_array(2, shape)};
 	for (int x=0; x<shape[0]; x++) {
@@ -129,6 +132,7 @@ struct state random_state(int* shape) {
 	return result;
 }
 
+// Render information about a state to a string
 char* state_summary(struct state s) {
 	// temporary
 	char* output = calloc(s.data.size+s.data.shape[0]+1, sizeof(char));
@@ -147,11 +151,13 @@ char* state_summary(struct state s) {
 	return output;
 }
 
+// Count neighbor cells given a state and coordinate
 int count_neighbors(struct state source, int x, int y) {
 	int neighbors = 0;
 	int c, d;
 	for (int a=-1; a<=1; a++) {
 		for (int b=-1; b<=1; b++) {
+			// Exclude target cell
 			if (a!=0 || b!=0) {
 				c = x+a;
 				d = y+b;
@@ -228,6 +234,7 @@ int main() {
 
 	int complete = 0;
 
+	// Handle command input
 	printf("Processing command...\n");
 	do {
 		printf("Handling token %s \n", token);
