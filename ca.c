@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
 
 #define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
 	type output = init;\
@@ -144,7 +145,7 @@ char* state_summary(struct array s) {
 	
 
 int main() {
-	printf("ca.c loaded successfully");
+	printf("ca.c loaded successfully \n");
 	// Set random seed
 	srand(time(NULL));
 
@@ -160,7 +161,7 @@ int main() {
 	compute = 0;
 	int c, d;
 
-	for (int i=0; i<200; i++) {
+	for (int i=0; i<0; i++) {
 		printf("Simulating frame %i \n", i+1);
 		printf("Total compute: %i \n", compute);
 		printf("Population: %i \n", array_sum(grid));
@@ -218,6 +219,7 @@ int main() {
 
 	int complete = 0;
 
+	printf("Processing command...\n");
 	do {
 		printf("Handling token %s \n", token);
 		if (token == NULL || strcmp(token, ">") == 0) {
@@ -255,5 +257,4 @@ int main() {
 			
 		token = strtok(NULL, " ");
 	} while (!complete);
-	printf("Processing command...\n");
 }
