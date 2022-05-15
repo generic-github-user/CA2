@@ -114,6 +114,16 @@ struct simulation {
 
 };
 
+struct array random_state(int* shape) {
+	struct array result = new_array(2, shape);
+	for (int x=0; x<shape[0]; x++) {
+		for (int y=0; y<shape[1]; y++) {
+			array_set(result, vec(x, y), rand() % 2);
+			compute ++;
+		}
+	}
+	return result;
+}
 int main() {
 	printf("ca.c loaded successfully");
 	// Set random seed
@@ -124,18 +134,13 @@ int main() {
 	// int grid[w][h];
 	// int prev[w][h];
 	int shape[2] = {30, 30};
-	struct array grid = new_array(2, shape);
+	//struct array grid = new_array(2, shape);
+	struct array grid = random_state(shape);
 	struct array prev = new_array(2, shape);
 	int neighbors = 0;
 	compute = 0;
 	int c, d;
 
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
-			array_set(grid, vec(x, y), rand() % 2);
-			compute ++;
-		}
-	}
 	for (int i=0; i<200; i++) {
 		printf("Simulating frame %i \n", i+1);
 		printf("Total compute: %i \n", compute);
