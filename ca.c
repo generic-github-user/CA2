@@ -69,7 +69,7 @@ struct array new_array(int rank, int* shape) {
 		size *= shape[i];
 		compute ++;
 	}
-	printf("Initalizing array with size %i \n", size);
+	//printf("Initalizing array with size %i \n", size);
 	//int data[size] = {0};
 	//int data[size];
 	int* data = calloc(size, sizeof(int));
@@ -201,7 +201,9 @@ void print_state(struct state s) {
 }
 
 void step(struct state s, struct state p, int i, int show) {
-	printf("Simulating frame %i \n", i+1);
+	if (show) {
+		printf("Simulating frame %i \n", i+1);
+	}
 	int neighbors = 0;
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
@@ -226,23 +228,31 @@ void step(struct state s, struct state p, int i, int show) {
 //	}
 	if (show) {
 		print_state(s);
+		printf("\n");
 	}
-
-	printf("\n");
 	fflush(stdout);
-	usleep(500000);
+	// usleep(500000);
 }
 
 void simulate(struct simulation sim, int n, int show) {
 	int w = 30;
 	int h = 30;
 	int shape[2] = {30, 30};
+	int prog = 0;
+	printf("[");
 	for (int i=0; i<n-1; i++) {
 		struct state p = sim.states[sim.time-1];
 		sim.states[sim.time] = (struct state) {new_array(2, p.data.shape)};
 		step(sim.states[sim.time], p, i, show);
+
 		sim.time ++;
+		int q = 20 * ((double) i / (double) n);
+		if (q > prog) {
+			printf("#");
+			prog = q;
+		}
 	}
+	printf("]\n");
 }
 
 int main() {
