@@ -74,8 +74,6 @@ struct array new_array(int rank, int* shape) {
 		compute ++;
 	}
 	//printf("Initalizing array with size %i \n", size);
-	//int data[size] = {0};
-	//int data[size];
 	int* data = calloc(size, sizeof(int));
 	struct array a = { rank, shape, size, data };
 	fill_array(a, 0);
@@ -245,9 +243,6 @@ void step(struct state s, struct state p, int i, int show, int* cc) {
 }
 
 void simulate(struct simulation sim, int n, int show) {
-	int w = 30;
-	int h = 30;
-	int shape[2] = {30, 30};
 	int prog = 0;
 	printf("[");
 	for (int i=0; i<n-1; i++) {
@@ -388,8 +383,6 @@ int main() {
 			printf("Found command %s \n", command);
 		}
 		else if (token[0] == '-') {
-//			switch (token[1]) {
-//				case 'n': 
 			optionc = token[1];
 		}
 		else if (optionc != '\0') {
@@ -412,8 +405,6 @@ int main() {
 			opt = strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
-		
-		// if (strcmp(command, "randomstate") == 0) {
 		
 		token = strtok(NULL, " ");
 		usleep(200000);
