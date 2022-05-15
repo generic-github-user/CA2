@@ -125,6 +125,17 @@ struct simulation {
 	int time, steps;
 };
 
+// should s be a state pointer?
+struct simulation new_simulation(struct state s, int steps) {
+	struct simulation sim;
+	sim.states = (struct state*) calloc(steps, sizeof(struct state));
+	sim.states[0] = s;
+	sim.time = 1;
+	sim.steps = steps;
+//	printf("Created new simulation
+	return sim;
+}
+
 // Generate a random state
 struct state random_state(int* shape) {
 	struct state result = {new_array(2, shape)};
@@ -221,6 +232,18 @@ int main() {
 		fflush(stdout);
 		usleep(100000);
 	}
+
+void simulate(struct simulation sim, int n) {
+	int w = 30;
+	int h = 30;
+	int shape[2] = {30, 30};
+	for (int i=0; i<n-1; i++) {
+		struct state p = sim.states[sim.time-1];
+		sim.states[sim.time] = (struct state) {new_array(2, p.data.shape)};
+		step(sim.states[sim.time], p, i);
+		sim.time ++;
+	}
+}
 	char input[200];
 	fgets(input, 200, stdin);
 	char* token = strtok(input, " ");
