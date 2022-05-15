@@ -7,6 +7,7 @@
 // TODO: provide tools for mutating patterns
 // TODO: log files
 // TODO: add support for long-term experiment databases
+// TODO: add function for backtracing cellular automata states
 
 // Create a statically typed function that reduces an array to a single value
 #define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
@@ -115,6 +116,8 @@ ARRAY_REDUCE(array_sum, int, +, 0)
 double array_mean(struct array a) {
 	return array_sum(a) / a.size;
 }
+
+// struct state map_neighbors
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
@@ -276,16 +279,8 @@ void write_state(struct state s, FILE* fptr) {
 	free(summary);
 }
 
-int main() {
-	printf("ca.c loaded successfully \n");
-	// Set random seed
-	srand(time(NULL));
-	
-	compute = 0;
-
-	char input[200];
-	fgets(input, 200, stdin);
-	char* token = strtok(input, " ");
+void process_command(char* cmd) {
+	char* token = strtok(cmd, " ");
 	char* command;
 	char* option;
 	char optionc = '\0';
@@ -409,4 +404,17 @@ int main() {
 		token = strtok(NULL, " ");
 		usleep(200000);
 	} while (!complete);
+
+}
+
+int main() {
+	printf("ca.c loaded successfully \n");
+	// Set random seed
+	srand(time(NULL));
+	
+	compute = 0;
+
+	char input[200];
+	fgets(input, 200, stdin);
+	process_command(input);
 }
