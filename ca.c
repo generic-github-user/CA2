@@ -280,6 +280,8 @@ int main() {
 	struct state* stateset_selection;
 
 	struct simulation sim_selection;
+	struct simulation* simset_selection;
+	
 	char* selection_type;
 
 	char* opt;
@@ -338,6 +340,14 @@ int main() {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
 					simulate(sim_selection, opt_iterations, opt_print);
+				}
+				else if (strcmp(selection_type, "state_set") == 0) {
+					simset_selection = calloc(opt_num, sizeof(struct simulation));
+					for (int j=0; j<opt_num; j++) {
+						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
+						simulate(simset_selection[j], opt_iterations, opt_print);
+					}
+					selection_type = "simulation_set";
 				}
 				complete = 1;
 			}
