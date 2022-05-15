@@ -122,6 +122,8 @@ double array_mean(struct array a) {
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
 	struct array data;
+	int population;
+	double density;
 };
 
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
@@ -279,6 +281,20 @@ void write_state(struct state s, FILE* fptr) {
 	free(summary);
 }
 
+int iscommand(char* text) {
+	char** commands = {"randomstate", "write", "simulate"};
+	for (int i=0; i<3; i++) {
+		if (strcmp(text, commands[i]) == 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+int streq(char* a, char* b) {
+	return strcmp(a, b) == 0;
+}
+
 void process_command(char* cmd) {
 	char* token = strtok(cmd, " ");
 	char* command;
@@ -309,13 +325,13 @@ void process_command(char* cmd) {
 		}
 		printx(1);
 		printf("Handling token [%s] \n", token);
-		if (token == NULL || strcmp(token, ">") == 0) {
+		if (token == NULL || streq(token, ">")) {
 			if (command == NULL) {
 				printx(2);
 				printf("No command set \n");
 			}
 
-			if (strcmp(command, "randomstate") == 0) {
+			if (streq(command, "randomstate")) {
 				printx(2);
 				printf("Generating random state \n");
 				if (opt_num == 1) {
@@ -330,7 +346,7 @@ void process_command(char* cmd) {
 					selection_type = "state_set";
 				}
 			}
-			else if (strcmp(command, "write") == 0) {
+			else if (streq(command, "write")) {
 				printx(2);
 				printf("Writing to output file [%s] \n", opt);
 				FILE* outfile = fopen(opt, "w");
@@ -346,15 +362,15 @@ void process_command(char* cmd) {
 				fclose(outfile);
 				complete = 1;
 			}
-			else if (strcmp(command, "simulate") == 0) {
+			else if (streq(command, "simulate")) {
 				printx(2);
 				printf("Executing simulation \n");
-				if (strcmp(selection_type, "state") == 0) {
+				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
 					simulate(sim_selection, opt_iterations, opt_print);
 				}
-				else if (strcmp(selection_type, "state_set") == 0) {
+				else if (streq(selection_type, "state_set")) {
 					simset_selection = calloc(opt_num, sizeof(struct simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
@@ -371,7 +387,7 @@ void process_command(char* cmd) {
 				exit(1);
 			}
 		}
-		else if (strcmp(token, "randomstate") == 0 || strcmp(token, "write") == 0 || strcmp(token, "simulate") == 0) {
+		else if (iscommand(token)) {
 			command = strdup(token);
 			command[strcspn(command, "\n")] = 0;
 			printx(2);
