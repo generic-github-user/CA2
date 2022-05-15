@@ -269,11 +269,14 @@ int main() {
 	char* option;
 
 	struct state state_selection;
+	struct state* stateset_selection;
+
 	struct simulation sim_selection;
 	char* selection_type;
 
 	char* opt;
 	int opt_shape[2] = {30, 30};
+	int opt_num = 1;
 	int opt_iterations = 100;
 	int opt_print = 0;
 
@@ -293,8 +296,17 @@ int main() {
 
 			if (strcmp(command, "randomstate") == 0) {
 				printf("Generating random state \n");
-				state_selection = random_state(opt_shape);
-				selection_type = "state";
+				if (opt_num == 1) {
+					state_selection = random_state(opt_shape);
+					selection_type = "state";
+				}
+				else {
+					stateset_selection = calloc(opt_num, sizeof(struct state));
+					for (int j=0; j<opt_num; j++) {
+						stateset_selection[j] = random_state(opt_shape);
+					}
+					selection_type = "state_set";
+				}
 			}
 			else if (strcmp(command, "write") == 0) {
 				printf("Writing to output file [%s] \n", opt);
