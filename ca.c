@@ -132,7 +132,8 @@ char* state_summary(struct array s) {
 	int i = 0;
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
-			char c = array_get(s, vec(x, y)) ? '*' : ' ';
+			//char c = array_get(s, vec(x, y)) ? '*' : ' ';
+			char c = array_get(s, vec(x, y)) ? '#' : ' ';
 			output[i] = c;
 			i ++;
 		}
@@ -142,7 +143,26 @@ char* state_summary(struct array s) {
 	output[i] = '\0';
 	return output;
 }
-	
+
+int count_neighbors(struct array source, int x, int y) {
+	int neighbors = 0;
+	int c, d;
+	for (int a=-1; a<=1; a++) {
+		for (int b=-1; b<=1; b++) {
+			if (a!=0 || b!=0) {
+				c = x+a;
+				d = y+b;
+				//bound(&c, 0, 29);
+				//bound(&d, 0, 29);
+				if (c >= 0 && c <= 29 && d >= 0 && d <= 29) {
+					neighbors += array_get(source, vec(c, d));
+				}
+			}
+			compute ++;
+		}
+	}
+	return neighbors;
+}
 
 int main() {
 	printf("ca.c loaded successfully \n");
@@ -176,21 +196,7 @@ int main() {
 		}
 		for (int x=0; x<30; x++) {
 			for (int y=0; y<30; y++) {
-				neighbors = 0;
-				for (int a=-1; a<=1; a++) {
-					for (int b=-1; b<=1; b++) {
-						if (a!=0 || b!=0) {
-							c = x+a;
-							d = y+b;
-							//bound(&c, 0, 29);
-							//bound(&d, 0, 29);
-							if (c >= 0 && c <= 29 && d >= 0 && d <= 29) {
-								neighbors += array_get(prev, vec(c, d));
-							}
-						}
-						compute ++;
-					}
-				}
+				neighbors = count_neighbors(grid, x, y);
 				if (neighbors == 3) { array_set(grid, vec(x, y), 1); }
 				if (neighbors < 2 || neighbors > 3) { array_set(grid, vec(x, y), 0); }
 			}
