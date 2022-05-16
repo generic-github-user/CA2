@@ -18,6 +18,14 @@
 	return output;\
 }
 
+#define ARRAY_OP(name,op) struct array name(struct array a, struct array b) {\
+	struct array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] op b.data[i];\
+	}\
+	return output;\
+}
+
 // Example commands
 
 // randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 50 > sort population desc > write test.txt, save test.ca2
@@ -118,6 +126,11 @@ double array_mean(struct array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
+ARRAY_OP(array_bsum, +);
+ARRAY_OP(array_bdiff, -);
+ARRAY_OP(array_bprod, *);
+ARRAY_OP(array_bdiv, /);
+ARRAY_OP(array_bmod, %);
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
