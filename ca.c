@@ -29,6 +29,7 @@
 // snowflake > trace cgol > select -n 20 > write backtracking.txt
 
 int compute;
+FILE* logfile;
 
 // Clip an integer to a range (modify in-place)
 int bound(int* x, int a, int b) {
@@ -46,7 +47,7 @@ struct vector vec(int x, int y) {
 }
 
 struct manifold {
-
+	
 };
 
 // A general array struct for multidimensional arrays
@@ -268,11 +269,14 @@ void simulate(struct simulation sim, int n, int show) {
 }
 
 //void printx(int level, char* fmt, ...) {
-void printx(int level) {
+void printx(int level, char* text) {
 	for (int i=0; i<level; i++) {
 		printf("  ");
 	}
-	// printf(
+	if (strcmp(text, "") != 0) {
+		printf("%s \n", text);
+		fprintf(logfile, "%s \n", text);
+	}
 }
 
 void write_state(struct state s, FILE* fptr) {
@@ -282,7 +286,7 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char** commands = {"randomstate", "write", "simulate"};
+	char* commands[3] = {"randomstate", "write", "simulate"};
 	for (int i=0; i<3; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
@@ -295,7 +299,7 @@ int streq(char* a, char* b) {
 	return strcmp(a, b) == 0;
 }
 
-void process_command(char* cmd) {
+void process_command(char* cmd, FILE* log) {
 	char* token = strtok(cmd, " ");
 	char* command;
 	char* option;
@@ -318,22 +322,20 @@ void process_command(char* cmd) {
 	int complete = 0;
 
 	// Handle command input
-	printf("Processing command...\n");
+	printx(0, "Processing command...");
 	do {
 		if (token != NULL) {
 			token[strcspn(token, "\n")] = 0;
 		}
-		printx(1);
+		printx(1, "");
 		printf("Handling token [%s] \n", token);
 		if (token == NULL || streq(token, ">")) {
 			if (command == NULL) {
-				printx(2);
-				printf("No command set \n");
+				printx(2, "No command set");
 			}
 
 			if (streq(command, "randomstate")) {
-				printx(2);
-				printf("Generating random state \n");
+				printx(2, "Generating random state");
 				if (opt_num == 1) {
 					state_selection = random_state(opt_shape);
 					selection_type = "state";
@@ -347,7 +349,7 @@ void process_command(char* cmd) {
 				}
 			}
 			else if (streq(command, "write")) {
-				printx(2);
+				printx(2, "");
 				printf("Writing to output file [%s] \n", opt);
 				FILE* outfile = fopen(opt, "w");
 				if (strcmp(selection_type, "state") == 0) {
@@ -363,8 +365,7 @@ void process_command(char* cmd) {
 				complete = 1;
 			}
 			else if (streq(command, "simulate")) {
-				printx(2);
-				printf("Executing simulation \n");
+				printx(2, "Executing simulation");
 				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
@@ -381,8 +382,7 @@ void process_command(char* cmd) {
 				complete = 1;
 			}
 			else {
-				printx(2);
-				printf("Command not recognized \n");
+				printx(2, "Command not recognized");
 				complete = 1;
 				exit(1);
 			}
@@ -390,7 +390,7 @@ void process_command(char* cmd) {
 		else if (iscommand(token)) {
 			command = strdup(token);
 			command[strcspn(command, "\n")] = 0;
-			printx(2);
+			printx(2, "");
 			printf("Found command %s \n", command);
 		}
 		else if (token[0] == '-') {
@@ -411,8 +411,7 @@ void process_command(char* cmd) {
 			}
 		}
 		else {
-			printx(2);
-			printf("Found unlabeled option \n");
+			printx(2, "Found unlabeled option");
 			opt = strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
@@ -429,8 +428,10 @@ int main() {
 	srand(time(NULL));
 	
 	compute = 0;
+	logfile = fopen("ca_log.txt", "a");
 
 	char input[200];
 	fgets(input, 200, stdin);
-	process_command(input);
+	process_command(input, logfile);
+	fclose(logfile);
 }
