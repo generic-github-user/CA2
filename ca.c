@@ -371,8 +371,8 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[6] = {"randomstate", "write", "simulate", "collapse", "min", "max"};
-	for (int i=0; i<6; i++) {
+	char* commands[7] = {"randomstate", "write", "simulate", "collapse", "min", "max", "enumerate"};
+	for (int i=0; i<7; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -439,6 +439,36 @@ void process_command(char* cmd, FILE* log) {
 					}
 					selection_type = "state_set";
 				}
+			}
+			// TODO: exploit symmetries and pattern components for more compact storage/representation?
+			else if (streq(command, "enumerate")) {
+				printx(2, "Enumerating states...");
+				int i = 1;
+				int z = 0;
+				// TODO
+				//if (stateset_selection == NULL) {
+				stateset_selection = calloc(opt_num, sizeof(struct state));
+				//}
+				stateset_selection[0] = (struct state) {new_array(2, opt_shape)};
+				struct state* s;
+				while (i < opt_num) {
+					printx(3, "");
+					printf("Generating state %i\n", i);
+
+					z = 0;
+					s = &stateset_selection[i];
+					stateset_selection[i] = *clone_state(stateset_selection[i-1]);
+					while ((s->data).data[z] == 1) {
+						(s->data).data[z] = 0;
+						z ++;
+						if (z >= (s->data).size) {
+							break;
+						}
+					}
+					(s->data).data[z] = 1;
+					i ++;
+				}
+				selection_type = "state_set";
 			}
 			else if (streq(command, "write")) {
 				printx(2, "");
