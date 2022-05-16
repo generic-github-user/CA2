@@ -8,12 +8,24 @@
 // TODO: log files
 // TODO: add support for long-term experiment databases
 // TODO: add function for backtracing cellular automata states
+// TODO: add array views & semi-mutable data structures
 
 // Create a statically typed function that reduces an array to a single value
 #define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
 	type output = init;\
 	for (int i=0; i<a.size; i++) {\
 		output = output op a.data[i];\
+	}\
+	return output;\
+}
+
+#define PTR_REDUCE(name,property,op) struct state name(struct state* states, int n) {\
+	struct state output = states[0];\
+	for (int i=0; i<n; i++) {\
+		/* if ((states[i] -> property) op (output -> property)) {*/\
+		if (states[i].property op output.property) {\
+			output = states[i];\
+		}\
 	}\
 	return output;\
 }
@@ -126,11 +138,14 @@ double array_mean(struct array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
+
 ARRAY_OP(array_bsum, +);
 ARRAY_OP(array_bdiff, -);
 ARRAY_OP(array_bprod, *);
 ARRAY_OP(array_bdiv, /);
 ARRAY_OP(array_bmod, %);
+
+
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
@@ -138,6 +153,9 @@ struct state {
 	int population;
 	double density;
 };
+
+PTR_REDUCE(max_population, population, >);
+PTR_REDUCE(min_population, population, <);
 
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
