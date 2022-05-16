@@ -290,6 +290,9 @@ void printx(int level, char* text) {
 // note: don't pass by value?!?!
 void simulate(struct simulation* sim, int n, int show, int level) {
 	int prog = 0;
+	printx(level+1, "");
+	printf("Simulating %i iterations\n", n-1);
+	printx(level+1, "");
 	printf("[");
 	for (int i=0; i<n-1; i++) {
 		struct state* p = &(sim->states)[(sim->time)-1];
@@ -297,7 +300,7 @@ void simulate(struct simulation* sim, int n, int show, int level) {
 		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute));
 
 		(sim -> time) ++;
-		int q = 20 * ((double) i / (double) n);
+		int q = 40 * ((double) i / (double) n);
 		if (q > prog) {
 			printf("#");
 			prog = q;
@@ -434,6 +437,8 @@ void process_command(char* cmd, FILE* log) {
 					for (int j=0; j<opt_num; j++) {
 						//struct simulation sim = simset_selection[j];
 						struct simulation* sim = &simset_selection[j];
+						printx(2, "");
+						printf("Getting state at index %i\n", sim -> time);
 						stateset_selection[j] = sim -> states[(sim -> time) - 2];
 					}
 					selection_type = "state_set";
@@ -462,8 +467,10 @@ void process_command(char* cmd, FILE* log) {
 			optionc = token[1];
 		}
 		else if (optionc != '\0') {
+			printf("Received option [-%c] with value %s", optionc, token);
 			switch (optionc) {
 				case 'n': {
+					printx(2, "");
 					opt_num = atoi(token);
 					optionc = '\0';
 					break;
@@ -481,7 +488,7 @@ void process_command(char* cmd, FILE* log) {
 		}
 		else {
 			printx(2, "Found unlabeled option");
-			opt = strdup(token);
+			opt = (char*) strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
 		
@@ -503,6 +510,12 @@ int main() {
 
 	char input[200];
 	fgets(input, 200, stdin);
-	process_command(input, logfile);
+	if (streq(input, "test1\n")) {
+		char* r = "randomstate -n 20 > simulate -i 200 > collapse > write test1.txt";
+		process_command(r, logfile);
+	}
+	else {
+		process_command(input, logfile);
+	}
 	fclose(logfile);
 }
