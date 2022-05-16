@@ -9,12 +9,18 @@ This program includes an interactive mode (i.e., a command shell) for experiment
 This is a non-exhaustive list of commands that can be run in the tool's interactive mode:
 
 - `randomstate -n [int] -w [int] -h [int]`: Randomly generate a set of cellular automata states
-- `simulate [rule] -i [int] -r auto`
+- `simulate [rule] -i [int] -r auto -p`
 - `sort [property]`
 - `write [path]`: Store a human-readable text summary of the data (state(s), simulation(s), etc.) passed to the command at the specified filepath
 - `save [path]`
 - `abbr short long`: Create an abbreviation that will be expanded before a command is run, similar to preprocessor directives and macros in C
+- `collapse`: Get the last state of one or more simulations
+- `enumerate`: Iterate through possible states of a cellular automaton
+- `min [property]`: Reduce a set of states based on the specified property
+- `max [property]`
 - `help`: Display this list
+- `undo`: Revert previous command
+- `redo`
 
 Here are descriptions of the `[types]` used in the above command descriptions:
 
