@@ -225,14 +225,14 @@ void print_state(struct state s) {
 	}
 }
 
-void step(struct state s, struct state p, int i, int show, int* cc) {
+void step(struct state* s, struct state* p, int i, int show, int* cc) {
 	if (show) {
 		printf("Simulating frame %i \n", i+1);
 	}
 	int neighbors = 0;
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			array_set(s.data, vec(x, y), array_get(p.data, vec(x, y)));
+			array_set(s -> data, vec(x, y), array_get(p -> data, vec(x, y)));
 			compute ++;
 			(*cc) ++;
 		}
@@ -240,10 +240,10 @@ void step(struct state s, struct state p, int i, int show, int* cc) {
 
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			neighbors = count_neighbors(p, x, y, cc);
+			neighbors = count_neighbors(*p, x, y, cc);
 			(*cc) ++;
-			if (neighbors == 3) { array_set(s.data, vec(x, y), 1); }
-			if (neighbors < 2 || neighbors > 3) { array_set(s.data, vec(x, y), 0); }
+			if (neighbors == 3) { array_set(s -> data, vec(x, y), 1); }
+			if (neighbors < 2 || neighbors > 3) { array_set(s -> data, vec(x, y), 0); }
 		}
 	}
 //	for (int x=0; x<30; x++) {
@@ -254,7 +254,7 @@ void step(struct state s, struct state p, int i, int show, int* cc) {
 //		}
 //	}
 	if (show) {
-		print_state(s);
+		print_state(*s);
 		printf("\n");
 	}
 	fflush(stdout);
@@ -274,26 +274,27 @@ void printx(int level, char* text) {
 	}
 }
 
-void simulate(struct simulation sim, int n, int show, int level) {
+// note: don't pass by value?!?!
+void simulate(struct simulation* sim, int n, int show, int level) {
 	int prog = 0;
 	printf("[");
 	for (int i=0; i<n-1; i++) {
-		struct state p = sim.states[sim.time-1];
-		sim.states[sim.time] = (struct state) {new_array(2, p.data.shape)};
-		step(sim.states[sim.time], p, i, show, &sim.compute);
+		struct state* p = &(sim->states)[(sim->time)-1];
+		(sim -> states)[sim -> time] = (struct state) {new_array(2, p -> data.shape)};
+		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute));
 
-		sim.time ++;
+		(sim -> time) ++;
 		int q = 20 * ((double) i / (double) n);
 		if (q > prog) {
 			printf("#");
 			prog = q;
 		}
-		sim.compute ++;
+		(sim -> compute) ++;
 	}
 	printf("]\n");
 
 	char temp[50];
-	sprintf(temp, "Simulation complete; compute usage was %i \n", sim.compute);
+	sprintf(temp, "Simulation complete; compute usage was %i \n", sim -> compute);
 	printx(level+1, temp);
 //	free(temp);
 }
@@ -402,13 +403,13 @@ void process_command(char* cmd, FILE* log) {
 				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
-					simulate(sim_selection, opt_iterations, opt_print, 2);
+					simulate(&sim_selection, opt_iterations, opt_print, 2);
 				}
 				else if (streq(selection_type, "state_set")) {
 					simset_selection = calloc(opt_num, sizeof(struct simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
-						simulate(simset_selection[j], opt_iterations, opt_print, 2);
+						simulate(&simset_selection[j], opt_iterations, opt_print, 2);
 					}
 					selection_type = "simulation_set";
 				}
@@ -418,8 +419,9 @@ void process_command(char* cmd, FILE* log) {
 				if (streq(selection_type, "simulation_set")) {
 					stateset_selection = calloc(opt_num, sizeof(struct state));
 					for (int j=0; j<opt_num; j++) {
-						struct simulation sim = simset_selection[j];
-						stateset_selection[j] = sim.states[sim.time];
+						//struct simulation sim = simset_selection[j];
+						struct simulation* sim = &simset_selection[j];
+						stateset_selection[j] = sim -> states[(sim -> time) - 2];
 					}
 					selection_type = "state_set";
 				}
