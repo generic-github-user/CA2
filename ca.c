@@ -118,7 +118,6 @@ double array_mean(struct array a) {
 	return array_sum(a) / a.size;
 }
 
-// struct state map_neighbors
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
@@ -199,6 +198,20 @@ int count_neighbors(struct state source, int x, int y, int* cc) {
 	}
 	return neighbors;
 }
+
+struct state map_neighbors(struct state s, int* cc) {
+	int neighbors;
+	struct state counts = {new_array(2, s.data.shape)};
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			neighbors = count_neighbors(s, x, y, cc);
+			array_set(counts.data, vec(x, y), neighbors);
+			//(*cc) ++;
+		}
+	}
+	return counts;
+}
+
 
 void print_state(struct state s) {
 	printf("Total compute: %i \n", compute);
