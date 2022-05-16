@@ -265,7 +265,7 @@ void simulate(struct simulation sim, int n, int show) {
 		sim.compute ++;
 	}
 	printf("]\n");
-	printf("Simulation complete; compute usage was %i", sim.compute);
+	printf("Simulation complete; compute usage was %i \n", sim.compute);
 }
 
 //void printx(int level, char* fmt, ...) {
@@ -286,7 +286,7 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[3] = {"randomstate", "write", "simulate"};
+	char* commands[3] = {"randomstate", "write", "simulate", "collapse"};
 	for (int i=0; i<3; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
@@ -379,12 +379,26 @@ void process_command(char* cmd, FILE* log) {
 					}
 					selection_type = "simulation_set";
 				}
-				complete = 1;
+			}
+			else if (streq(command, "collapse")) {
+				printx(2, "Collapsing simulation(s)");
+				if (streq(selection_type, "simulation_set")) {
+					stateset_selection = calloc(opt_num, sizeof(struct state));
+					for (int j=0; j<opt_num; j++) {
+						struct simulation sim = simset_selection[j];
+						stateset_selection[j] = sim.states[sim.time];
+					}
+					selection_type = "state_set";
+				}
 			}
 			else {
 				printx(2, "Command not recognized");
 				complete = 1;
 				exit(1);
+			}
+
+			if (token == NULL) {
+				complete = 1;
 			}
 		}
 		else if (iscommand(token)) {
