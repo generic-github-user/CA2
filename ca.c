@@ -154,6 +154,12 @@ struct state {
 	double density;
 };
 
+void update_state(struct state* s) {
+	(s -> population) = array_sum(s -> data);
+	// should s -> data be a pointer?
+	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
+}
+
 PTR_REDUCE(max_population, population, >);
 PTR_REDUCE(min_population, population, <);
 
@@ -186,6 +192,7 @@ struct state random_state(int* shape) {
 			compute ++;
 		}
 	}
+	update_state(&result);
 	return result;
 }
 
@@ -277,6 +284,8 @@ void step(struct state* s, struct state* p, int i, int show, int* cc) {
 			if (neighbors < 2 || neighbors > 3) { array_set(s -> data, vec(x, y), 0); }
 		}
 	}
+	update_state(s);
+
 //	for (int x=0; x<30; x++) {
 //		for (int y=0; y<30; y++) {
 //			struct vector v = vec(x, y);
