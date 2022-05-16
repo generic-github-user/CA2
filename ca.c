@@ -194,7 +194,7 @@ int count_neighbors(struct state source, int x, int y, int* cc) {
 				}
 			}
 			compute ++;
-			*cc ++;
+			(*cc) ++;
 		}
 	}
 	return neighbors;
@@ -221,14 +221,14 @@ void step(struct state s, struct state p, int i, int show, int* cc) {
 		for (int y=0; y<30; y++) {
 			array_set(s.data, vec(x, y), array_get(p.data, vec(x, y)));
 			compute ++;
-			*cc ++;
+			(*cc) ++;
 		}
 	}
 
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
 			neighbors = count_neighbors(p, x, y, cc);
-			*cc ++;
+			(*cc) ++;
 			if (neighbors == 3) { array_set(s.data, vec(x, y), 1); }
 			if (neighbors < 2 || neighbors > 3) { array_set(s.data, vec(x, y), 0); }
 		}
@@ -248,7 +248,18 @@ void step(struct state s, struct state p, int i, int show, int* cc) {
 	// usleep(500000);
 }
 
-void simulate(struct simulation sim, int n, int show) {
+//void printx(int level, char* fmt, ...) {
+void printx(int level, char* text) {
+	for (int i=0; i<level; i++) {
+		printf("  ");
+	}
+	if (strcmp(text, "") != 0) {
+		printf("%s \n", text);
+		fprintf(logfile, "%s \n", text);
+	}
+}
+
+void simulate(struct simulation sim, int n, int show, int level) {
 	int prog = 0;
 	printf("[");
 	for (int i=0; i<n-1; i++) {
@@ -265,19 +276,14 @@ void simulate(struct simulation sim, int n, int show) {
 		sim.compute ++;
 	}
 	printf("]\n");
-	printf("Simulation complete; compute usage was %i \n", sim.compute);
+
+	char temp[50];
+	sprintf(temp, "Simulation complete; compute usage was %i \n", sim.compute);
+	printx(level+1, temp);
+//	free(temp);
 }
 
-//void printx(int level, char* fmt, ...) {
-void printx(int level, char* text) {
-	for (int i=0; i<level; i++) {
-		printf("  ");
-	}
-	if (strcmp(text, "") != 0) {
-		printf("%s \n", text);
-		fprintf(logfile, "%s \n", text);
-	}
-}
+
 
 void write_state(struct state s, FILE* fptr) {
 	char* summary = state_summary(s);
@@ -286,8 +292,8 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[3] = {"randomstate", "write", "simulate", "collapse"};
-	for (int i=0; i<3; i++) {
+	char* commands[4] = {"randomstate", "write", "simulate", "collapse"};
+	for (int i=0; i<4; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -369,13 +375,13 @@ void process_command(char* cmd, FILE* log) {
 				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
-					simulate(sim_selection, opt_iterations, opt_print);
+					simulate(sim_selection, opt_iterations, opt_print, 2);
 				}
 				else if (streq(selection_type, "state_set")) {
 					simset_selection = calloc(opt_num, sizeof(struct simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
-						simulate(simset_selection[j], opt_iterations, opt_print);
+						simulate(simset_selection[j], opt_iterations, opt_print, 2);
 					}
 					selection_type = "simulation_set";
 				}
