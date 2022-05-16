@@ -356,8 +356,8 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[4] = {"randomstate", "write", "simulate", "collapse"};
-	for (int i=0; i<4; i++) {
+	char* commands[6] = {"randomstate", "write", "simulate", "collapse", "min", "max"};
+	for (int i=0; i<6; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -472,6 +472,26 @@ void process_command(char* cmd, FILE* log) {
 				}
 				else {
 					printx(2, "Command not supported for this data type");
+				}
+			}
+			else if (streq(command, "min")) {
+				printx(2, "Reducing to minimum");
+				if (streq(selection_type, "state_set")) {
+					selection_type = "state";
+					if (streq(opt, "population")) {
+						// TODO
+						state_selection = min_population(stateset_selection, opt_num);
+					}
+				}
+			}
+			else if (streq(command, "max")) {
+				printx(2, "Reducing to maximum");
+				if (streq(selection_type, "state_set")) {
+					selection_type = "state";
+					if (streq(opt, "population")) {
+						// TODO
+						state_selection = max_population(stateset_selection, opt_num);
+					}
 				}
 			}
 			else {
