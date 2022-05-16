@@ -337,6 +337,13 @@ void process_command(char* cmd, FILE* log) {
 		}
 		printx(1, "");
 		printf("Handling token [%s] \n", token);
+
+		if (token == NULL) {
+			if (optionc == 'p') {
+				opt_print = 1;
+			}
+		}
+
 		if (token == NULL || streq(token, ">")) {
 			if (command == NULL) {
 				printx(2, "No command set");
@@ -433,6 +440,10 @@ void process_command(char* cmd, FILE* log) {
 					optionc = '\0';
 					break;
 				}
+				case 'p': {
+					opt_print = 1;
+					break;
+				}
 			}
 		}
 		else {
@@ -441,6 +452,8 @@ void process_command(char* cmd, FILE* log) {
 			opt[strcspn(opt, "\n")] = 0;
 		}
 		
+
+
 		token = strtok(NULL, " ");
 		usleep(200000);
 	} while (!complete);
