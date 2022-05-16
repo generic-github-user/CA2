@@ -115,7 +115,7 @@ void* reduce_array(struct array a, void* (F)(void*, void*), void* init) {
 // int array_sum(struct array a) { return (int) reduce_array(a, sum, 0); }
 ARRAY_REDUCE(array_sum, int, +, 0)
 double array_mean(struct array a) {
-	return array_sum(a) / a.size;
+	return (double) array_sum(a) / (double) a.size;
 }
 
 
@@ -301,6 +301,11 @@ void simulate(struct simulation sim, int n, int show, int level) {
 
 
 void write_state(struct state s, FILE* fptr) {
+	fprintf(fptr, "Population: %i \n", array_sum(s.data));
+	fprintf(fptr, "Density: %f \n", (double) array_sum(s.data) / (double) s.data.size);
+	int cc = 0;
+	fprintf(fptr, "Avg. neighbors: %f \n", array_mean(map_neighbors(s, &cc).data));
+
 	char* summary = state_summary(s);
 	fprintf(fptr, "%s", summary);
 	free(summary);
