@@ -66,6 +66,8 @@ struct vector vec(int x, int y) {
 	return (struct vector) { x, y };
 }
 
+// struct name_group
+
 struct manifold {
 	
 };
@@ -261,6 +263,19 @@ void print_state(struct state s) {
 		}
 		printf("\n");
 	}
+}
+
+struct state* clone_state(struct state s) {
+	//struct state clone = (struct state) {new_array(2, s.data.shape)};
+	struct state* clone = malloc(sizeof(struct state));
+	*clone = (struct state) {new_array(2, s.data.shape)};
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			array_set(clone -> data, vec(x, y), array_get(s.data, vec(x, y)));
+			compute ++;
+		}
+	}
+	return clone;
 }
 
 void step(struct state* s, struct state* p, int i, int show, int* cc) {
