@@ -85,7 +85,7 @@ struct array new_array(int rank, int* shape) {
 // Convert a series of indices to a corresponding memory address in the internal representation of the array data
 int get_coord(struct array a, struct vector z) {
 	// ?
-	return z.x * a.shape[0] + z.y;
+	return z.x * a.shape[1] + z.y;
 }
 
 int array_get(struct array a, struct vector z) {
@@ -245,7 +245,9 @@ void step(struct state s, struct state p, int i, int show, int* cc) {
 		printf("\n");
 	}
 	fflush(stdout);
-	// usleep(500000);
+	if (show) {
+		usleep(200000);
+	}
 }
 
 //void printx(int level, char* fmt, ...) {
@@ -395,6 +397,9 @@ void process_command(char* cmd, FILE* log) {
 						stateset_selection[j] = sim.states[sim.time];
 					}
 					selection_type = "state_set";
+				}
+				else {
+					printx(2, "Command not supported for this data type");
 				}
 			}
 			else {
