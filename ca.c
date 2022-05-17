@@ -66,11 +66,48 @@ struct vector vec(int x, int y) {
 	return (struct vector) { x, y };
 }
 
+struct rule {
+	char* name;
+};
+
+struct neighborhood {
+	int inner_radius;
+	int outer_radius;
+};
+
+// A rule that defines only the conditions that cause cells to "die", be "born", or continue living
+struct subtotalistic {
+	struct neighborhood* N;
+	int* conditions;
+};
+
+struct totalistic {
+	struct neighborhood* N;
+	int** values;
+};
+
 // struct name_group
+// struct lattice
 
 struct manifold {
-	
+	char* lattice;
+	int dimensions;
+	int shape;
+	// Edge behaviors are described as sequential pairs of characters indicating the two directions of motion along each axis, with the following representation:
+	// e: expand boundaries to fit the automaton's activity
+	// w: wrap from one edge to the opposite (e.g., global wrapping on a 2D plane generates a torus)
+	// i: wrap edges, inverted (as with a Mobius strip)
+	//
+	char* edges;
 };
+
+// TODO: type description classes
+struct manifold random_manifold() {
+	struct manifold m = {};
+	return m;
+}
+
+
 
 // A general array struct for multidimensional arrays
 struct array {
