@@ -278,6 +278,22 @@ char* microplot(struct simulation s) {
 	}
 	return result;
 }
+
+void sim_summary(struct simulation* s) {
+	fprintf(stdout, "Simulation (%i steps) \n\n", s -> steps);
+	fprintf(stdout, "Population -- %s\n", microplot(*s));
+	for (int i=0; i<s -> steps; i++) {
+		fprintf(stdout, "  Step %i: %i \n", i, (s -> states)[i].population);
+	}
+}
+
+char* sim_info(struct simulation s) {
+	char* result = calloc(50, sizeof(char));
+	strcat(result, "Simulation { Length");
+//	strcat(result, itoa(s.steps));
+	return result;
+}
+
 int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
 }
