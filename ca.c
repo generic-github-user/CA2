@@ -384,6 +384,17 @@ int streq(char* a, char* b) {
 	return strcmp(a, b) == 0;
 }
 
+int states_equal(struct state a, struct state b) {
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			if (array_get(a.data, vec(x, y)) != array_get(b.data, vec(x, y))) {
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
 void process_command(char* cmd, FILE* log) {
 	char* token = strtok(cmd, " ");
 	char* command;
