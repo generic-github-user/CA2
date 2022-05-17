@@ -38,6 +38,18 @@
 	return output;\
 }
 
+// TODO
+#define EXTRACT(name,property) struct array extract_##property(struct state* states, int n) {\
+	int* shape = malloc(sizeof(int));\
+	shape[0] = n;\
+	\
+	struct array output = new_array(1, shape);\
+	for (int i=0; i<n; i++) {\
+		output.data[i] = states[i].property;\
+	}\
+	return output;\
+}
+
 // Example commands
 
 // randomstate -n 100 -wh 10 > simulate cgol -i 100 -r auto --max 50 > sort population desc > write test.txt, save test.ca2
@@ -202,6 +214,7 @@ void update_state(struct state* s) {
 PTR_REDUCE(max_population, population, >);
 PTR_REDUCE(min_population, population, <);
 
+EXTRACT(extract_population, population);
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 	struct state* states;
