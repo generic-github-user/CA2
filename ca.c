@@ -193,6 +193,25 @@ double array_mean(struct array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
+int array_min(struct array a) {
+	int output = a.data[0];
+	for (int i=0; i<a.size; i++) {
+		if (a.data[i] < output) {
+			output = a.data[i];
+		}
+	}
+	return output;
+}
+
+int array_max(struct array a) {
+	int output = a.data[0];
+	for (int i=0; i<a.size; i++) {
+		if (a.data[i] > output) {
+			output = a.data[i];
+		}
+	}
+	return output;
+}
 
 ARRAY_OP(array_bsum, +);
 ARRAY_OP(array_bdiff, -);
