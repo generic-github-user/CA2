@@ -600,7 +600,17 @@ void process_command(char* cmd, FILE* log) {
 		token = strtok(NULL, " ");
 		usleep(200000);
 	} while (!complete);
+}
 
+char* microplot(struct simulation s) {
+	char* result = calloc(s.steps, sizeof(char));
+	int min = array_min(extract_pop(s));
+	int max = array_max(extract_pop(s));
+	char plotsymbols[3] = " .*oO";
+	for (int i=0; i<s.steps; i++) {
+		result[i] = plotsymbols[(int) ((double) (s.states[i].population - min) / (double) (max - min) * 5)];
+	}
+	return result;
 }
 
 int main() {
@@ -610,6 +620,7 @@ int main() {
 	
 	compute = 0;
 	logfile = fopen("ca_log.txt", "a");
+
 
 	char input[200];
 	fgets(input, 200, stdin);
