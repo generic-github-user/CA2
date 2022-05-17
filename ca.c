@@ -4,6 +4,9 @@
 #include <time.h>
 #include <string.h>
 
+#include <math.h>
+#include <stddef.h>
+#include <stdint.h>
 // TODO: provide tools for mutating patterns
 // TODO: log files
 // TODO: add support for long-term experiment databases
@@ -105,6 +108,7 @@ struct manifold {
 	char* lattice;
 	int dimensions;
 	int shape;
+
 	// Edge behaviors are described as sequential pairs of characters indicating the two directions of motion along each axis, with the following representation:
 	// e: expand boundaries to fit the automaton's activity
 	// w: wrap from one edge to the opposite (e.g., global wrapping on a 2D plane generates a torus)
@@ -264,6 +268,16 @@ char* state_summary(struct state s) {
 	return output;
 }
 
+char* microplot(struct simulation s) {
+	char* result = calloc(s.steps, sizeof(char));
+	int min = array_min(extract_population(s.states, s.steps));
+	int max = array_max(extract_population(s.states, s.steps));
+	char plotsymbols[5] = " .*oO";
+	for (int i=0; i<s.steps; i++) {
+		result[i] = plotsymbols[(int) ((double) (s.states[i].population - min) / (double) (max - min) * 5)];
+	}
+	return result;
+}
 int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
 }
@@ -659,16 +673,7 @@ void process_command(char* cmd, FILE* log) {
 	} while (!complete);
 }
 
-char* microplot(struct simulation s) {
-	char* result = calloc(s.steps, sizeof(char));
-	int min = array_min(extract_pop(s));
-	int max = array_max(extract_pop(s));
-	char plotsymbols[3] = " .*oO";
-	for (int i=0; i<s.steps; i++) {
-		result[i] = plotsymbols[(int) ((double) (s.states[i].population - min) / (double) (max - min) * 5)];
-	}
-	return result;
-}
+
 
 int main() {
 	printf("ca.c loaded successfully \n");
