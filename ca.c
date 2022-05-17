@@ -442,7 +442,7 @@ void process_command(char* cmd, FILE* log) {
 				if (opt_num == 1) {
 					state_selection = random_state(opt_shape);
 					selection_type = "state";
-				}
+			}
 				else {
 					stateset_selection = calloc(opt_num, sizeof(struct state));
 					for (int j=0; j<opt_num; j++) {
@@ -461,6 +461,7 @@ void process_command(char* cmd, FILE* log) {
 				stateset_selection = calloc(opt_num, sizeof(struct state));
 				//}
 				stateset_selection[0] = (struct state) {new_array(2, opt_shape)};
+				// TODO: update stats?
 				struct state* s;
 				while (i < opt_num) {
 					printx(3, "");
@@ -487,13 +488,18 @@ void process_command(char* cmd, FILE* log) {
 				FILE* outfile = fopen(opt, "w");
 				if (strcmp(selection_type, "state") == 0) {
 					write_state(state_selection, outfile);
+					//free(state_selection);
 				}
 				else if (strcmp(selection_type, "state_set") == 0) {
+					printx(3, "");
+					printf("Writing %i states \n", opt_num);
 					for (int j=0; j<opt_num; j++) {
 						write_state(stateset_selection[j], outfile);
 						fprintf(outfile, "\n\n");
 					}
+					free(stateset_selection);
 				}
+				printx(3, "Closing output file");
 				fclose(outfile);
 				complete = 1;
 			}
@@ -570,7 +576,8 @@ void process_command(char* cmd, FILE* log) {
 			optionc = token[1];
 		}
 		else if (optionc != '\0') {
-			printf("Received option [-%c] with value %s", optionc, token);
+			printx(2, "");
+			printf("Received option [-%c] with value %s \n", optionc, token);
 			switch (optionc) {
 				case 'n': {
 					printx(2, "");
