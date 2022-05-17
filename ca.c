@@ -470,8 +470,8 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[7] = {"randomstate", "write", "simulate", "collapse", "min", "max", "enumerate"};
-	for (int i=0; i<7; i++) {
+	char* commands[8] = {"randomstate", "write", "simulate", "collapse", "min", "max", "enumerate", "print"};
+	for (int i=0; i<8; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -601,6 +601,16 @@ void process_command(char* cmd, FILE* log) {
 				printx(3, "Closing output file");
 				fclose(outfile);
 				complete = 1;
+			}
+			else if (streq(command, "print")) {
+				if (streq(selection_type, "simulation")) {
+					sim_summary(&sim_selection);
+				}
+				else if (streq(selection_type, "simulation_set")) {
+					for (int j=0; j<opt_num; j++) {
+						sim_summary(&simset_selection[j]);
+					}
+				}
 			}
 			else if (streq(command, "simulate")) {
 				printx(2, "Executing simulation");
