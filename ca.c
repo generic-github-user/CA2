@@ -30,6 +30,8 @@ char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // TODO: add function for backtracing cellular automata states
 // TODO: add array views & semi-mutable data structures
 
+// are nested array structs viable?
+
 // Create a statically typed function that reduces an array to a single value
 #define ARRAY_REDUCE(name,type,op,init) type name(array a) { \
 	type output = init;\
@@ -225,6 +227,7 @@ void array_set(array a, vector z, int value) {
 	a.data[get_coord(a, z)] = value;
 }
 
+
 // array array_from(int rank, int* shape, void* values) {
 
 
@@ -277,6 +280,18 @@ void array_summary(array* a) {
 	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
 }
 
+
+array copy_array(array a) {
+	array copy = new_array(a.rank, a.shape);
+	for (int i=0; i<a.size; i++) {
+		copy.data[i] = a.data[i];
+	}
+	return copy;
+}
+
+vector array_to_vec(array a) {
+	return vec(a.data[0], a.data[1], a.data[2]);
+}
 
 
 typedef struct simulation simulation;
@@ -348,9 +363,14 @@ image generate_image(state s, char* color) {
 	fill_array(*result.data, 255);
 	int w = 3;
 	int h = 3;
+	int v[1] = {3};
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			if (array_get(s.data, vec(x, y)) != 0) {
+			array cell_color = new_array(1, v);
+			if (streq(color, "age")) {
+
+			}
+			if (array_get(s.data, vec(x, y, 0)) != 0) {
 //				fill_slice(&s.data, vec(x*w, y*h), vec(x*w+w, y*h+h), 0);
 				fill_slice(result.data, vec(x*w, y*h, 0), vec(x*w+w, y*h+h, 3), 0);
 			}
@@ -359,7 +379,7 @@ image generate_image(state s, char* color) {
 	return result;
 }
 
-void write_image(state s) {
+void write_image(state s, char* color) {
 	// Based on code from https://www.nayuki.io/res/tiny-png-output/MandelbrotPng.c
 	printx(3, "Opening image file\n");
 	FILE* target = fopen("test.png", "wb");
@@ -799,7 +819,7 @@ void process_command(char* cmd, FILE* log) {
 			else if (streq(command, "render")) {
 				printx(2, "Rendering selected state to image...");
 				if (streq(selection_type, "state")) {
-					write_image(state_selection);
+					write_image(state_selection, opt_color);
 				}
 			}
 			else if (streq(command, "simulate")) {
@@ -893,6 +913,8 @@ void process_command(char* cmd, FILE* log) {
 					opt_print = 1;
 					break;
 				}
+				case 'u': { opt_unicode = 1; break; }
+				case 'c': { opt_color = token; break; }
 			}
 		}
 		else {
