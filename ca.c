@@ -12,6 +12,18 @@
 #include "spng.h"
 #include "TinyPngOut.h"
 
+// Based on code from https://stackoverflow.com/a/3219471
+#define RED     "\x1b[31m"
+#define GREEN   "\x1b[32m"
+#define YELLOW  "\x1b[33m"
+#define BLUE    "\x1b[34m"
+#define MAGENTA "\x1b[35m"
+#define CYAN    "\x1b[36m"
+#define RESET   "\x1b[0m"
+
+char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
+
+
 // TODO: provide tools for mutating patterns
 // TODO: log files
 // TODO: add support for long-term experiment databases
@@ -476,8 +488,8 @@ void write_image(state s) {
 struct simulation {
 	state* states;
 	int time, steps, compute;
+	array ages;
 };
-typedef struct simulation simulation;
 
 // should s be a state pointer?
 simulation new_simulation(state s, int steps) {
@@ -488,6 +500,8 @@ simulation new_simulation(state s, int steps) {
 	sim.time = 1;
 	sim.steps = steps;
 	sim.compute = 0;
+
+	sim.ages = new_array(2, s.data.shape);
 
 //	printf("Created new simulation
 	return sim;
@@ -586,17 +600,28 @@ state map_neighbors(state s, int* cc) {
 	return counts;
 }
 
-
-void print_state(state s, int unicode) {
+void print_state(state s, int unicode, char color) {
 	printf("Total compute: %i \n", compute);
 	printf("Population: %i \n", array_sum(s.data));
 	printf("\n");
+	int c = 0;
+	//int min = array_min(
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
+			c = 0;
+			if (color == 'a' && s.sim != NULL) {
+				int age = array_get(s.sim -> ages, vec(x, y, 0));
+				if (age > 1) {
+					if (age > 7) { age = 7; }
+					c = 1;
+					printf("%s", COLOR_ORDER[age-2]);
+				}
+			}
 			printf(
 				array_get(s.data, vec(x, y, 0)) ?
 				(unicode ? "██" : "*") :
 				(unicode ? "  " : " "));
+			if (c) { printf("%s", RESET); }
 		}
 		printf("\n");
 	}
@@ -615,7 +640,7 @@ state* clone_state(state s) {
 	return clone;
 }
 
-void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unicode) {
+void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unicode, char color) {
 	if (show) {
 		printf("Simulating frame %i \n", i+1);
 	}
@@ -646,7 +671,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 //		}
 //	}
 	if (show) {
-		print_state(*s, unicode);
+		print_state(*s, unicode, color);
 		printf("\n");
 	}
 	fflush(stdout);
@@ -658,7 +683,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 
 
 // note: don't pass by value?!?!
-void simulate(simulation* sim, int n, int show, int level, int unicode) {
+void simulate(simulation* sim, int n, int show, int level, int unicode, char color) {
 	int prog = 0;
 	printx(level+1, "");
 	printf("Simulating %i iterations\n", n-1);
@@ -666,8 +691,8 @@ void simulate(simulation* sim, int n, int show, int level, int unicode) {
 	printf("[");
 	for (int i=0; i<n-1; i++) {
 		state* p = &(sim->states)[(sim->time)-1];
-		(sim -> states)[sim -> time] = (state) {new_array(2, p -> data.shape)};
-		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode);
+		(sim -> states)[sim -> time] = (state) {new_array(2, p -> data.shape), 0, 0, sim};
+		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
 		int q = 40 * ((double) i / (double) n);
@@ -748,6 +773,7 @@ void process_command(char* cmd, FILE* log) {
 	int opt_iterations = 100;
 	int opt_print = 0;
 	int opt_unicode = 1;
+	char* opt_color = "age";
 
 	int complete = 0;
 
@@ -858,13 +884,13 @@ void process_command(char* cmd, FILE* log) {
 				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
-					simulate(&sim_selection, opt_iterations, opt_print, 2, opt_unicode);
+					simulate(&sim_selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0]);
 				}
 				else if (streq(selection_type, "state_set")) {
 					simset_selection = calloc(opt_num, sizeof(simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
-						simulate(&simset_selection[j], opt_iterations, opt_print, 2, opt_unicode);
+						simulate(&simset_selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0]);
 					}
 					selection_type = "simulation_set";
 				}
