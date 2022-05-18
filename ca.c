@@ -19,7 +19,7 @@
 // TODO: add array views & semi-mutable data structures
 
 // Create a statically typed function that reduces an array to a single value
-#define ARRAY_REDUCE(name,type,op,init) type name(struct array a) { \
+#define ARRAY_REDUCE(name,type,op,init) type name(array a) { \
 	type output = init;\
 	for (int i=0; i<a.size; i++) {\
 		output = output op a.data[i];\
@@ -38,8 +38,8 @@
 	return output;\
 }
 
-#define ARRAY_OP(name,op) struct array name(struct array a, struct array b) {\
-	struct array output = new_array(a.rank, a.shape);\
+#define ARRAY_OP(name,op) array name(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
 		output.data[i] = a.data[i] op b.data[i];\
 	}\
@@ -47,11 +47,11 @@
 }
 
 // TODO
-#define EXTRACT(name,property) struct array extract_##property(state* states, int n) {\
+#define EXTRACT(name,property) array extract_##property(state* states, int n) {\
 	int* shape = malloc(sizeof(int));\
 	shape[0] = n;\
 	\
-	struct array output = new_array(1, shape);\
+	array output = new_array(1, shape);\
 	for (int i=0; i<n; i++) {\
 		output.data[i] = states[i].property;\
 	}\
@@ -90,30 +90,35 @@ vector vec(int x, int y) {
 struct rule {
 	char* name;
 };
+typedef struct rule rule;
 
 struct neighborhood {
 	int inner_radius;
 	int outer_radius;
 };
+typedef struct neighborhood neighborhood;
 
 struct range {
 
 };
+typedef struct range range;
 
 // A rule that defines only the conditions that cause cells to "die", be "born", or continue living
 struct subtotalistic {
-	struct neighborhood* N;
+	neighborhood* N;
 	int* conditions;
 };
+typedef struct subtotalistic subtotalistic;
 
-struct subtotalistic random_subtotal() {
+subtotalistic random_subtotal() {
 
 }
 
 struct totalistic {
-	struct neighborhood* N;
+	neighborhood* N;
 	int** values;
 };
+typedef struct totalistic totalistic;
 
 // struct name_group
 // struct lattice
@@ -130,10 +135,11 @@ struct manifold {
 	//
 	char* edges;
 };
+typedef struct manifold manifold;
 
 // TODO: type description classes
-struct manifold random_manifold() {
-	struct manifold m = {};
+manifold random_manifold() {
+	manifold m = {};
 	return m;
 }
 
@@ -146,9 +152,10 @@ struct array {
 	int size;
 	int* data;
 };
+typedef struct array array;
 
 // Fill an array with a value
-struct array fill_array(struct array a, int value) {
+array fill_array(array a, int value) {
 	for (int i=0; i<a.size; i++) {
 		a.data[i] = value;
 		compute ++;
@@ -157,7 +164,7 @@ struct array fill_array(struct array a, int value) {
 }
 
 // Initialize an array struct
-struct array new_array(int rank, int* shape) {
+array new_array(int rank, int* shape) {
 	// int* size = malloc(sizeof(int));
 	int size = 1;
 	for(int i=0; i<rank; i++) {
@@ -166,33 +173,33 @@ struct array new_array(int rank, int* shape) {
 	}
 	//printf("Initalizing array with size %i \n", size);
 	int* data = calloc(size, sizeof(int));
-	struct array a = { rank, shape, size, data };
+	array a = { rank, shape, size, data };
 	fill_array(a, 0);
 	return a;
 };
 
 // Convert a series of indices to a corresponding memory address in the internal representation of the array data
-int get_coord(struct array a, vector z) {
+int get_coord(array a, vector z) {
 	// ?
 	return z.x * a.shape[1] + z.y;
 }
 
-int array_get(struct array a, vector z) {
+int array_get(array a, vector z) {
 	return a.data[get_coord(a, z)];
 }
 
-void array_set(struct array a, vector z, int value) {
+void array_set(array a, vector z, int value) {
 	a.data[get_coord(a, z)] = value;
 }
 
-// struct array array_from(int rank, int* shape, void* values) {
+// array array_from(int rank, int* shape, void* values) {
 
 
-//struct array array_and(struct array a1, struct array a2) {
+//array array_and(array a1, array a2) {
 
-// void map_array(struct array a, )
+// void map_array(array a, )
 
-void* reduce_array(struct array a, void* (F)(void*, void*), void* init) {
+void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 	void* output = init;
 	for (int i=0; i<a.size; i++) {
 		output = F(output, &a.data[i]);
@@ -201,13 +208,13 @@ void* reduce_array(struct array a, void* (F)(void*, void*), void* init) {
 }
 
 // void* sum(int a, int b) { return (void*) a + b; }
-// int array_sum(struct array a) { return (int) reduce_array(a, sum, 0); }
+// int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
 ARRAY_REDUCE(array_sum, int, +, 0)
-double array_mean(struct array a) {
+double array_mean(array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
-int array_min(struct array a) {
+int array_min(array a) {
 	int output = a.data[0];
 	for (int i=0; i<a.size; i++) {
 		if (a.data[i] < output) {
@@ -217,7 +224,7 @@ int array_min(struct array a) {
 	return output;
 }
 
-int array_max(struct array a) {
+int array_max(array a) {
 	int output = a.data[0];
 	for (int i=0; i<a.size; i++) {
 		if (a.data[i] > output) {
@@ -233,13 +240,13 @@ ARRAY_OP(array_bprod, *);
 ARRAY_OP(array_bdiv, /);
 ARRAY_OP(array_bmod, %);
 
-void array_summary(struct array a) {
+void array_summary(array a) {
 	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
 }
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
-	struct array data;
+	array data;
 	int population;
 	double density;
 };
@@ -269,10 +276,11 @@ void printx(int level, char* text) {
 
 
 struct image {
-	struct array* data;
+	array* data;
 };
+typedef struct image image;
 
-void fill_slice(struct array* a, vector j, vector k, int value) {
+void fill_slice(array* a, vector j, vector k, int value) {
 	for (int x=j.x; x<k.x; x++) {
 		for (int y=j.y; y<k.y; y++) {
 			if (k.x < a -> shape[0] && k.y < a -> shape[1]) {
@@ -282,11 +290,11 @@ void fill_slice(struct array* a, vector j, vector k, int value) {
 	}
 }
 
-struct image generate_image(state s) {
+image generate_image(state s) {
 	int shape[3] = {100, 100, 3};
-	struct array* A = malloc(sizeof(struct array));
+	array* A = malloc(sizeof(array));
 	*A = new_array(3, shape);
-	struct image result = { A };
+	image result = { A };
 	fill_array(*result.data, 255);
 	int w = 3;
 	int h = 3;
@@ -337,7 +345,7 @@ void write_image(state s) {
 	}
 
 	printx(3, "Generating image array");
-	struct image image_data = generate_image(s);
+	image image_data = generate_image(s);
 	array_summary(*image_data.data);
 	
 	struct TinyPngOut pngout;
