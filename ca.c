@@ -190,10 +190,30 @@ array new_array(int rank, int* shape) {
 	return a;
 };
 
+array vec_to_array(vector v) {
+	int s[1] = {3};
+	array output = new_array(1, s);
+	//output.data = (int*) {v.x, v.y};
+	output.data[0] = v.x;
+	output.data[1] = v.y;
+	output.data[2] = v.z;
+	return output;
+}
+
 // Convert a series of indices to a corresponding memory address in the internal representation of the array data
 int get_coord(array a, vector z) {
 	// ?
-	return z.x * a.shape[1] + z.y;
+	// return z.x * a.shape[1] + z.y;
+	
+	array w = vec_to_array(z);
+	// TODO: make sure this will still work with very large arrays
+	int block_size = 1;
+	int q = 0;
+	for (int i=0; i<3; i++) {
+		q += w.data[i] * block_size;
+		block_size *= a.shape[i];
+	}
+	return q;
 }
 
 int array_get(array a, vector z) {
