@@ -280,6 +280,24 @@ void array_summary(array* a) {
 	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
 }
 
+// filter coordinate list?
+
+// A (relatively) tidy iterative solution using an array of counters is also possible
+
+//void slice_helper(array source, array target, array T, array U,
+//		array shape, array count, int i, int n) {
+//	if (i < n-1) {
+//		for (int j=T.data[i]; j<U.data[i]; j++) {
+//			slice_helper(source, target, T, U, i+1, n);
+//		}
+//	}
+//	else {
+//		for (int j=0; j<shape[i]; j++) {
+//			array_set(target, count, array_get(source, 
+//			count.data[j] ++;
+//		}
+//	}
+//}
 
 array copy_array(array a) {
 	array copy = new_array(a.rank, a.shape);
@@ -291,6 +309,39 @@ array copy_array(array a) {
 
 vector array_to_vec(array a) {
 	return vec(a.data[0], a.data[1], a.data[2]);
+}
+
+array array_slice(array a, array T, array U, int rank) {
+	array shape = array_bdiff(U, T);
+	array slice = new_array(rank, shape.data);
+
+	//int* s = malloc(sizeof(int));
+	array counta = new_array(1, &rank);
+	array countb = copy_array(T);
+//	slice_helper(a, slice, T, U, shape, count, 0, rank);
+	int i=0;
+	//int j=0;
+	// are two counters/an inner while-loop needed?
+	while (i < rank) {
+		if (counta.data[i] < shape.data[i]) {
+			counta.data[i] ++; countb.data[i] ++;
+			array_set(
+				slice,
+				array_to_vec(counta),
+				array_get(a, array_to_vec(countb))
+			);
+		} else {
+			counta.data[i] = 0;
+			countb.data[i] = T.data[i];
+			for (int j=0; j<rank; j++) {
+				if (counta.data[j] < shape.data[i]) {
+					counta.data[j] ++; countb.data[j] ++;
+					break;
+				}
+			}
+		}
+	}
+	return slice;
 }
 
 
