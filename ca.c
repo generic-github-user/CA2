@@ -428,6 +428,10 @@ void printx(int level, char* text) {
 	}
 }
 
+int streq(char* a, char* b) {
+	return strcmp(a, b) == 0;
+}
+
 
 struct image {
 	array* data;
@@ -444,8 +448,10 @@ void fill_slice(array* a, vector j, vector k, int value) {
 	}
 }
 
-image generate_image(state s) {
-	int shape[3] = {100, 100, 3};
+image generate_image(state s, char* color) {
+//	int shape[3] = {100, 100, 3};
+	int* shape = calloc(3, sizeof(int));
+	shape = (int[]) {100, 100, 3};
 	array* A = malloc(sizeof(array));
 	*A = new_array(3, shape);
 	image result = { A };
@@ -456,7 +462,7 @@ image generate_image(state s) {
 		for (int y=0; y<30; y++) {
 			if (array_get(s.data, vec(x, y)) != 0) {
 //				fill_slice(&s.data, vec(x*w, y*h), vec(x*w+w, y*h+h), 0);
-				fill_slice(result.data, vec(x*w, y*h), vec(x*w+w, y*h+h), 0);
+				fill_slice(result.data, vec(x*w, y*h, 0), vec(x*w+w, y*h+h, 3), 0);
 			}
 		}
 	}
@@ -473,14 +479,16 @@ void write_image(state s) {
 	}
 
 	printx(3, "Generating image array");
-	image image_data = generate_image(s);
-	array_summary(*image_data.data);
+	image image_data = generate_image(s, color);
+	// Why does this modify the array's shape (or cause a segfault)?
+	// array_summary(image_data.data);
 	
 	struct TinyPngOut pngout;
 	static const int width = 100;
 	static const int height = 100;
 	enum TinyPngOut_Status status = TinyPngOut_init(&pngout, (uint32_t)width, (uint32_t)height, target);
 	if (status != TINYPNGOUT_OK) {
+		printx(3, "Error in TinyPngOut; exiting");
 		exit(1);
 	}
 	printx(3, "Writing pixels to image\n");
@@ -488,10 +496,11 @@ void write_image(state s) {
 	uint8_t *line = calloc((size_t)width * 3, sizeof(uint8_t));
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-			int pixel = image_data.data -> data[x*100+y];
-			line[x*3+0] = pixel;
-			line[x*3+1] = pixel;
-			line[x*3+2] = pixel;
+//			int pixel = image_data.data -> data[(x*100+y)*3];
+			for (int z = 0; z < 3; z++) {
+				int pixel = array_get(*image_data.data, vec(x, y, z));
+				line[x*3+z] = pixel;
+			}
 		}
 		status = TinyPngOut_write(&pngout, line, (size_t)width);
 		if (status != TINYPNGOUT_OK) {
@@ -559,11 +568,11 @@ char* state_summary(state s) {
 
 char* microplot(simulation s) {
 	char* result = calloc(s.steps, sizeof(char));
-	int min = array_min(extract_population(s.states, s.steps));
-	int max = array_max(extract_population(s.states, s.steps));
+	//int min = array_min(extract_population(s.states, s.steps));
+	//int max = array_max(extract_population(s.states, s.steps));
 	char plotsymbols[5] = " .*oO";
 	for (int i=0; i<s.steps; i++) {
-		result[i] = plotsymbols[(int) ((double) (s.states[i].population - min) / (double) (max - min) * 5)];
+	//	result[i] = plotsymbols[(int) ((double) (s.states[i].population - min) / (double) (max - min) * 5)];
 	}
 	return result;
 }
@@ -686,7 +695,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 
 //	for (int x=0; x<30; x++) {
 //		for (int y=0; y<30; y++) {
-//			vector v = vec(x, y);
+//			vector v = vec(x, y, 0);
 //			array_set(p.data, v, array_get(s.data, v));
 //			compute ++;
 //		}
@@ -759,9 +768,6 @@ int iscommand(char* text) {
 	return 0;
 }
 
-int streq(char* a, char* b) {
-	return strcmp(a, b) == 0;
-}
 
 int states_equal(state a, state b) {
 	for (int x=0; x<30; x++) {
