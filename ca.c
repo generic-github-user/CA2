@@ -587,13 +587,16 @@ state map_neighbors(state s, int* cc) {
 }
 
 
-void print_state(state s) {
+void print_state(state s, int unicode) {
 	printf("Total compute: %i \n", compute);
 	printf("Population: %i \n", array_sum(s.data));
 	printf("\n");
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			printf(array_get(s.data, vec(x, y)) ? "*" : " ");
+			printf(
+				array_get(s.data, vec(x, y, 0)) ?
+				(unicode ? "██" : "*") :
+				(unicode ? "  " : " "));
 		}
 		printf("\n");
 	}
@@ -612,7 +615,7 @@ state* clone_state(state s) {
 	return clone;
 }
 
-void step(state* s, state* p, int i, int show, int* cc) {
+void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unicode) {
 	if (show) {
 		printf("Simulating frame %i \n", i+1);
 	}
@@ -643,7 +646,7 @@ void step(state* s, state* p, int i, int show, int* cc) {
 //		}
 //	}
 	if (show) {
-		print_state(*s);
+		print_state(*s, unicode);
 		printf("\n");
 	}
 	fflush(stdout);
@@ -655,7 +658,7 @@ void step(state* s, state* p, int i, int show, int* cc) {
 
 
 // note: don't pass by value?!?!
-void simulate(simulation* sim, int n, int show, int level) {
+void simulate(simulation* sim, int n, int show, int level, int unicode) {
 	int prog = 0;
 	printx(level+1, "");
 	printf("Simulating %i iterations\n", n-1);
@@ -664,7 +667,7 @@ void simulate(simulation* sim, int n, int show, int level) {
 	for (int i=0; i<n-1; i++) {
 		state* p = &(sim->states)[(sim->time)-1];
 		(sim -> states)[sim -> time] = (state) {new_array(2, p -> data.shape)};
-		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute));
+		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode);
 
 		(sim -> time) ++;
 		int q = 40 * ((double) i / (double) n);
@@ -744,6 +747,7 @@ void process_command(char* cmd, FILE* log) {
 	int opt_num = 1;
 	int opt_iterations = 100;
 	int opt_print = 0;
+	int opt_unicode = 1;
 
 	int complete = 0;
 
@@ -854,13 +858,13 @@ void process_command(char* cmd, FILE* log) {
 				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
-					simulate(&sim_selection, opt_iterations, opt_print, 2);
+					simulate(&sim_selection, opt_iterations, opt_print, 2, opt_unicode);
 				}
 				else if (streq(selection_type, "state_set")) {
 					simset_selection = calloc(opt_num, sizeof(simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
-						simulate(&simset_selection[j], opt_iterations, opt_print, 2);
+						simulate(&simset_selection[j], opt_iterations, opt_print, 2, opt_unicode);
 					}
 					selection_type = "simulation_set";
 				}
