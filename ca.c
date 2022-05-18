@@ -296,6 +296,12 @@ void update_state(state* s) {
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
 }
 
+//struct list {
+
+state new_state(array data, simulation* sim) {
+	state s = {data, 0, 0, sim};
+	return s;
+}
 PTR_REDUCE(max_population, population, >);
 PTR_REDUCE(min_population, population, <);
 
