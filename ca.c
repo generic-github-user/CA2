@@ -260,6 +260,20 @@ void printx(int level, char* text) {
 	}
 }
 
+
+struct image {
+	struct array* data;
+};
+
+void fill_slice(struct array* a, vector j, vector k, int value) {
+	for (int x=j.x; x<k.x; x++) {
+		for (int y=j.y; y<k.y; y++) {
+			if (k.x < a -> shape[0] && k.y < a -> shape[1]) {
+				array_set(*a, vec(x, y), value);
+			}
+		}
+	}
+}
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 	struct state* states;
