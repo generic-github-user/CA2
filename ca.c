@@ -309,32 +309,6 @@ image generate_image(state s) {
 	return result;
 }
 
-//void write_image(state s) {
-//	FILE* target = fopen("test.png", "wb");
-//
-//	spng_ctx *enc = spng_ctx_new(SPNG_CTX_ENCODER);
-//	spng_set_option(enc, SPNG_ENCODE_TO_BUFFER, 1);
-//	struct spng_ihdr ihdr =
-//	{
-//	    .width = 100,
-//	    .height = 100,
-//	    .bit_depth = 8,
-//	    .color_type = SPNG_COLOR_TYPE_TRUECOLOR_ALPHA
-//	};
-//	spng_set_ihdr(enc, &ihdr);
-//	//size_t png_size[2] = {100, 100};
-//	size_t png_size = 100;
-//	struct image image_data = generate_image(s);
-//	spng_encode_image(enc, image_data.data.data, &png_size, SPNG_FMT_PNG, SPNG_ENCODE_FINALIZE);
-//	long error;
-//	//void *png = spng_get_png_buffer(enc, &png_size, &error);
-//	void *png = target;
-//
-//	free(png);
-//	spng_ctx_free(enc);
-//	free(image_data.data.data);
-//}
-
 void write_image(state s) {
 	// Based on code from https://www.nayuki.io/res/tiny-png-output/MandelbrotPng.c
 	printx(3, "Opening image file\n");
@@ -360,11 +334,6 @@ void write_image(state s) {
 	uint8_t *line = calloc((size_t)width * 3, sizeof(uint8_t));
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-//			int* pixel = array_get(image_data.data, vec(x, y));
-//			line[x * 3 + 0] = (array_get(image_data.data, vec(x, y)));
-//			line[x * 3 + 1] = (array_get(image_data.data, vec(x, y)));
-//			line[x * 3 + 2] = (array_get(image_data.data, vec(x, y)));
-			
 			int pixel = image_data.data -> data[x*100+y];
 			line[x*3+0] = pixel;
 			line[x*3+1] = pixel;
@@ -398,7 +367,7 @@ simulation new_simulation(state s, int steps) {
 	sim.time = 1;
 	sim.steps = steps;
 	sim.compute = 0;
-//
+
 //	printf("Created new simulation
 	return sim;
 }
@@ -606,7 +575,12 @@ void write_state(state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[9] = {"randomstate", "write", "simulate", "collapse", "min", "max", "enumerate", "print", "render"};
+	char* commands[9] = {
+		"randomstate", "enumerate",
+		"simulate",
+		"collapse", "min", "max",
+		"write", "print", "render"
+	};
 	for (int i=0; i<9; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
