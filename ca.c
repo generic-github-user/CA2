@@ -219,7 +219,9 @@ ARRAY_OP(array_bprod, *);
 ARRAY_OP(array_bdiv, /);
 ARRAY_OP(array_bmod, %);
 
-
+void array_summary(struct array a) {
+	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
+}
 
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
