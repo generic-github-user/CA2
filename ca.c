@@ -90,11 +90,19 @@ struct neighborhood {
 	int outer_radius;
 };
 
+struct range {
+
+};
+
 // A rule that defines only the conditions that cause cells to "die", be "born", or continue living
 struct subtotalistic {
 	struct neighborhood* N;
 	int* conditions;
 };
+
+struct subtotalistic random_subtotal() {
+
+}
 
 struct totalistic {
 	struct neighborhood* N;
@@ -240,6 +248,18 @@ PTR_REDUCE(max_population, population, >);
 PTR_REDUCE(min_population, population, <);
 
 EXTRACT(extract_population, population);
+
+//void printx(int level, char* fmt, ...) {
+void printx(int level, char* text) {
+	for (int i=0; i<level; i++) {
+		printf("  ");
+	}
+	if (strcmp(text, "") != 0) {
+		printf("%s \n", text);
+		fprintf(logfile, "%s \n", text);
+	}
+}
+
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 	struct state* states;
@@ -419,16 +439,7 @@ void step(struct state* s, struct state* p, int i, int show, int* cc) {
 	}
 }
 
-//void printx(int level, char* fmt, ...) {
-void printx(int level, char* text) {
-	for (int i=0; i<level; i++) {
-		printf("  ");
-	}
-	if (strcmp(text, "") != 0) {
-		printf("%s \n", text);
-		fprintf(logfile, "%s \n", text);
-	}
-}
+
 
 // note: don't pass by value?!?!
 void simulate(struct simulation* sim, int n, int show, int level) {
