@@ -27,8 +27,8 @@
 	return output;\
 }
 
-#define PTR_REDUCE(name,property,op) struct state name(struct state* states, int n) {\
-	struct state output = states[0];\
+#define PTR_REDUCE(name,property,op) state name(state* states, int n) {\
+	state output = states[0];\
 	for (int i=0; i<n; i++) {\
 		/* if ((states[i] -> property) op (output -> property)) {*/\
 		if (states[i].property op output.property) {\
@@ -47,7 +47,7 @@
 }
 
 // TODO
-#define EXTRACT(name,property) struct array extract_##property(struct state* states, int n) {\
+#define EXTRACT(name,property) struct array extract_##property(state* states, int n) {\
 	int* shape = malloc(sizeof(int));\
 	shape[0] = n;\
 	\
@@ -81,9 +81,10 @@ int bound(int* x, int a, int b) {
 struct vector {
 	int x, y;
 };
+typedef struct vector vector;
 
-struct vector vec(int x, int y) {
-	return (struct vector) { x, y };
+vector vec(int x, int y) {
+	return (vector) { x, y };
 }
 
 struct rule {
@@ -171,16 +172,16 @@ struct array new_array(int rank, int* shape) {
 };
 
 // Convert a series of indices to a corresponding memory address in the internal representation of the array data
-int get_coord(struct array a, struct vector z) {
+int get_coord(struct array a, vector z) {
 	// ?
 	return z.x * a.shape[1] + z.y;
 }
 
-int array_get(struct array a, struct vector z) {
+int array_get(struct array a, vector z) {
 	return a.data[get_coord(a, z)];
 }
 
-void array_set(struct array a, struct vector z, int value) {
+void array_set(struct array a, vector z, int value) {
 	a.data[get_coord(a, z)] = value;
 }
 
@@ -242,8 +243,9 @@ struct state {
 	int population;
 	double density;
 };
+typedef struct state state;
 
-void update_state(struct state* s) {
+void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// should s -> data be a pointer?
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
@@ -374,14 +376,15 @@ void write_image(state s) {
 
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
-	struct state* states;
+	state* states;
 	int time, steps, compute;
 };
+typedef struct simulation simulation;
 
 // should s be a state pointer?
-struct simulation new_simulation(struct state s, int steps) {
-	struct simulation sim;
-	sim.states = (struct state*) calloc(steps, sizeof(struct state));
+simulation new_simulation(state s, int steps) {
+	simulation sim;
+	sim.states = (state*) calloc(steps, sizeof(state));
 	sim.states[0] = s;
 
 	sim.time = 1;
@@ -393,8 +396,8 @@ struct simulation new_simulation(struct state s, int steps) {
 }
 
 // Generate a random state
-struct state random_state(int* shape) {
-	struct state result = {new_array(2, shape)};
+state random_state(int* shape) {
+	state result = {new_array(2, shape)};
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
 			array_set(result.data, vec(x, y), rand() % 2);
@@ -406,7 +409,7 @@ struct state random_state(int* shape) {
 }
 
 // Render information about a state to a string
-char* state_summary(struct state s) {
+char* state_summary(state s) {
 	// temporary
 	char* output = calloc(s.data.size+s.data.shape[0]+1, sizeof(char));
 	int i = 0;
@@ -421,7 +424,7 @@ char* state_summary(struct state s) {
 	return output;
 }
 
-char* microplot(struct simulation s) {
+char* microplot(simulation s) {
 	char* result = calloc(s.steps, sizeof(char));
 	int min = array_min(extract_population(s.states, s.steps));
 	int max = array_max(extract_population(s.states, s.steps));
@@ -432,7 +435,7 @@ char* microplot(struct simulation s) {
 	return result;
 }
 
-void sim_summary(struct simulation* s) {
+void sim_summary(simulation* s) {
 	fprintf(stdout, "Simulation (%i steps) \n\n", s -> steps);
 	fprintf(stdout, "Population -- %s\n", microplot(*s));
 	for (int i=0; i<s -> steps; i++) {
@@ -440,7 +443,7 @@ void sim_summary(struct simulation* s) {
 	}
 }
 
-char* sim_info(struct simulation s) {
+char* sim_info(simulation s) {
 	char* result = calloc(50, sizeof(char));
 	strcat(result, "Simulation { Length");
 //	strcat(result, itoa(s.steps));
@@ -452,7 +455,7 @@ int inrange(int x, int n, int m) {
 }
 
 // Count neighbor cells given a state and coordinate
-int count_neighbors(struct state source, int x, int y, int* cc) {
+int count_neighbors(state source, int x, int y, int* cc) {
 	int neighbors = 0;
 	int c, d;
 	for (int a=-1; a<=1; a++) {
@@ -472,9 +475,9 @@ int count_neighbors(struct state source, int x, int y, int* cc) {
 	return neighbors;
 }
 
-struct state map_neighbors(struct state s, int* cc) {
+state map_neighbors(state s, int* cc) {
 	int neighbors;
-	struct state counts = {new_array(2, s.data.shape)};
+	state counts = {new_array(2, s.data.shape)};
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
 			neighbors = count_neighbors(s, x, y, cc);
@@ -486,7 +489,7 @@ struct state map_neighbors(struct state s, int* cc) {
 }
 
 
-void print_state(struct state s) {
+void print_state(state s) {
 	printf("Total compute: %i \n", compute);
 	printf("Population: %i \n", array_sum(s.data));
 	printf("\n");
@@ -498,10 +501,10 @@ void print_state(struct state s) {
 	}
 }
 
-struct state* clone_state(struct state s) {
-	//struct state clone = (struct state) {new_array(2, s.data.shape)};
-	struct state* clone = malloc(sizeof(struct state));
-	*clone = (struct state) {new_array(2, s.data.shape)};
+state* clone_state(state s) {
+	//state clone = (state) {new_array(2, s.data.shape)};
+	state* clone = malloc(sizeof(state));
+	*clone = (state) {new_array(2, s.data.shape)};
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
 			array_set(clone -> data, vec(x, y), array_get(s.data, vec(x, y)));
@@ -511,7 +514,7 @@ struct state* clone_state(struct state s) {
 	return clone;
 }
 
-void step(struct state* s, struct state* p, int i, int show, int* cc) {
+void step(state* s, state* p, int i, int show, int* cc) {
 	if (show) {
 		printf("Simulating frame %i \n", i+1);
 	}
@@ -536,7 +539,7 @@ void step(struct state* s, struct state* p, int i, int show, int* cc) {
 
 //	for (int x=0; x<30; x++) {
 //		for (int y=0; y<30; y++) {
-//			struct vector v = vec(x, y);
+//			vector v = vec(x, y);
 //			array_set(p.data, v, array_get(s.data, v));
 //			compute ++;
 //		}
@@ -554,15 +557,15 @@ void step(struct state* s, struct state* p, int i, int show, int* cc) {
 
 
 // note: don't pass by value?!?!
-void simulate(struct simulation* sim, int n, int show, int level) {
+void simulate(simulation* sim, int n, int show, int level) {
 	int prog = 0;
 	printx(level+1, "");
 	printf("Simulating %i iterations\n", n-1);
 	printx(level+1, "");
 	printf("[");
 	for (int i=0; i<n-1; i++) {
-		struct state* p = &(sim->states)[(sim->time)-1];
-		(sim -> states)[sim -> time] = (struct state) {new_array(2, p -> data.shape)};
+		state* p = &(sim->states)[(sim->time)-1];
+		(sim -> states)[sim -> time] = (state) {new_array(2, p -> data.shape)};
 		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute));
 
 		(sim -> time) ++;
@@ -583,7 +586,7 @@ void simulate(struct simulation* sim, int n, int show, int level) {
 
 
 
-void write_state(struct state s, FILE* fptr) {
+void write_state(state s, FILE* fptr) {
 	fprintf(fptr, "Population: %i \n", array_sum(s.data));
 	fprintf(fptr, "Density: %f \n", (double) array_sum(s.data) / (double) s.data.size);
 	int cc = 0;
@@ -595,8 +598,8 @@ void write_state(struct state s, FILE* fptr) {
 }
 
 int iscommand(char* text) {
-	char* commands[8] = {"randomstate", "write", "simulate", "collapse", "min", "max", "enumerate", "print"};
-	for (int i=0; i<8; i++) {
+	char* commands[9] = {"randomstate", "write", "simulate", "collapse", "min", "max", "enumerate", "print", "render"};
+	for (int i=0; i<9; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -608,7 +611,7 @@ int streq(char* a, char* b) {
 	return strcmp(a, b) == 0;
 }
 
-int states_equal(struct state a, struct state b) {
+int states_equal(state a, state b) {
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
 			if (array_get(a.data, vec(x, y)) != array_get(b.data, vec(x, y))) {
@@ -625,11 +628,11 @@ void process_command(char* cmd, FILE* log) {
 	char* option;
 	char optionc = '\0';
 
-	struct state state_selection;
-	struct state* stateset_selection;
+	state state_selection;
+	state* stateset_selection;
 
-	struct simulation sim_selection;
-	struct simulation* simset_selection;
+	simulation sim_selection;
+	simulation* simset_selection;
 	
 	char* selection_type;
 
@@ -668,7 +671,7 @@ void process_command(char* cmd, FILE* log) {
 					selection_type = "state";
 			}
 				else {
-					stateset_selection = calloc(opt_num, sizeof(struct state));
+					stateset_selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
 						stateset_selection[j] = random_state(opt_shape);
 					}
@@ -682,11 +685,11 @@ void process_command(char* cmd, FILE* log) {
 				int z = 0;
 				// TODO
 				//if (stateset_selection == NULL) {
-				stateset_selection = calloc(opt_num, sizeof(struct state));
+				stateset_selection = calloc(opt_num, sizeof(state));
 				//}
-				stateset_selection[0] = (struct state) {new_array(2, opt_shape)};
+				stateset_selection[0] = (state) {new_array(2, opt_shape)};
 				// TODO: update stats?
-				struct state* s;
+				state* s;
 				while (i < opt_num) {
 					printx(3, "");
 					printf("Generating state %i\n", i);
@@ -751,7 +754,7 @@ void process_command(char* cmd, FILE* log) {
 					simulate(&sim_selection, opt_iterations, opt_print, 2);
 				}
 				else if (streq(selection_type, "state_set")) {
-					simset_selection = calloc(opt_num, sizeof(struct simulation));
+					simset_selection = calloc(opt_num, sizeof(simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
 						simulate(&simset_selection[j], opt_iterations, opt_print, 2);
@@ -762,10 +765,10 @@ void process_command(char* cmd, FILE* log) {
 			else if (streq(command, "collapse")) {
 				printx(2, "Collapsing simulation(s)");
 				if (streq(selection_type, "simulation_set")) {
-					stateset_selection = calloc(opt_num, sizeof(struct state));
+					stateset_selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
-						//struct simulation sim = simset_selection[j];
-						struct simulation* sim = &simset_selection[j];
+						//simulation sim = simset_selection[j];
+						simulation* sim = &simset_selection[j];
 						printx(2, "");
 						printf("Getting state at index %i\n", sim -> time);
 						stateset_selection[j] = sim -> states[(sim -> time) - 2];
