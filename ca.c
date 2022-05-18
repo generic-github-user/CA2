@@ -398,11 +398,14 @@ rgb hsv2rgb(hsv in)
     return out;     
 }
 
+typedef struct simulation simulation;
+
 // A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
 struct state {
 	array data;
 	int population;
 	double density;
+	simulation* sim;
 };
 typedef struct state state;
 
@@ -539,7 +542,7 @@ simulation new_simulation(state s, int steps) {
 
 // Generate a random state
 state random_state(int* shape) {
-	state result = {new_array(2, shape)};
+	state result = {new_array(2, shape), 0, 0, NULL};
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
 			array_set(result.data, vec(x, y, 0), rand() % 2);
@@ -677,7 +680,8 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 	int neighbors = 0;
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			array_set(s -> data, vec(x, y), array_get(p -> data, vec(x, y)));
+			array_set(s -> data, vec(x, y, 0), array_get(p -> data, vec(x, y, 0)));
+			sim.ages.data[get_coord(sim.ages, vec(x, y, 0))] ++;
 			compute ++;
 			(*cc) ++;
 		}
@@ -687,8 +691,13 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 		for (int y=0; y<30; y++) {
 			neighbors = count_neighbors(*p, x, y, cc);
 			(*cc) ++;
-			if (neighbors == 3) { array_set(s -> data, vec(x, y), 1); }
-			if (neighbors < 2 || neighbors > 3) { array_set(s -> data, vec(x, y), 0); }
+			if (neighbors == 3) {
+				array_set(s -> data, vec(x, y, 0), 1);
+			}
+			if (neighbors < 2 || neighbors > 3) {
+				array_set(s -> data, vec(x, y, 0), 0);
+				array_set(sim.ages, vec(x, y, 0), 0);
+			}
 		}
 	}
 	update_state(s);
