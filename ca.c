@@ -7,6 +7,11 @@
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#include <inttypes.h>
+#include "spng.h"
+#include "TinyPngOut.h"
+
 // TODO: provide tools for mutating patterns
 // TODO: log files
 // TODO: add support for long-term experiment databases
@@ -274,6 +279,99 @@ void fill_slice(struct array* a, vector j, vector k, int value) {
 		}
 	}
 }
+
+struct image generate_image(state s) {
+	int shape[3] = {100, 100, 3};
+	struct array* A = malloc(sizeof(struct array));
+	*A = new_array(3, shape);
+	struct image result = { A };
+	fill_array(*result.data, 255);
+	int w = 3;
+	int h = 3;
+	for (int x=0; x<30; x++) {
+		for (int y=0; y<30; y++) {
+			if (array_get(s.data, vec(x, y)) != 0) {
+//				fill_slice(&s.data, vec(x*w, y*h), vec(x*w+w, y*h+h), 0);
+				fill_slice(result.data, vec(x*w, y*h), vec(x*w+w, y*h+h), 0);
+			}
+		}
+	}
+	return result;
+}
+
+//void write_image(state s) {
+//	FILE* target = fopen("test.png", "wb");
+//
+//	spng_ctx *enc = spng_ctx_new(SPNG_CTX_ENCODER);
+//	spng_set_option(enc, SPNG_ENCODE_TO_BUFFER, 1);
+//	struct spng_ihdr ihdr =
+//	{
+//	    .width = 100,
+//	    .height = 100,
+//	    .bit_depth = 8,
+//	    .color_type = SPNG_COLOR_TYPE_TRUECOLOR_ALPHA
+//	};
+//	spng_set_ihdr(enc, &ihdr);
+//	//size_t png_size[2] = {100, 100};
+//	size_t png_size = 100;
+//	struct image image_data = generate_image(s);
+//	spng_encode_image(enc, image_data.data.data, &png_size, SPNG_FMT_PNG, SPNG_ENCODE_FINALIZE);
+//	long error;
+//	//void *png = spng_get_png_buffer(enc, &png_size, &error);
+//	void *png = target;
+//
+//	free(png);
+//	spng_ctx_free(enc);
+//	free(image_data.data.data);
+//}
+
+void write_image(state s) {
+	// Based on code from https://www.nayuki.io/res/tiny-png-output/MandelbrotPng.c
+	printx(3, "Opening image file\n");
+	FILE* target = fopen("test.png", "wb");
+	if (target == NULL) {
+		perror("Error: fopen");
+		exit(1);
+	}
+
+	printx(3, "Generating image array");
+	struct image image_data = generate_image(s);
+	array_summary(*image_data.data);
+	
+	struct TinyPngOut pngout;
+	static const int width = 100;
+	static const int height = 100;
+	enum TinyPngOut_Status status = TinyPngOut_init(&pngout, (uint32_t)width, (uint32_t)height, target);
+	if (status != TINYPNGOUT_OK) {
+		exit(1);
+	}
+	printx(3, "Writing pixels to image\n");
+
+	uint8_t *line = calloc((size_t)width * 3, sizeof(uint8_t));
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+//			int* pixel = array_get(image_data.data, vec(x, y));
+//			line[x * 3 + 0] = (array_get(image_data.data, vec(x, y)));
+//			line[x * 3 + 1] = (array_get(image_data.data, vec(x, y)));
+//			line[x * 3 + 2] = (array_get(image_data.data, vec(x, y)));
+			
+			int pixel = image_data.data -> data[x*100+y];
+			line[x*3+0] = pixel;
+			line[x*3+1] = pixel;
+			line[x*3+2] = pixel;
+		}
+		status = TinyPngOut_write(&pngout, line, (size_t)width);
+		if (status != TINYPNGOUT_OK) {
+			printx(3, "Encountered error while writing image; exiting");
+			exit(1);
+		}
+	}
+	printf("%s", " -- Done");
+
+	free(line);
+	free(image_data.data -> data);
+}
+
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
 	struct state* states;
@@ -637,6 +735,12 @@ void process_command(char* cmd, FILE* log) {
 					for (int j=0; j<opt_num; j++) {
 						sim_summary(&simset_selection[j]);
 					}
+				}
+			}
+			else if (streq(command, "render")) {
+				printx(2, "Rendering selected state to image...");
+				if (streq(selection_type, "state")) {
+					write_image(state_selection);
 				}
 			}
 			else if (streq(command, "simulate")) {
