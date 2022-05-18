@@ -91,12 +91,12 @@ int bound(int* x, int a, int b) {
 
 // A vector or coordinate
 struct vector {
-	int x, y;
+	int x, y, z;
 };
 typedef struct vector vector;
 
-vector vec(int x, int y) {
-	return (vector) { x, y };
+vector vec(int x, int y, int z) {
+	return (vector) { x, y, z };
 }
 
 struct rule {
@@ -135,17 +135,18 @@ typedef struct totalistic totalistic;
 // struct name_group
 // struct lattice
 
+// TODO: add support for more exotic surfaces (like spheres)
 struct manifold {
 	char* lattice;
 	int dimensions;
-	int shape;
+	int* shape;
 
 	// Edge behaviors are described as sequential pairs of characters indicating the two directions of motion along each axis, with the following representation:
 	// e: expand boundaries to fit the automaton's activity
 	// w: wrap from one edge to the opposite (e.g., global wrapping on a 2D plane generates a torus)
 	// i: wrap edges, inverted (as with a Mobius strip)
 	//
-	char* edges;
+	char edges;
 };
 typedef struct manifold manifold;
 
@@ -246,21 +247,21 @@ double array_mean(array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
-int array_min(array a) {
-	int output = a.data[0];
-	for (int i=0; i<a.size; i++) {
-		if (a.data[i] < output) {
-			output = a.data[i];
+int array_min(array* a) {
+	int output = a->data[0];
+	for (int i=0; i<a->size; i++) {
+		if (a->data[i] < output) {
+			output = a->data[i];
 		}
 	}
 	return output;
 }
 
-int array_max(array a) {
-	int output = a.data[0];
-	for (int i=0; i<a.size; i++) {
-		if (a.data[i] > output) {
-			output = a.data[i];
+int array_max(array* a) {
+	int output = a->data[0];
+	for (int i=0; i<a->size; i++) {
+		if (a->data[i] > output) {
+			output = a->data[i];
 		}
 	}
 	return output;
@@ -272,7 +273,7 @@ ARRAY_OP(array_bprod, *);
 ARRAY_OP(array_bdiv, /);
 ARRAY_OP(array_bmod, %);
 
-void array_summary(array a) {
+void array_summary(array* a) {
 	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
 }
 
@@ -437,7 +438,7 @@ void fill_slice(array* a, vector j, vector k, int value) {
 	for (int x=j.x; x<k.x; x++) {
 		for (int y=j.y; y<k.y; y++) {
 			if (k.x < a -> shape[0] && k.y < a -> shape[1]) {
-				array_set(*a, vec(x, y), value);
+				array_set(*a, vec(x, y, 0), value);
 			}
 		}
 	}
@@ -532,7 +533,7 @@ state random_state(int* shape) {
 	state result = {new_array(2, shape)};
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
-			array_set(result.data, vec(x, y), rand() % 2);
+			array_set(result.data, vec(x, y, 0), rand() % 2);
 			compute ++;
 		}
 	}
@@ -547,7 +548,7 @@ char* state_summary(state s) {
 	int i = 0;
 	for (int x=0; x<s.data.shape[0]; x++) {
 		for (int y=0; y<s.data.shape[1]; y++) {
-			char c = array_get(s.data, vec(x, y)) ? '#' : ' ';
+			char c = array_get(s.data, vec(x, y, 0)) ? '#' : ' ';
 			output[i++] = c;
 		}
 		output[i++] = '\n';
@@ -597,7 +598,7 @@ int count_neighbors(state source, int x, int y, int* cc) {
 				c = x+a;
 				d = y+b;
 				if (inrange(c, 0, 29) && inrange(d, 0, 29)) {
-					neighbors += array_get(source.data, vec(c, d));
+					neighbors += array_get(source.data, vec(c, d, 0));
 				}
 			}
 			compute ++;
@@ -613,7 +614,7 @@ state map_neighbors(state s, int* cc) {
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
 			neighbors = count_neighbors(s, x, y, cc);
-			array_set(counts.data, vec(x, y), neighbors);
+			array_set(counts.data, vec(x, y, 0), neighbors);
 			//(*cc) ++;
 		}
 	}
@@ -653,7 +654,7 @@ state* clone_state(state s) {
 	*clone = (state) {new_array(2, s.data.shape)};
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			array_set(clone -> data, vec(x, y), array_get(s.data, vec(x, y)));
+			array_set(clone -> data, vec(x, y, 0), array_get(s.data, vec(x, y, 0)));
 			compute ++;
 		}
 	}
@@ -765,7 +766,7 @@ int streq(char* a, char* b) {
 int states_equal(state a, state b) {
 	for (int x=0; x<30; x++) {
 		for (int y=0; y<30; y++) {
-			if (array_get(a.data, vec(x, y)) != array_get(b.data, vec(x, y))) {
+			if (array_get(a.data, vec(x, y, 0)) != array_get(b.data, vec(x, y, 0))) {
 				return 0;
 			}
 		}
