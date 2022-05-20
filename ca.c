@@ -181,6 +181,8 @@ struct array {
 	int* shape;
 	int size;
 	int* data;
+	int space;
+	int compute;
 };
 typedef struct array array;
 
@@ -203,7 +205,8 @@ array new_array(int rank, int* shape) {
 	}
 	//printf("Initalizing array with size %i \n", size);
 	int* data = calloc(size, sizeof(int));
-	array a = { rank, shape, size, data };
+	int space = size * sizeof(int);
+	array a = { rank, shape, size, data, space };
 	fill_array(a, 0);
 	return a;
 };
@@ -230,6 +233,7 @@ int get_coord(array a, vector z) {
 	for (int i=0; i<3; i++) {
 		q += w.data[i] * block_size;
 		block_size *= a.shape[i];
+		a.compute ++;
 	}
 	return q;
 }
@@ -271,6 +275,7 @@ int array_min(array* a) {
 		if (a->data[i] < output) {
 			output = a->data[i];
 		}
+		a -> compute ++;
 	}
 	return output;
 }
@@ -281,6 +286,7 @@ int array_max(array* a) {
 		if (a->data[i] > output) {
 			output = a->data[i];
 		}
+		a -> compute ++;
 	}
 	return output;
 }
@@ -368,6 +374,7 @@ struct state {
 	int population;
 	double density;
 	simulation* sim;
+	int* shape;
 };
 typedef struct state state;
 
@@ -586,12 +593,16 @@ struct simulation {
 	state* states;
 	int time, steps, compute;
 	array ages;
+	// Amount of space dynamically alloated for members of this struct
+	int size;
 };
 
 // should s be a state pointer?
 simulation new_simulation(state s, int steps) {
 	simulation sim;
 	sim.states = (state*) calloc(steps, sizeof(state));
+	sim.size = steps * sizeof(state);
+	// TODO: sum memory allocated by each state instance
 	sim.states[0] = s;
 
 	sim.time = 1;
@@ -613,6 +624,7 @@ state random_state(int* shape) {
 			compute ++;
 		}
 	}
+	result.shape = shape;
 	update_state(&result);
 	return result;
 }
