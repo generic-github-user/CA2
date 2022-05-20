@@ -378,6 +378,25 @@ unsigned long int hash_state(state s) {
 //	return hash((unsigned int*) s -> data.data, s -> data.size);
 	return hash((unsigned int*) s.data.data, s.data.size);
 }
+
+// multidimensional array-based hashtable?
+// other open addressing schemes?
+// nesting hash tables?
+
+struct hashtable {
+	unsigned int size;
+	// should we use a double pointer here?
+	state** data;
+};
+typedef struct hashtable hashtable;
+
+hashtable new_hashtable(int size) {
+	hashtable h = {size};
+	for (int i=0; i<size; i++) {
+		h.data[i] = NULL;
+	}
+	return h;
+}
 //struct list {
 
 state new_state(array data, simulation* sim) {
