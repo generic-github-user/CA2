@@ -436,6 +436,36 @@ state new_state(array data, simulation* sim) {
 	state s = {data, 0, 0, sim};
 	return s;
 }
+
+// Generate geometrically defined chunks from a state
+state* extract_slices(state* s, int limit) {
+	// TODO
+	state* slices = calloc(limit, sizeof(state));
+	int q[1] = {2};
+	array T = new_array(1, q);
+	array U = new_array(1, q);
+	int i=0;
+	for (int w=1; w<=4; w++) {
+		for (int x=0; x<s->data.shape[0]-w; x++) {
+			for (int y=0; y<s->data.shape[1]-w; y++) {
+				//T.data = {x, y};
+				memcpy(&T, (int[]) {x, y}, sizeof(int));
+				memcpy(&U, (int[]) {x+w, y+w}, sizeof(int));
+				slices[i] = new_state(
+					array_slice(s -> data, T, U, 2),
+					s -> sim
+				);
+				i++;
+				if (i >= limit) {
+					// please forgive me for my sins
+					goto end;
+				}
+			}
+		}
+	}
+	end: return slices;
+}
+
 PTR_REDUCE(max_population, population, >);
 PTR_REDUCE(min_population, population, <);
 
