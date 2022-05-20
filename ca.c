@@ -397,6 +397,32 @@ hashtable new_hashtable(int size) {
 	}
 	return h;
 }
+
+state* lookup(hashtable h, state s) {
+	int index = hash_state(s) % h.size;
+	for (int i=0; i<h.size; i++) {
+		state* value = h.data[index + i];
+		if (value != NULL) {
+			return value;
+		}
+	}
+	return NULL;
+}
+
+void insert(hashtable h, state* s) {
+	int index = hash_state(*s) % h.size;
+	for (int i=0; i<h.size; i++) {
+		state* value = h.data[index + i];
+		if (value == NULL) {
+			h.data[index + 1] = s;
+		}
+	}
+}
+
+//void remove(hashtable h, state* s) {
+
+//}
+
 //struct list {
 
 state new_state(array data, simulation* sim) {
