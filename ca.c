@@ -362,6 +362,22 @@ void update_state(state* s) {
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
 }
 
+// Based on djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
+unsigned long hash(unsigned int *values, int n) {
+        unsigned long int hash = 5381;
+
+        for (int i=0; i<n; i++) {
+            hash = ((hash << 5) + hash) + values[i]; /* hash * 33 + c */
+	}
+
+        return hash;
+}
+
+unsigned long int hash_state(state s) {
+//	for
+//	return hash((unsigned int*) s -> data.data, s -> data.size);
+	return hash((unsigned int*) s.data.data, s.data.size);
+}
 //struct list {
 
 state new_state(array data, simulation* sim) {
