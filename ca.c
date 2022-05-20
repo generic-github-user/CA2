@@ -29,6 +29,7 @@ char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // TODO: add support for long-term experiment databases
 // TODO: add function for backtracing cellular automata states
 // TODO: add array views & semi-mutable data structures
+// TODO: use ndarray structs to store arbitrary collections of states/simulations?
 
 // are nested array structs viable?
 
@@ -127,6 +128,13 @@ typedef struct subtotalistic subtotalistic;
 subtotalistic random_subtotal() {
 
 }
+
+
+struct session {
+
+};
+typedef struct session session;
+
 
 struct totalistic {
 	neighborhood* N;
@@ -728,6 +736,8 @@ state* clone_state(state s) {
 	}
 	return clone;
 }
+
+//delta
 
 void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unicode, char color) {
 	if (show) {
