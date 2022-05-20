@@ -35,3 +35,18 @@ Here are descriptions of the `[types]` used in the above command descriptions:
 - `property`: One of population, volume, density
 - `path`: A filepath (both relative and absolute are allowed)
 
+### Examples
+
+Here are a few practical examples that illustrate command usage (note that not all of these are fully implemented yet).
+
+Generate 1000 random states, simulate for 200 iterations, and write the final states to a text file:
+
+```
+randomstate -n 1000 > simulate -i 200 > collapse > write ex1.txt
+```
+
+Simulate 100 iterations of Conway's Game of Life, rendering to stdout:
+
+```
+randomstate > simulate -i 100 -p
+```
