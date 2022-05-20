@@ -628,7 +628,7 @@ int count_neighbors(state source, int x, int y, int* cc) {
 			if (a!=0 || b!=0) {
 				c = x+a;
 				d = y+b;
-				if (inrange(c, 0, 29) && inrange(d, 0, 29)) {
+				if (inrange(c, 0, source.shape[0]-1) && inrange(d, 0, source.shape[1]-1)) {
 					neighbors += array_get(source.data, vec(c, d, 0));
 				}
 			}
@@ -642,8 +642,8 @@ int count_neighbors(state source, int x, int y, int* cc) {
 state map_neighbors(state s, int* cc) {
 	int neighbors;
 	state counts = {new_array(2, s.data.shape)};
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
+	for (int x=0; x<s.shape[0]; x++) {
+		for (int y=0; y<s.shape[1]; y++) {
 			neighbors = count_neighbors(s, x, y, cc);
 			array_set(counts.data, vec(x, y, 0), neighbors);
 			//(*cc) ++;
@@ -658,8 +658,8 @@ void print_state(state s, int unicode, char color) {
 	printf("\n");
 	int c = 0;
 	//int min = array_min(
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
+	for (int x=0; x<s.shape[0]; x++) {
+		for (int y=0; y<s.shape[1]; y++) {
 			c = 0;
 			if (color == 'a' && s.sim != NULL) {
 				int age = array_get(s.sim -> ages, vec(x, y, 0));
@@ -683,8 +683,8 @@ state* clone_state(state s) {
 	//state clone = (state) {new_array(2, s.data.shape)};
 	state* clone = malloc(sizeof(state));
 	*clone = (state) {new_array(2, s.data.shape)};
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
+	for (int x=0; x<s.shape[0]; x++) {
+		for (int y=0; y<s.shape[1]; y++) {
 			array_set(clone -> data, vec(x, y, 0), array_get(s.data, vec(x, y, 0)));
 			compute ++;
 		}
@@ -697,8 +697,8 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 		printf("Simulating frame %i \n", i+1);
 	}
 	int neighbors = 0;
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
+	for (int x=0; x<s->shape[0]; x++) {
+		for (int y=0; y<s->shape[1]; y++) {
 			array_set(s -> data, vec(x, y, 0), array_get(p -> data, vec(x, y, 0)));
 			sim.ages.data[get_coord(sim.ages, vec(x, y, 0))] ++;
 			compute ++;
@@ -706,8 +706,8 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 		}
 	}
 
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
+	for (int x=0; x<s->shape[0]; x++) {
+		for (int y=0; y<s->shape[1]; y++) {
 			neighbors = count_neighbors(*p, x, y, cc);
 			(*cc) ++;
 			if (neighbors == 3) {
@@ -798,8 +798,9 @@ int iscommand(char* text) {
 
 
 int states_equal(state a, state b) {
-	for (int x=0; x<30; x++) {
-		for (int y=0; y<30; y++) {
+	// TODO: check that states are of the same size
+	for (int x=0; x<a.shape[0]; x++) {
+		for (int y=0; y<a.shape[1]; y++) {
 			if (array_get(a.data, vec(x, y, 0)) != array_get(b.data, vec(x, y, 0))) {
 				return 0;
 			}
