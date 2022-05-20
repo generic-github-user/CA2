@@ -154,7 +154,14 @@ typedef struct manifold manifold;
 
 // TODO: type description classes
 manifold random_manifold() {
-	manifold m = {};
+	char edge_types[3] = "ewi";
+	int dim = rand() % 4;
+//	int* shape = random_array
+	int* shape = calloc(dim, sizeof(int));
+	for (int i=0; i<dim; i++) {
+		shape[i] = (rand() % 95) + 5;
+	}
+	manifold m = {"grid", dim, shape, edge_types[rand() % 3]};
 	return m;
 }
 
