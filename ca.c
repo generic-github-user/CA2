@@ -12,6 +12,9 @@
 #include "spng.h"
 #include "TinyPngOut.h"
 
+#include "array.h"
+// #include "vector.h"
+
 // Based on code from https://stackoverflow.com/a/3219471
 #define RED     "\x1b[31m"
 #define GREEN   "\x1b[32m"
@@ -92,15 +95,7 @@ int bound(int* x, int a, int b) {
 	if (*x > b) { *x = b; }
 }
 
-// A vector or coordinate
-struct vector {
-	int x, y, z;
-};
-typedef struct vector vector;
 
-vector vec(int x, int y, int z) {
-	return (vector) { x, y, z };
-}
 
 struct rule {
 	char* name;
@@ -173,94 +168,9 @@ manifold random_manifold() {
 	return m;
 }
 
+// manifold mutate_manifold(manifold m) {
 
 
-// A general array struct for multidimensional arrays
-struct array {
-	int rank;
-	int* shape;
-	int size;
-	int* data;
-	int space;
-	int compute;
-};
-typedef struct array array;
-
-// Fill an array with a value
-array fill_array(array a, int value) {
-	for (int i=0; i<a.size; i++) {
-		a.data[i] = value;
-		compute ++;
-	}
-	return a;
-}
-
-// Initialize an array struct
-array new_array(int rank, int* shape) {
-	// int* size = malloc(sizeof(int));
-	int size = 1;
-	for(int i=0; i<rank; i++) {
-		size *= shape[i];
-		compute ++;
-	}
-	//printf("Initalizing array with size %i \n", size);
-	int* data = calloc(size, sizeof(int));
-	int space = size * sizeof(int);
-	array a = { rank, shape, size, data, space };
-	fill_array(a, 0);
-	return a;
-};
-
-array vec_to_array(vector v) {
-	int s[1] = {3};
-	array output = new_array(1, s);
-	//output.data = (int*) {v.x, v.y};
-	output.data[0] = v.x;
-	output.data[1] = v.y;
-	output.data[2] = v.z;
-	return output;
-}
-
-// Convert a series of indices to a corresponding memory address in the internal representation of the array data
-int get_coord(array a, vector z) {
-	// ?
-	// return z.x * a.shape[1] + z.y;
-	
-	array w = vec_to_array(z);
-	// TODO: make sure this will still work with very large arrays
-	int block_size = 1;
-	int q = 0;
-	for (int i=0; i<3; i++) {
-		q += w.data[i] * block_size;
-		block_size *= a.shape[i];
-		a.compute ++;
-	}
-	return q;
-}
-
-int array_get(array a, vector z) {
-	return a.data[get_coord(a, z)];
-}
-
-void array_set(array a, vector z, int value) {
-	a.data[get_coord(a, z)] = value;
-}
-
-
-// array array_from(int rank, int* shape, void* values) {
-
-
-//array array_and(array a1, array a2) {
-
-// void map_array(array a, )
-
-void* reduce_array(array a, void* (F)(void*, void*), void* init) {
-	void* output = init;
-	for (int i=0; i<a.size; i++) {
-		output = F(output, &a.data[i]);
-	}
-	return output;
-}
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
@@ -314,7 +224,7 @@ void array_summary(array* a) {
 //	}
 //	else {
 //		for (int j=0; j<shape[i]; j++) {
-//			array_set(target, count, array_get(source, 
+//			array_set(target, count, array_get(source,
 //			count.data[j] ++;
 //		}
 //	}
@@ -556,7 +466,7 @@ void write_image(state s, char* color) {
 	image image_data = generate_image(s, color);
 	// Why does this modify the array's shape (or cause a segfault)?
 	// array_summary(image_data.data);
-	
+
 	struct TinyPngOut pngout;
 	static const int width = 100;
 	static const int height = 100;
@@ -879,7 +789,7 @@ void process_command(char* cmd, FILE* log) {
 
 	simulation sim_selection;
 	simulation* simset_selection;
-	
+
 	char* selection_type;
 
 	char* opt;
@@ -1094,7 +1004,7 @@ void process_command(char* cmd, FILE* log) {
 			opt = (char*) strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
-		
+
 
 
 		token = strtok(NULL, " ");
@@ -1108,7 +1018,7 @@ int main() {
 	printf("ca.c loaded successfully \n");
 	// Set random seed
 	srand(time(NULL));
-	
+
 	compute = 0;
 	logfile = fopen("ca_log.txt", "a");
 
