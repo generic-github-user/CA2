@@ -83,12 +83,13 @@ int bound(int* x, int a, int b) {
 }
 
 
-
+// A cellular automata rule, which specifies how new states should evolve from previous ones
 struct rule {
 	char* name;
 };
 typedef struct rule rule;
 
+// A data type describing a "neighborhood", a region of influence (usually centered on the target cell) that determines which cells will affect the evolution of the new cell
 struct neighborhood {
 	int inner_radius;
 	int outer_radius;
@@ -109,7 +110,8 @@ struct range {
 };
 typedef struct range range;
 
-// A rule that defines only the conditions that cause cells to "die", be "born", or continue living
+// A rule that defines only the conditions that cause cells to "die", be "born", or continue living (the best-known example probably being Conway's Game of Life)
+// [nonstandard]
 struct subtotalistic {
 	neighborhood* N;
 	int* conditions;
@@ -126,7 +128,11 @@ struct session {
 };
 typedef struct session session;
 
+session new_session() {
 
+}
+
+// A type of cellular automata rule that uses only total counts of "live" cells in a neighborhood to generate the next state
 struct totalistic {
 	neighborhood* N;
 	int** values;
@@ -293,6 +299,8 @@ struct image {
 };
 typedef struct image image;
 
+// Fill every index in the specified region with (a copy of) the given value
+// Note that j_i must be less than or equal to k_i for all i
 void fill_slice(array* a, vector j, vector k, int value) {
 	for (int x=j.x; x<k.x; x++) {
 		for (int y=j.y; y<k.y; y++) {
@@ -402,11 +410,9 @@ char* sim_info(simulation s) {
 	return result;
 }
 
-
-
-
 //delta
 
+// Simulate a single step of a cellular automata rule, given the previous and current states (the new state is modified in place)
 void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unicode, char color) {
 	if (show) {
 		printf("Simulating frame %i \n", i+1);
@@ -456,6 +462,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 
 
 // note: don't pass by value?!?!
+// Simulate n steps of a cellular automaton (last three arguments are print settings)
 void simulate(simulation* sim, int n, int show, int level, int unicode, char color) {
 	int prog = 0;
 	printx(level+1, "");
@@ -483,7 +490,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 //	free(temp);
 }
 
-
+// Check if a string is a valid command name
 int iscommand(char* text) {
 	char* commands[10] = {
 		"randomstate", "enumerate",
@@ -500,9 +507,7 @@ int iscommand(char* text) {
 	return 0;
 }
 
-
-
-
+// Execute a command string, writing to stdout and the provided log file
 void process_command(char* cmd, FILE* log) {
 	char* token = strtok(cmd, " ");
 	char* command;
