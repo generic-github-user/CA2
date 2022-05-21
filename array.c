@@ -1,6 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Create a statically typed function that reduces an array to a single value
+#define ARRAY_REDUCE(name,type,op,init) type name(array a) { \
+	type output = init;\
+	for (int i=0; i<a.size; i++) {\
+		output = output op a.data[i];\
+	}\
+	return output;\
+}
+
+#define ARRAY_OP(name,op) array name(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] op b.data[i];\
+	}\
+	return output;\
+}
+
 // #include "vector.h"
 #include "array.h"
 
@@ -77,3 +94,38 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 	}
 	return output;
 }
+
+// void* sum(int a, int b) { return (void*) a + b; }
+// int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
+ARRAY_REDUCE(array_sum, int, +, 0)
+double array_mean(array a) {
+	return (double) array_sum(a) / (double) a.size;
+}
+
+int array_min(array* a) {
+	int output = a->data[0];
+	for (int i=0; i<a->size; i++) {
+		if (a->data[i] < output) {
+			output = a->data[i];
+		}
+		a -> compute ++;
+	}
+	return output;
+}
+
+int array_max(array* a) {
+	int output = a->data[0];
+	for (int i=0; i<a->size; i++) {
+		if (a->data[i] > output) {
+			output = a->data[i];
+		}
+		a -> compute ++;
+	}
+	return output;
+}
+
+ARRAY_OP(array_bsum, +);
+ARRAY_OP(array_bdiff, -);
+ARRAY_OP(array_bprod, *);
+ARRAY_OP(array_bdiv, /);
+ARRAY_OP(array_bmod, %);

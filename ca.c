@@ -172,41 +172,6 @@ manifold random_manifold() {
 
 
 
-// void* sum(int a, int b) { return (void*) a + b; }
-// int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-ARRAY_REDUCE(array_sum, int, +, 0)
-double array_mean(array a) {
-	return (double) array_sum(a) / (double) a.size;
-}
-
-int array_min(array* a) {
-	int output = a->data[0];
-	for (int i=0; i<a->size; i++) {
-		if (a->data[i] < output) {
-			output = a->data[i];
-		}
-		a -> compute ++;
-	}
-	return output;
-}
-
-int array_max(array* a) {
-	int output = a->data[0];
-	for (int i=0; i<a->size; i++) {
-		if (a->data[i] > output) {
-			output = a->data[i];
-		}
-		a -> compute ++;
-	}
-	return output;
-}
-
-ARRAY_OP(array_bsum, +);
-ARRAY_OP(array_bdiff, -);
-ARRAY_OP(array_bprod, *);
-ARRAY_OP(array_bdiv, /);
-ARRAY_OP(array_bmod, %);
-
 void array_summary(array* a) {
 	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
 }
