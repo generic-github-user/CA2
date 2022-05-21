@@ -243,21 +243,6 @@ array array_slice(array a, array T, array U, int rank) {
 
 typedef struct simulation simulation;
 
-// A static "frame" of a simulation to which the rules of a cellular automata may be repeatedly applied in a simulation
-struct state {
-	array data;
-	int population;
-	double density;
-	simulation* sim;
-	int* shape;
-};
-typedef struct state state;
-
-void update_state(state* s) {
-	(s -> population) = array_sum(s -> data);
-	// should s -> data be a pointer?
-	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
-}
 
 // Based on djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
 unsigned long hash(unsigned int *values, int n) {
@@ -265,7 +250,7 @@ unsigned long hash(unsigned int *values, int n) {
 
         for (int i=0; i<n; i++) {
             hash = ((hash << 5) + hash) + values[i]; /* hash * 33 + c */
-	}
+	  }
 
         return hash;
 }
@@ -490,35 +475,6 @@ simulation new_simulation(state s, int steps) {
 	return sim;
 }
 
-// Generate a random state
-state random_state(int* shape) {
-	state result = {new_array(2, shape), 0, 0, NULL};
-	for (int x=0; x<shape[0]; x++) {
-		for (int y=0; y<shape[1]; y++) {
-			array_set(result.data, vec(x, y, 0), rand() % 2);
-			compute ++;
-		}
-	}
-	result.shape = shape;
-	update_state(&result);
-	return result;
-}
-
-// Render information about a state to a string
-char* state_summary(state s) {
-	// temporary
-	char* output = calloc(s.data.size+s.data.shape[0]+1, sizeof(char));
-	int i = 0;
-	for (int x=0; x<s.data.shape[0]; x++) {
-		for (int y=0; y<s.data.shape[1]; y++) {
-			char c = array_get(s.data, vec(x, y, 0)) ? '#' : ' ';
-			output[i++] = c;
-		}
-		output[i++] = '\n';
-	}
-	output[i++] = '\0';
-	return output;
-}
 
 char* microplot(simulation s) {
 	char* result = calloc(s.steps, sizeof(char));
@@ -584,45 +540,7 @@ state map_neighbors(state s, int* cc) {
 	return counts;
 }
 
-void print_state(state s, int unicode, char color) {
-	printf("Total compute: %i \n", compute);
-	printf("Population: %i \n", array_sum(s.data));
-	printf("\n");
-	int c = 0;
-	//int min = array_min(
-	for (int x=0; x<s.shape[0]; x++) {
-		for (int y=0; y<s.shape[1]; y++) {
-			c = 0;
-			if (color == 'a' && s.sim != NULL) {
-				int age = array_get(s.sim -> ages, vec(x, y, 0));
-				if (age > 1) {
-					if (age > 7) { age = 7; }
-					c = 1;
-					printf("%s", COLOR_ORDER[age-2]);
-				}
-			}
-			printf(
-				array_get(s.data, vec(x, y, 0)) ?
-				(unicode ? "██" : "*") :
-				(unicode ? "  " : " "));
-			if (c) { printf("%s", RESET); }
-		}
-		printf("\n");
-	}
-}
 
-state* clone_state(state s) {
-	//state clone = (state) {new_array(2, s.data.shape)};
-	state* clone = malloc(sizeof(state));
-	*clone = (state) {new_array(2, s.data.shape)};
-	for (int x=0; x<s.shape[0]; x++) {
-		for (int y=0; y<s.shape[1]; y++) {
-			array_set(clone -> data, vec(x, y, 0), array_get(s.data, vec(x, y, 0)));
-			compute ++;
-		}
-	}
-	return clone;
-}
 
 //delta
 
@@ -703,18 +621,6 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 }
 
 
-
-void write_state(state s, FILE* fptr) {
-	fprintf(fptr, "Population: %i \n", array_sum(s.data));
-	fprintf(fptr, "Density: %f \n", (double) array_sum(s.data) / (double) s.data.size);
-	int cc = 0;
-	fprintf(fptr, "Avg. neighbors: %f \n", array_mean(map_neighbors(s, &cc).data));
-
-	char* summary = state_summary(s);
-	fprintf(fptr, "%s", summary);
-	free(summary);
-}
-
 int iscommand(char* text) {
 	char* commands[9] = {
 		"randomstate", "enumerate",
@@ -731,17 +637,7 @@ int iscommand(char* text) {
 }
 
 
-int states_equal(state a, state b) {
-	// TODO: check that states are of the same size
-	for (int x=0; x<a.shape[0]; x++) {
-		for (int y=0; y<a.shape[1]; y++) {
-			if (array_get(a.data, vec(x, y, 0)) != array_get(b.data, vec(x, y, 0))) {
-				return 0;
-			}
-		}
-	}
-	return 1;
-}
+
 
 void process_command(char* cmd, FILE* log) {
 	char* token = strtok(cmd, " ");
