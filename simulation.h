@@ -17,5 +17,6 @@ struct simulation {
 typedef struct simulation simulation;
 
 simulation new_simulation(state s, int steps);
+void sim_data(simulation s);
 
 #endif

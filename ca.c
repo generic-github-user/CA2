@@ -492,14 +492,14 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 
 // Check if a string is a valid command name
 int iscommand(char* text) {
-	char* commands[10] = {
+	char* commands[11] = {
 		"randomstate", "enumerate",
 		"simulate",
 		"collapse", "min", "max",
-		"write", "print", "render",
+		"write", "print", "render", "table",
 		"quit"
 	};
-	for (int i=0; i<10; i++) {
+	for (int i=0; i<11; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -632,6 +632,11 @@ void process_command(char* cmd, FILE* log) {
 				printx(2, "Rendering selected state to image...");
 				if (streq(selection_type, "state")) {
 					write_image(state_selection, opt_color);
+				}
+			}
+			else if (streq(command, "table")) {
+				if (streq(selection_type, "simulation")) {
+					sim_data(sim_selection);
 				}
 			}
 			else if (streq(command, "simulate")) {

@@ -1,3 +1,4 @@
 misc
 *.out
 *.o
+test.*

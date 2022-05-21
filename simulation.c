@@ -5,6 +5,7 @@
 // should s be a state pointer?
 simulation new_simulation(state s, int steps) {
 	simulation sim;
+	// TODO: check that we aren't calling sizeof on pointers
 	sim.states = (state*) calloc(steps, sizeof(state));
 	sim.size = steps * sizeof(state);
 	// TODO: sum memory allocated by each state instance
@@ -18,4 +19,13 @@ simulation new_simulation(state s, int steps) {
 
 //	printf("Created new simulation
 	return sim;
+}
+
+void sim_data(simulation s) {
+	char* headers[] = {"Step", "Population"};
+	printf("%15s\t%15s\n\n", headers[0], headers[1]);
+	for (int i=0; i<s.steps; i++) {
+		state st = s.states[i];
+		printf("%15d\t%15d\n", i+1, st.population);
+	}
 }
