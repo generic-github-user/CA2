@@ -481,13 +481,14 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 
 
 int iscommand(char* text) {
-	char* commands[9] = {
+	char* commands[10] = {
 		"randomstate", "enumerate",
 		"simulate",
 		"collapse", "min", "max",
-		"write", "print", "render"
+		"write", "print", "render",
+		"quit"
 	};
-	for (int i=0; i<9; i++) {
+	for (int i=0; i<10; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -676,6 +677,10 @@ void process_command(char* cmd, FILE* log) {
 						state_selection = max_population(stateset_selection, opt_num);
 					}
 				}
+			}
+			else if (streq(command, "quit")) {
+				printx(2, "Exiting");
+				exit(1);
 			}
 			else {
 				printx(2, "Command not recognized");
