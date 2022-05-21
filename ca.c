@@ -14,6 +14,8 @@
 
 #include "array.h"
 // #include "vector.h"
+#include "state.h"
+#include "simulation.h"
 
 // Based on code from https://stackoverflow.com/a/3219471
 #define RED     "\x1b[31m"
@@ -36,14 +38,7 @@ char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 
 // are nested array structs viable?
 
-// Create a statically typed function that reduces an array to a single value
-#define ARRAY_REDUCE(name,type,op,init) type name(array a) { \
-	type output = init;\
-	for (int i=0; i<a.size; i++) {\
-		output = output op a.data[i];\
-	}\
-	return output;\
-}
+
 
 #define PTR_REDUCE(name,property,op) state name(state* states, int n) {\
 	state output = states[0];\
@@ -52,14 +47,6 @@ char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 		if (states[i].property op output.property) {\
 			output = states[i];\
 		}\
-	}\
-	return output;\
-}
-
-#define ARRAY_OP(name,op) array name(array a, array b) {\
-	array output = new_array(a.rank, a.shape);\
-	for (int i=0; i<a.size; i++) {\
-		output.data[i] = a.data[i] op b.data[i];\
 	}\
 	return output;\
 }
@@ -241,7 +228,6 @@ array array_slice(array a, array T, array U, int rank) {
 }
 
 
-typedef struct simulation simulation;
 
 
 // Based on djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
@@ -448,32 +434,6 @@ void write_image(state s, char* color) {
 	free(image_data.data -> data);
 }
 
-// A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
-struct simulation {
-	state* states;
-	int time, steps, compute;
-	array ages;
-	// Amount of space dynamically alloated for members of this struct
-	int size;
-};
-
-// should s be a state pointer?
-simulation new_simulation(state s, int steps) {
-	simulation sim;
-	sim.states = (state*) calloc(steps, sizeof(state));
-	sim.size = steps * sizeof(state);
-	// TODO: sum memory allocated by each state instance
-	sim.states[0] = s;
-
-	sim.time = 1;
-	sim.steps = steps;
-	sim.compute = 0;
-
-	sim.ages = new_array(2, s.data.shape);
-
-//	printf("Created new simulation
-	return sim;
-}
 
 
 char* microplot(simulation s) {
@@ -502,43 +462,6 @@ char* sim_info(simulation s) {
 	return result;
 }
 
-int inrange(int x, int n, int m) {
-	return x >= n && x <= m;
-}
-
-// Count neighbor cells given a state and coordinate
-int count_neighbors(state source, int x, int y, int* cc) {
-	int neighbors = 0;
-	int c, d;
-	for (int a=-1; a<=1; a++) {
-		for (int b=-1; b<=1; b++) {
-			// Exclude target cell
-			if (a!=0 || b!=0) {
-				c = x+a;
-				d = y+b;
-				if (inrange(c, 0, source.shape[0]-1) && inrange(d, 0, source.shape[1]-1)) {
-					neighbors += array_get(source.data, vec(c, d, 0));
-				}
-			}
-			compute ++;
-			(*cc) ++;
-		}
-	}
-	return neighbors;
-}
-
-state map_neighbors(state s, int* cc) {
-	int neighbors;
-	state counts = {new_array(2, s.data.shape)};
-	for (int x=0; x<s.shape[0]; x++) {
-		for (int y=0; y<s.shape[1]; y++) {
-			neighbors = count_neighbors(s, x, y, cc);
-			array_set(counts.data, vec(x, y, 0), neighbors);
-			//(*cc) ++;
-		}
-	}
-	return counts;
-}
 
 
 
