@@ -462,27 +462,29 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 
 
 // note: don't pass by value?!?!
-// Simulate n steps of a cellular automaton (last three arguments are print settings)
-void simulate(simulation* sim, int n, int show, int level, int unicode, char color) {
+// Simulate n steps of a cellular automaton (last four arguments are print settings)
+void simulate(simulation* sim, int n, int show, int level, int unicode, char color, int progress) {
 	int prog = 0;
 	printx(level+1, "");
 	printf("Simulating %i iterations\n", n-1);
 	printx(level+1, "");
-	printf("[");
+	if (progress) { printf("["); }
 	for (int i=0; i<n-1; i++) {
 		state* p = &(sim->states)[(sim->time)-1];
 		(sim -> states)[sim -> time] = new_state(new_array(2, p -> data.shape), sim);
 		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
-		int q = 40 * ((double) i / (double) n);
-		if (q > prog) {
-			printf("#");
-			prog = q;
+		if (progress) {
+			int q = 40 * ((double) i / (double) n);
+			if (q > prog) {
+				printf("#");
+				prog = q;
+			}
 		}
 		(sim -> compute) ++;
 	}
-	printf("]\n");
+	if (progress) { printf("]\n"); }
 
 	char temp[50];
 	sprintf(temp, "Simulation complete; compute usage was %i \n", sim -> compute);
@@ -644,13 +646,13 @@ void process_command(char* cmd, FILE* log) {
 				if (streq(selection_type, "state")) {
 					sim_selection = new_simulation(state_selection, opt_iterations);
 					selection_type = "simulation";
-					simulate(&sim_selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0]);
+					simulate(&sim_selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
 				}
 				else if (streq(selection_type, "state_set")) {
 					simset_selection = calloc(opt_num, sizeof(simulation));
 					for (int j=0; j<opt_num; j++) {
 						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
-						simulate(&simset_selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0]);
+						simulate(&simset_selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
 					}
 					selection_type = "simulation_set";
 				}
