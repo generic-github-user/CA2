@@ -1,5 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
+
+#include <stdio.h>
 #include "simulation.h"
 #include "array.h"
 
