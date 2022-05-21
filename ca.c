@@ -92,8 +92,17 @@ typedef struct rule rule;
 struct neighborhood {
 	int inner_radius;
 	int outer_radius;
+	unsigned int area;
 };
 typedef struct neighborhood neighborhood;
+
+neighborhood new_neighborhood(int ir, int or) {
+	neighborhood N = {ir, or};
+	int id = ir*2-1;
+	int od = or*2-1;
+	N.area = (od*od) - (id*id);
+	return N;
+}
 
 struct range {
 
