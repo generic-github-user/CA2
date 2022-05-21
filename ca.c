@@ -229,11 +229,6 @@ array array_slice(array a, array T, array U, int rank) {
 
 //struct list {
 
-state new_state(array data, simulation* sim) {
-	state s = {data, 0, 0, sim};
-	return s;
-}
-
 // Generate geometrically defined chunks from a state
 state* extract_slices(state* s, int limit) {
 	// TODO
@@ -460,7 +455,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 	printf("[");
 	for (int i=0; i<n-1; i++) {
 		state* p = &(sim->states)[(sim->time)-1];
-		(sim -> states)[sim -> time] = (state) {new_array(2, p -> data.shape), 0, 0, sim};
+		(sim -> states)[sim -> time] = new_state(new_array(2, p -> data.shape), sim);
 		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
@@ -566,7 +561,7 @@ void process_command(char* cmd, FILE* log) {
 				//if (stateset_selection == NULL) {
 				stateset_selection = calloc(opt_num, sizeof(state));
 				//}
-				stateset_selection[0] = (state) {new_array(2, opt_shape)};
+				stateset_selection[0] = new_state(new_array(2, opt_shape), NULL);
 				// TODO: update stats?
 				state* s;
 				while (i < opt_num) {

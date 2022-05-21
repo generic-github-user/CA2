@@ -8,6 +8,12 @@ extern char* COLOR_ORDER[6];
 // char* RESET;
 #define RESET   "\x1b[0m"
 
+state new_state(array data, simulation* sim) {
+	state s = {data, 0, 0, sim};
+	s.shape = s.data.shape;
+	return s;
+}
+
 void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// should s -> data be a pointer?
@@ -108,7 +114,7 @@ void print_state(state s, int unicode, char color) {
 state* clone_state(state s) {
 	//state clone = (state) {new_array(2, s.data.shape)};
 	state* clone = malloc(sizeof(state));
-	*clone = (state) {new_array(2, s.data.shape)};
+	*clone = new_state(new_array(2, s.data.shape), s.sim);
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
 			array_set(clone -> data, vec(x, y, 0), array_get(s.data, vec(x, y, 0)));
