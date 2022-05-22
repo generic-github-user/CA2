@@ -149,18 +149,6 @@ struct image {
 };
 typedef struct image image;
 
-// Fill every index in the specified region with (a copy of) the given value
-// Note that j_i must be less than or equal to k_i for all i
-void fill_slice(array* a, vector j, vector k, int value) {
-	for (int x=j.x; x<k.x; x++) {
-		for (int y=j.y; y<k.y; y++) {
-			if (k.x < a -> shape[0] && k.y < a -> shape[1]) {
-				array_set(*a, vec(x, y, 0), value);
-			}
-		}
-	}
-}
-
 image generate_image(state s, char* color) {
 //	int shape[3] = {100, 100, 3};
 	int* shape = calloc(3, sizeof(int));
