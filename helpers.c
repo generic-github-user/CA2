@@ -30,3 +30,7 @@ char* microplot(simulation s) {
 	}
 	return result;
 }
+
+int streq(char* a, char* b) {
+	return strcmp(a, b) == 0;
+}

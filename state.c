@@ -5,6 +5,17 @@
 #include "helpers.h"
 #include "array.h"
 
+#define PTR_REDUCE(name,property,op) state name(state* states, int n) {\
+	state output = states[0];\
+	for (int i=0; i<n; i++) {\
+		/* if ((states[i] -> property) op (output -> property)) {*/\
+		if (states[i].property op output.property) {\
+			output = states[i];\
+		}\
+	}\
+	return output;\
+}
+
 extern char* COLOR_ORDER[6];
 // char* RESET;
 #define RESET   "\x1b[0m"
@@ -151,3 +162,7 @@ int states_equal(state a, state b) {
 void mutate_state(state* s) {
 	array_set(s -> data, vec(rand() % 30, rand() % 30, 0), rand() % 2);
 }
+
+
+PTR_REDUCE(max_population, population, >);
+PTR_REDUCE(min_population, population, <);

@@ -9,17 +9,6 @@
 // TODO: add Collection type?
 // TODO: are nested array structs viable?
 
-#define PTR_REDUCE(name,property,op) state name(state* states, int n) {\
-	state output = states[0];\
-	for (int i=0; i<n; i++) {\
-		/* if ((states[i] -> property) op (output -> property)) {*/\
-		if (states[i].property op output.property) {\
-			output = states[i];\
-		}\
-	}\
-	return output;\
-}
-
 // TODO
 #define EXTRACT(name,property) array extract_##property(state* states, int n) {\
 	int* shape = malloc(sizeof(int));\
@@ -132,17 +121,7 @@ state* extract_slices(state* s, int limit) {
 	end: return slices;
 }
 
-PTR_REDUCE(max_population, population, >);
-PTR_REDUCE(min_population, population, <);
-
 EXTRACT(extract_population, population);
-
-
-
-int streq(char* a, char* b) {
-	return strcmp(a, b) == 0;
-}
-
 
 int main() {
 	printf("ca.c loaded successfully \n");
