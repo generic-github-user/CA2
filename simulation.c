@@ -16,6 +16,8 @@ simulation new_simulation(state s, int steps) {
 	sim.compute = 0;
 
 	sim.ages = new_array(2, s.data.shape);
+	// TODO: check this
+	//s.sim = &sim;
 
 //	printf("Created new simulation
 	return sim;

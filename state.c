@@ -3,6 +3,7 @@
 
 #include "state.h"
 #include "helpers.h"
+#include "array.h"
 
 extern char* COLOR_ORDER[6];
 // char* RESET;

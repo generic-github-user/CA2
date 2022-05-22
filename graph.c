@@ -1,17 +1,25 @@
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "graph.h"
 
 //graph new
 
 node new_node(graph* G, void* data) {
 	node n = {data};
+	// !!!
+	n.indegree = 0;
+	n.outdegree = 0;
 	return n;
 }
 
 void add_in(node* a, node* b) {
+	a->in = realloc(a->indegree ? a->in : NULL, a->indegree+1);
 	(a->in)[a->indegree] = b;
 	a->indegree ++;
+	b->out = realloc(b-> outdegree ? b->out : NULL, b->outdegree+1);
 	(b->out)[b->outdegree] = a;
-	b->indegree ++;
+	b->outdegree ++;
 }
 
 node* new_list(void* value) {

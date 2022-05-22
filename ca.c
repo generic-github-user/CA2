@@ -35,6 +35,7 @@ char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // TODO: add function for backtracing cellular automata states
 // TODO: add array views & semi-mutable data structures
 // TODO: use ndarray structs to store arbitrary collections of states/simulations?
+// TODO: add Collection type?
 
 // are nested array structs viable?
 
@@ -470,6 +471,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 	printx(level+1, "");
 	if (progress) { printf("["); }
 	for (int i=0; i<n-1; i++) {
+		//state* p = &(sim->states)[(sim->time)-1];
 		state* p = &(sim->states)[(sim->time)-1];
 		(sim -> states)[sim -> time] = new_state(new_array(2, p -> data.shape), sim);
 		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode, color);
