@@ -37,10 +37,7 @@ char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // TODO: add array views & semi-mutable data structures
 // TODO: use ndarray structs to store arbitrary collections of states/simulations?
 // TODO: add Collection type?
-
-// are nested array structs viable?
-
-
+// TODO: are nested array structs viable?
 
 #define PTR_REDUCE(name,property,op) state name(state* states, int n) {\
 	state output = states[0];\
@@ -84,10 +81,6 @@ int bound(int* x, int a, int b) {
 	if (*x > b) { *x = b; }
 }
 
-
-
-
-
 struct range {
 
 };
@@ -114,9 +107,6 @@ typedef struct session session;
 session new_session() {
 
 }
-
-
-
 
 void array_summary(array* a) {
 	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
@@ -185,8 +175,6 @@ array array_slice(array a, array T, array U, int rank) {
 	}
 	return slice;
 }
-
-//struct list {
 
 // Generate geometrically defined chunks from a state
 state* extract_slices(state* s, int limit) {
@@ -386,13 +374,6 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 	}
 	update_state(s);
 
-//	for (int x=0; x<30; x++) {
-//		for (int y=0; y<30; y++) {
-//			vector v = vec(x, y, 0);
-//			array_set(p.data, v, array_get(s.data, v));
-//			compute ++;
-//		}
-//	}
 	if (show) {
 		print_state(*s, unicode, color);
 		printf("\n");
