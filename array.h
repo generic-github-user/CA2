@@ -35,4 +35,8 @@ array array_bprod(array a, array b);
 array array_bdiv(array a, array b);
 array array_bmod(array a, array b);
 
+array copy_array(array);
+vector array_to_vec(array);
+array array_slice(array, array, array, int);
+
 #endif

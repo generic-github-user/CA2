@@ -137,3 +137,48 @@ ARRAY_OP(array_bdiff, -);
 ARRAY_OP(array_bprod, *);
 ARRAY_OP(array_bdiv, /);
 ARRAY_OP(array_bmod, %);
+
+array copy_array(array a) {
+	array copy = new_array(a.rank, a.shape);
+	for (int i=0; i<a.size; i++) {
+		copy.data[i] = a.data[i];
+	}
+	return copy;
+}
+
+vector array_to_vec(array a) {
+	return vec(a.data[0], a.data[1], a.data[2]);
+}
+
+array array_slice(array a, array T, array U, int rank) {
+	array shape = array_bdiff(U, T);
+	array slice = new_array(rank, shape.data);
+
+	//int* s = malloc(sizeof(int));
+	array counta = new_array(1, &rank);
+	array countb = copy_array(T);
+//	slice_helper(a, slice, T, U, shape, count, 0, rank);
+	int i=0;
+	//int j=0;
+	// are two counters/an inner while-loop needed?
+	while (i < rank) {
+		if (counta.data[i] < shape.data[i]) {
+			counta.data[i] ++; countb.data[i] ++;
+			array_set(
+				slice,
+				array_to_vec(counta),
+				array_get(a, array_to_vec(countb))
+			);
+		} else {
+			counta.data[i] = 0;
+			countb.data[i] = T.data[i];
+			for (int j=0; j<rank; j++) {
+				if (counta.data[j] < shape.data[i]) {
+					counta.data[j] ++; countb.data[j] ++;
+					break;
+				}
+			}
+		}
+	}
+	return slice;
+}
