@@ -17,6 +17,7 @@
 #include "state.h"
 #include "simulation.h"
 #include "rule.h"
+#include "helpers.h"
 
 // Based on code from https://stackoverflow.com/a/3219471
 #define RED     "\x1b[31m"
@@ -167,16 +168,7 @@ PTR_REDUCE(min_population, population, <);
 
 EXTRACT(extract_population, population);
 
-//void printx(int level, char* fmt, ...) {
-void printx(int level, char* text) {
-	for (int i=0; i<level; i++) {
-		printf("  ");
-	}
-	if (strcmp(text, "") != 0) {
-		printf("%s \n", text);
-		fprintf(logfile, "%s \n", text);
-	}
-}
+
 
 int streq(char* a, char* b) {
 	return strcmp(a, b) == 0;
@@ -272,17 +264,6 @@ void write_image(state s, char* color) {
 }
 
 
-
-char* microplot(simulation s) {
-	char* result = calloc(s.steps, sizeof(char));
-	//int min = array_min(extract_population(s.states, s.steps));
-	//int max = array_max(extract_population(s.states, s.steps));
-	char plotsymbols[5] = " .*oO";
-	for (int i=0; i<s.steps; i++) {
-	//	result[i] = plotsymbols[(int) ((double) (s.states[i].population - min) / (double) (max - min) * 5)];
-	}
-	return result;
-}
 
 
 
