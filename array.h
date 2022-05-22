@@ -2,6 +2,7 @@
 #define ARRAY_H
 
 #include "vector.h"
+#include "graph.h"
 
 // A general array struct for multidimensional arrays
 struct array {
@@ -11,6 +12,7 @@ struct array {
 	int* data;
 	int space;
 	int compute;
+	node* indices;
 };
 typedef struct array array;
 

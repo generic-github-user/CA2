@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// #include "vector.h"
+#include "array.h"
+
 // Create a statically typed function that reduces an array to a single value
 #define ARRAY_REDUCE(name,type,op,init) type name(array a) { \
 	type output = init;\
@@ -18,8 +21,6 @@
 	return output;\
 }
 
-// #include "vector.h"
-#include "array.h"
 
 // Fill an array with a value
 array fill_array(array a, int value) {
@@ -39,7 +40,9 @@ array new_array(int rank, int* shape) {
 	//printf("Initalizing array with size %i \n", size);
 	int* data = calloc(size, sizeof(int));
 	int space = size * sizeof(int);
-	array a = { rank, shape, size, data, space };
+	array a = { rank, shape, size, data, space, 0, NULL };
+	// a.indices = new_array(
+	a.indices = new_list(NULL);
 	fill_array(a, 0);
 	return a;
 };
@@ -77,6 +80,11 @@ int array_get(array a, vector z) {
 
 void array_set(array a, vector z, int value) {
 	a.data[get_coord(a, z)] = value;
+	if (value != 0) {
+		vector* pos = malloc(sizeof(vector));
+		*pos = vec(z.x, z.y, z.z);
+		list_add(a.indices, (void*) pos);
+	}
 }
 
 
