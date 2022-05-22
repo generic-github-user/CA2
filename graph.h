@@ -16,4 +16,9 @@ struct graph {
 };
 typedef struct graph graph;
 
+node new_node(graph*, void*);
+void add_in(node*, node*);
+node* new_list(void*);
+void list_add(node*, void*);
+
 #endif
