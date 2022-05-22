@@ -18,5 +18,9 @@ typedef struct simulation simulation;
 
 simulation new_simulation(state s, int steps);
 void sim_data(simulation s);
+void sim_summary(simulation*);
+char* sim_info(simulation);
+void step(state*, state*, int, int, int*, simulation, int, char);
+void simulate(simulation*, int, int, int, int, char, int);
 
 #endif
