@@ -12,7 +12,7 @@ This program includes an interactive mode (i.e., a command shell) for experiment
 
 This is a non-exhaustive list of commands that can be run in the tool's interactive mode:
 
-- `randomstate -n [int] -w [int] -h [int]`: Randomly generate a set of cellular automata states
+- `randomstate -n [int] -w [int] -h [int] -t [topology]`: Randomly generate a set of cellular automata states
 - `simulate [rule] -i [int] -r auto -p`
 - `sort [property]`
 - `write [path]`: Store a human-readable text summary of the data (state(s), simulation(s), etc.) passed to the command at the specified filepath
@@ -49,4 +49,22 @@ Simulate 100 iterations of Conway's Game of Life, rendering to stdout:
 
 ```
 randomstate > simulate -i 100 -p
+```
+
+Enumerate 10000 states on a 4 by 4 grid and simulate CGOL for 50 iterations, automatically expanding the bounds to fit the current state, then write information about each state into a text file:
+
+```
+enumerate -n 10000 -wh 4 > simulate cgol -i 50 > write ex3.txt
+```
+
+Find and display the densest state resulting from evolving 5000 random states on a torus manifold for 100 steps:
+
+```
+randomstate -n 5000 -wh 30 -t torus > simulate cgol -i 100 > max density > print
+```
+
+Simulate different initial density conditions and simulation lengths and generate a heatmap of the resulting densities:
+
+```
+randomstate -n 100 -d 0.01:0.99 > simulate cgol -i 100 > plot density
 ```
