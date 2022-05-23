@@ -16,7 +16,7 @@ struct simulation {
 };
 typedef struct simulation simulation;
 
-simulation new_simulation(state s, int steps);
+simulation* new_simulation(state s, int steps);
 void sim_data(simulation s);
 void sim_summary(simulation*);
 char* sim_info(simulation);

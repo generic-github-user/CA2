@@ -5,21 +5,22 @@
 #include <unistd.h>
 
 #include "state.h"
+#include "helpers.h"
 
 // should s be a state pointer?
-simulation new_simulation(state s, int steps) {
-	simulation sim;
+simulation* new_simulation(state s, int steps) {
+	simulation* sim = malloc(sizeof(simulation));
 	// TODO: check that we aren't calling sizeof on pointers
-	sim.states = (state*) calloc(steps, sizeof(state));
-	sim.size = steps * sizeof(state);
+	sim->states = (state*) calloc(steps, sizeof(state));
+	sim->size = steps * sizeof(state);
 	// TODO: sum memory allocated by each state instance
-	sim.states[0] = s;
+	sim->states[0] = s;
 
-	sim.time = 1;
-	sim.steps = steps;
-	sim.compute = 0;
+	sim->time = 1;
+	sim->steps = steps;
+	sim->compute = 0;
 
-	sim.ages = new_array(2, s.data.shape);
+	sim->ages = new_array(2, s.data.shape);
 	// TODO: check this
 	//s.sim = &sim;
 
@@ -106,7 +107,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 	for (int i=0; i<n-1; i++) {
 		//state* p = &(sim->states)[(sim->time)-1];
 		state* p = &(sim->states)[(sim->time)-1];
-		(sim -> states)[sim -> time] = new_state(new_array(2, p -> data.shape), sim);
+		(sim -> states)[sim -> time] = *new_state(new_array(2, p -> data.shape), sim);
 		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
