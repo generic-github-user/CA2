@@ -1,9 +1,12 @@
-misc
+misc*
 *.out
 *.o
 test.*
 test*.*
 *.gch
+ca_plot*
+ca
 
 ca_log.txt
+pylog.txt
 pltdata.txt
