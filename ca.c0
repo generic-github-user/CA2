@@ -8,6 +8,7 @@
 // TODO: use ndarray structs to store arbitrary collections of states/simulations?
 // TODO: add Collection type?
 // TODO: are nested array structs viable?
+// TODO: add unit handling
 
 
 

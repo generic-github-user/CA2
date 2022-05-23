@@ -1,4 +1,3 @@
-/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <math.h>
 
 // Color format conversion code from https://stackoverflow.com/a/6930407
