@@ -3,6 +3,10 @@ import os
 import re
 import datetime
 
+def ts():
+    t = datetime.datetime.now()
+    timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
+    return timestamp
 print("Running build script")
 def expand(m):
     print(" "*8+f"Searching match {m[0]}")
@@ -27,8 +31,13 @@ for path in glob.glob("./*/*.c0"):
         name = os.path.basename(t).split(".")[0]
         with open(t, "r") as th:
             template = th.read()
+            template = f"/* Imported from {t} at {ts()} */ \n" + template
             content = content.replace("{{"+name+"}}", template)
     content = re.sub(r"\$(.*)\$", expand, content);
+
+    content = "/* This is a content file generated from a source (.c0) file; you should edit that file instead */ \n" + content
+    content = f"/* Generated from {path} at {ts()} */ \n" + content
+    
     with open(path.replace("c0", "c"), "w") as dest:
         dest.write(content)
 print("Done")

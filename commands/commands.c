@@ -1,3 +1,5 @@
+/* Generated from ./commands/commands.c0 at 05/23/2022, 08:35:13 */ 
+/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -71,7 +73,8 @@ void process_command(char* cmd, FILE* log) {
 			}
 
 			if (streq(command, "randomstate")) {
-				printx(2, "Generating random state");
+				/* Imported from ./commands/randomstate_cmd.ct at 05/23/2022, 08:35:13 */ 
+printx(2, "Generating random state");
 if (opt_num == 1) {
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
@@ -88,7 +91,8 @@ else {
 			}
 			// TODO: exploit symmetries and pattern components for more compact storage/representation?
 			else if (streq(command, "enumerate")) {
-				printx(2, "Enumerating states...");
+				/* Imported from ./commands/enumerate_cmd.ct at 05/23/2022, 08:35:13 */ 
+printx(2, "Enumerating states...");
 int i = 1;
 int z = 0;
 // TODO
@@ -120,7 +124,8 @@ selection_type = "state_set";
 
 			}
 			else if (streq(command, "write")) {
-				printx(2, "");
+				/* Imported from ./commands/write_cmd.ct at 05/23/2022, 08:35:13 */ 
+printx(2, "");
 printf("Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
@@ -143,7 +148,8 @@ complete = 1;
 
 			}
 			else if (streq(command, "print")) {
-				if (streq(selection_type, "simulation")) {
+				/* Imported from ./commands/print_cmd.ct at 05/23/2022, 08:35:13 */ 
+if (streq(selection_type, "simulation")) {
 	sim_summary((simulation*) selection);
 }
 else if (streq(selection_type, "simulation_set")) {
@@ -154,7 +160,8 @@ else if (streq(selection_type, "simulation_set")) {
 
 			}
 			else if (streq(command, "render")) {
-				printx(2, "Rendering selected state to image...");
+				/* Imported from ./commands/render_cmd.ct at 05/23/2022, 08:35:13 */ 
+printx(2, "Rendering selected state to image...");
 if (streq(selection_type, "state")) {
 	write_image(*((state*) selection), opt_color);
 }
@@ -166,7 +173,8 @@ if (streq(selection_type, "state")) {
 				}
 			}
 			else if (streq(command, "simulate")) {
-				printx(2, "Executing simulation");
+				/* Imported from ./commands/simulate_cmd.ct at 05/23/2022, 08:35:13 */ 
+printx(2, "Executing simulation");
 if (streq(selection_type, "state")) {
 	*selection = new_simulation(*((state*) selection), opt_iterations);
 	selection_type = "simulation";

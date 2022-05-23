@@ -1,3 +1,5 @@
+/* Generated from ./state/state.c0 at 05/23/2022, 08:35:13 */ 
+/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -153,7 +155,7 @@ void mutate_state(state* s) {
 }
 
 
-/* Imported from ./state/ptr_reduce.ct at 05/23/2022, 06:50:08 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/23/2022, 08:35:13 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -165,7 +167,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/23/2022, 06:50:08 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/23/2022, 08:35:13 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
