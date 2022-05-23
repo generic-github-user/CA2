@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "helpers.h"
-#include "state.h"
+#include "../helpers/helpers.h"
+#include "../state/state.h"
 
 void plot(void* source, char* type) {
 	printf("Plotting data\n");

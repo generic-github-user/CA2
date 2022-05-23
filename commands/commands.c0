@@ -4,10 +4,10 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "state.h"
-#include "helpers.h"
-#include "image.h"
-#include "plot.h"
+#include "../state/state.h"
+#include "../helpers/helpers.h"
+#include "../image/image.h"
+#include "../plot/plot.h"
 
 // Check if a string is a valid command name
 int iscommand(char* text) {

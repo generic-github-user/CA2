@@ -2,8 +2,8 @@
 #define ARRAY_H
 #include <stdio.h>
 
-#include "vector.h"
-#include "graph.h"
+#include "../vector/vector.h"
+#include "../graph/graph.h"
 
 // A general array struct for multidimensional arrays
 struct array {

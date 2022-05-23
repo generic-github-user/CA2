@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "simulation.h"
+#include "../simulation/simulation.h"
 
 extern FILE* logfile;
 

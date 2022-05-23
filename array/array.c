@@ -98,7 +98,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-/* Imported from ./array/array_reduce.ct at 05/23/2022, 04:33:58 */ 
+/* Imported from ./array/array_reduce.ct at 05/23/2022, 05:02:55 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {

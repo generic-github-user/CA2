@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "state.h"
-#include "helpers.h"
-#include "array.h"
+#include "../state/state.h"
+#include "../helpers/helpers.h"
+#include "../array/array.h"
 
 #define PTR_REDUCE(name,property,op) state* name(state* states, int n) {\
 	state* output = states;\

@@ -2,8 +2,8 @@
 #define STATE_H
 
 #include <stdio.h>
-#include "simulation.h"
-#include "array.h"
+#include "../simulation/simulation.h"
+#include "../array/array.h"
 
 // struct simulation;
 // typedef struct simulation simulation;

@@ -9,16 +9,16 @@
 #include <stdint.h>
 
 #include <inttypes.h>
-#include "spng.h"
+#include "misc2/spng.h"
 //#include "TinyPngOut.h"
 
-#include "array.h"
+#include "array/array.h"
 // #include "vector.h"
-#include "state.h"
-#include "simulation.h"
-#include "rule.h"
-#include "helpers.h"
-#include "commands.h"
+#include "state/state.h"
+#include "simulation/simulation.h"
+#include "rule/rule.h"
+#include "helpers/helpers.h"
+#include "commands/commands.h"
 
 // Based on code from https://stackoverflow.com/a/3219471
 #define RED     "\x1b[31m"

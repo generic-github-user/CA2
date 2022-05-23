@@ -1,8 +1,8 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "array.h"
-#include "state.h"
+#include "../array/array.h"
+#include "../state/state.h"
 
 struct image {
 	array* data;

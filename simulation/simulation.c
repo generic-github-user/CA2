@@ -4,8 +4,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "state.h"
-#include "helpers.h"
+#include "../state/state.h"
+#include "../helpers/helpers.h"
 
 // should s be a state pointer?
 simulation* new_simulation(state s, int steps) {

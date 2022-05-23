@@ -1,7 +1,7 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 // #include "state.h"
-#include "array.h"
+#include "../array/array.h"
 
 struct state;
 typedef struct state state;
