@@ -1,5 +1,6 @@
 #ifndef ARRAY_H
 #define ARRAY_H
+#include <stdio.h>
 
 #include "vector.h"
 #include "graph.h"
@@ -40,5 +41,6 @@ vector array_to_vec(array);
 array array_slice(array, array, array, int);
 
 void fill_slice(array*, vector, vector, int);
+void write_array(array, FILE*);
 
 #endif
