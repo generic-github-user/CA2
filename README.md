@@ -4,7 +4,15 @@ This toolkit (titled CA2 for the time being) is a software framework to assist i
 
 ## Installation
 
-Clone the repository and compile using `gcc ca.c -g`, then execute the normal way.
+### Requirements
+
+- An updated version of Python (at least 3.9 is preferred)
+- Matplotlib
+- Access to `gcc` and `Make` (running using a terminal is preferred, though a standard compatibility layer should work fine if using Windows or a similar OS)
+
+Note that all of the above tools must be included in your `PATH` environment variable (i.e., must be globally accessible).
+
+Clone the repository and compile using `make`, then execute the normal way.
 
 ## Usage
 
