@@ -2,11 +2,11 @@
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 
-#include "TinyPngOut.h"
-#include "array.h"
-#include "helpers.h"
-#include "image.h"
-#include "state.h"
+#include "../tinypng/TinyPngOut.h"
+#include "../array/array.h"
+#include "../helpers/helpers.h"
+#include "../image/image.h"
+#include "../state/state.h"
 
 image generate_image(state s, char* color) {
 //	int shape[3] = {100, 100, 3};

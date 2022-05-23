@@ -1,6 +1,6 @@
 #ifndef HASHING_H
 #define HASHING_H
-#include "state.h"
+#include "../state/state.h"
 
 struct hashtable {
 	unsigned int size;
