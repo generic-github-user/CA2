@@ -1,6 +1,7 @@
 import glob
 import os
 import re
+import datetime
 
 def expand(m):
     print(f"Searching match {m[0]}")
@@ -13,6 +14,9 @@ def expand(m):
     for p in params:
         a, b = p.split(":")
         template = template.replace(a.upper(), b)
+    t = datetime.datetime.now()
+    timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
+    template = f"/* Imported from {tpath} at {timestamp} */ \n" + template
     return template
 for path in glob.glob("./*/*.c0"):
     with open(path, "r") as src:
