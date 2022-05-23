@@ -7,17 +7,19 @@
 #include "state.h"
 #include "helpers.h"
 #include "image.h"
+#include "plot.h"
 
 // Check if a string is a valid command name
 int iscommand(char* text) {
-	char* commands[11] = {
+	char* commands[] = {
 		"randomstate", "enumerate",
 		"simulate",
 		"collapse", "min", "max",
 		"write", "print", "render", "table",
-		"quit"
+		"quit",
+		"plot"
 	};
-	for (int i=0; i<11; i++) {
+	for (int i=0; i<12; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -186,6 +188,10 @@ void process_command(char* cmd, FILE* log) {
 					}
 					selection_type = "state_set";
 				}
+				else if (streq(selection_type, "simulation")) {
+					simulation* sim = &sim_selection;
+					state_selection = sim -> states[(sim -> time) - 2];
+				}
 				else {
 					printx(2, "Command not supported for this data type");
 				}
@@ -209,6 +215,9 @@ void process_command(char* cmd, FILE* log) {
 						state_selection = max_population(stateset_selection, opt_num);
 					}
 				}
+			}
+			else if (streq(command, "plot")) {
+				plot(&state_selection, "state");
 			}
 			else if (streq(command, "quit")) {
 				printx(2, "Exiting");
