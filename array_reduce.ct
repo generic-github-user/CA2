@@ -1,0 +1,7 @@
+TYPE NAME(array a) {
+	TYPE output = INIT;
+	for (int i=0; i<a.size; i++) {
+		output = output OP a.data[i];
+	}
+	return output;
+}

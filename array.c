@@ -5,13 +5,6 @@
 #include "array.h"
 
 // Create a statically typed function that reduces an array to a single value
-#define ARRAY_REDUCE(name,type,op,init) type name(array a) { \
-	type output = init;\
-	for (int i=0; i<a.size; i++) {\
-		output = output op a.data[i];\
-	}\
-	return output;\
-}
 
 #define ARRAY_OP(name,op) array name(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
@@ -105,7 +98,14 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-ARRAY_REDUCE(array_sum, int, +, 0)
+int array_sum(array a) {
+	int output = 0;
+	for (int i=0; i<a.size; i++) {
+		output = output + a.data[i];
+	}
+	return output;
+}
+
 double array_mean(array a) {
 	return (double) array_sum(a) / (double) a.size;
 }

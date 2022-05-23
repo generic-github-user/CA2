@@ -2,3 +2,8 @@ misc
 *.out
 *.o
 test.*
+test*.*
+*.gch
+
+ca_log.txt
+pltdata.txt
