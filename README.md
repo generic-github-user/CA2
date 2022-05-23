@@ -30,12 +30,19 @@ This is a non-exhaustive list of commands that can be run in the tool's interact
 - `undo`: Revert previous command (only applicable to commands that mutate the current state/selection)
 - `redo`: Redo an undone command
 
+These options can be used with any command:
+
+- `--help [command]`: Display information about the provided command
+- `--dry`: Execute a "dry run", displaying information about the actions that would be executed without actually modifying the current selection or writing to any files
+- `--log [int]`: Set the verbosity level (an integer greater than or equal to 0) for this command (useful to set as a default for all commands)
+
 Here are descriptions of the `[types]` used in the above command descriptions:
 
 - `int`: A simple integer; restrictions on the range of the number may be present for specific commands/options
 - `rule`: A named cellular automata rule, like `cgol`
 - `property`: One of population, volume, density
 - `path`: A filepath (both relative and absolute are allowed)
+- `command`: A command name (see the list above)
 
 ### Examples
 
