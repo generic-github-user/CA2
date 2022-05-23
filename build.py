@@ -3,8 +3,9 @@ import os
 import re
 import datetime
 
+print("Running build script")
 def expand(m):
-    print(f"Searching match {m[0]}")
+    print(" "*8+f"Searching match {m[0]}")
     args = re.search(r"(\w+)\(((?:\w+\:.+,?)+)\)", m[0])
     tname = args[1]
     params = args[2].split(",")
@@ -19,6 +20,7 @@ def expand(m):
     template = f"/* Imported from {tpath} at {timestamp} */ \n" + template
     return template
 for path in glob.glob("./*/*.c0"):
+    print(" "*4+f"Processing source file {path}")
     with open(path, "r") as src:
         content = src.read()
     for t in glob.glob("./*/*.ct"):
@@ -29,5 +31,5 @@ for path in glob.glob("./*/*.c0"):
     content = re.sub(r"\$(.*)\$", expand, content);
     with open(path.replace("c0", "c"), "w") as dest:
         dest.write(content)
-
+print("Done")
 
