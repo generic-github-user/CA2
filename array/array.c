@@ -6,13 +6,6 @@
 
 // Create a statically typed function that reduces an array to a single value
 
-#define ARRAY_OP(name,op) array name(array a, array b) {\
-	array output = new_array(a.rank, a.shape);\
-	for (int i=0; i<a.size; i++) {\
-		output.data[i] = a.data[i] op b.data[i];\
-	}\
-	return output;\
-}
 
 
 // Fill an array with a value
@@ -98,7 +91,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-/* Imported from ./array/array_reduce.ct at 05/23/2022, 05:43:02 */ 
+/* Imported from ./array/array_reduce.ct at 05/23/2022, 06:36:52 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -133,11 +126,51 @@ int array_max(array* a) {
 	return output;
 }
 
-ARRAY_OP(array_bsum, +);
-ARRAY_OP(array_bdiff, -);
-ARRAY_OP(array_bprod, *);
-ARRAY_OP(array_bdiv, /);
-ARRAY_OP(array_bmod, %);
+/* Imported from ./array/array_op.ct at 05/23/2022, 06:36:52 */ 
+array array_bsum(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] + b.data[i];\
+	}\
+	return output;\
+}
+
+/* Imported from ./array/array_op.ct at 05/23/2022, 06:36:52 */ 
+array array_bdiff(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] - b.data[i];\
+	}\
+	return output;\
+}
+
+/* Imported from ./array/array_op.ct at 05/23/2022, 06:36:52 */ 
+array array_bprod(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] * b.data[i];\
+	}\
+	return output;\
+}
+
+/* Imported from ./array/array_op.ct at 05/23/2022, 06:36:52 */ 
+array array_bdiv(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] / b.data[i];\
+	}\
+	return output;\
+}
+
+/* Imported from ./array/array_op.ct at 05/23/2022, 06:36:52 */ 
+array array_bmod(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] % b.data[i];\
+	}\
+	return output;\
+}
+
 
 array copy_array(array a) {
 	array copy = new_array(a.rank, a.shape);

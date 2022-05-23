@@ -1,0 +1,7 @@
+array NAME(array a, array b) {\
+	array output = new_array(a.rank, a.shape);\
+	for (int i=0; i<a.size; i++) {\
+		output.data[i] = a.data[i] OP b.data[i];\
+	}\
+	return output;\
+}
