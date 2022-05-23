@@ -34,11 +34,9 @@ void process_command(char* cmd, FILE* log) {
 	char* option;
 	char optionc = '\0';
 
-	state state_selection;
-	state* stateset_selection;
-
-	simulation sim_selection;
-	simulation* simset_selection;
+	// could this be a single [void] pointer?
+	void** selection;
+	void** set_selection;
 
 	char* selection_type;
 
@@ -75,13 +73,13 @@ void process_command(char* cmd, FILE* log) {
 			if (streq(command, "randomstate")) {
 				printx(2, "Generating random state");
 				if (opt_num == 1) {
-					state_selection = random_state(opt_shape);
+					*selection = (state*) random_state(opt_shape);
 					selection_type = "state";
 			}
 				else {
-					stateset_selection = calloc(opt_num, sizeof(state));
+					selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
-						stateset_selection[j] = random_state(opt_shape);
+						*(selection+j) = random_state(opt_shape);
 					}
 					selection_type = "state_set";
 				}
@@ -93,9 +91,9 @@ void process_command(char* cmd, FILE* log) {
 				int z = 0;
 				// TODO
 				//if (stateset_selection == NULL) {
-				stateset_selection = calloc(opt_num, sizeof(state));
+				selection = calloc(opt_num, sizeof(state));
 				//}
-				stateset_selection[0] = new_state(new_array(2, opt_shape), NULL);
+				selection[0] = new_state(new_array(2, opt_shape), NULL);
 				// TODO: update stats?
 				state* s;
 				while (i < opt_num) {
@@ -103,8 +101,8 @@ void process_command(char* cmd, FILE* log) {
 					printf("Generating state %i\n", i);
 
 					z = 0;
-					s = &stateset_selection[i];
-					stateset_selection[i] = *clone_state(stateset_selection[i-1]);
+					s = selection[i];
+					selection[i] = (state*) clone_state(*((state*) selection[i-1]));
 					while ((s->data).data[z] == 1) {
 						(s->data).data[z] = 0;
 						z ++;
@@ -122,17 +120,17 @@ void process_command(char* cmd, FILE* log) {
 				printf("Writing to output file [%s] \n", opt);
 				FILE* outfile = fopen(opt, "w");
 				if (strcmp(selection_type, "state") == 0) {
-					write_state(state_selection, outfile);
+					write_state(*((state*) *selection), outfile);
 					//free(state_selection);
 				}
 				else if (strcmp(selection_type, "state_set") == 0) {
 					printx(3, "");
 					printf("Writing %i states \n", opt_num);
 					for (int j=0; j<opt_num; j++) {
-						write_state(stateset_selection[j], outfile);
+						write_state(*((state*) selection[j]), outfile);
 						fprintf(outfile, "\n\n");
 					}
-					free(stateset_selection);
+					free(selection);
 				}
 				printx(3, "Closing output file");
 				fclose(outfile);
@@ -140,37 +138,37 @@ void process_command(char* cmd, FILE* log) {
 			}
 			else if (streq(command, "print")) {
 				if (streq(selection_type, "simulation")) {
-					sim_summary(&sim_selection);
+					sim_summary((simulation*) selection);
 				}
 				else if (streq(selection_type, "simulation_set")) {
 					for (int j=0; j<opt_num; j++) {
-						sim_summary(&simset_selection[j]);
+						sim_summary(selection[j]);
 					}
 				}
 			}
 			else if (streq(command, "render")) {
 				printx(2, "Rendering selected state to image...");
 				if (streq(selection_type, "state")) {
-					write_image(state_selection, opt_color);
+					write_image(*((state*) selection), opt_color);
 				}
 			}
 			else if (streq(command, "table")) {
 				if (streq(selection_type, "simulation")) {
-					sim_data(sim_selection);
+					sim_data(*((simulation*) selection));
 				}
 			}
 			else if (streq(command, "simulate")) {
 				printx(2, "Executing simulation");
 				if (streq(selection_type, "state")) {
-					sim_selection = new_simulation(state_selection, opt_iterations);
+					*selection = new_simulation(*((state*) selection), opt_iterations);
 					selection_type = "simulation";
-					simulate(&sim_selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
+					simulate(*selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
 				}
 				else if (streq(selection_type, "state_set")) {
-					simset_selection = calloc(opt_num, sizeof(simulation));
+					selection = calloc(opt_num, sizeof(simulation));
 					for (int j=0; j<opt_num; j++) {
-						simset_selection[j] = new_simulation(stateset_selection[j], opt_iterations);
-						simulate(&simset_selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
+						selection[j] = new_simulation(*((state*) selection[j]), opt_iterations);
+						simulate(selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
 					}
 					selection_type = "simulation_set";
 				}
@@ -178,19 +176,20 @@ void process_command(char* cmd, FILE* log) {
 			else if (streq(command, "collapse")) {
 				printx(2, "Collapsing simulation(s)");
 				if (streq(selection_type, "simulation_set")) {
-					stateset_selection = calloc(opt_num, sizeof(state));
+					selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
 						//simulation sim = simset_selection[j];
-						simulation* sim = &simset_selection[j];
+						simulation* sim = selection[j];
 						printx(2, "");
 						printf("Getting state at index %i\n", sim -> time);
-						stateset_selection[j] = sim -> states[(sim -> time) - 2];
+						// should this account for the size of a state struct?
+						selection[j] = (sim -> states) + (sim -> time) - 2;
 					}
 					selection_type = "state_set";
 				}
 				else if (streq(selection_type, "simulation")) {
-					simulation* sim = &sim_selection;
-					state_selection = sim -> states[(sim -> time) - 2];
+					simulation* sim = *selection;
+					*selection = (sim -> states) + (sim -> time) - 2;
 				}
 				else {
 					printx(2, "Command not supported for this data type");
@@ -202,7 +201,7 @@ void process_command(char* cmd, FILE* log) {
 					selection_type = "state";
 					if (streq(opt, "population")) {
 						// TODO
-						state_selection = min_population(stateset_selection, opt_num);
+						*selection = min_population(*selection, opt_num);
 					}
 				}
 			}
@@ -212,12 +211,15 @@ void process_command(char* cmd, FILE* log) {
 					selection_type = "state";
 					if (streq(opt, "population")) {
 						// TODO
-						state_selection = max_population(stateset_selection, opt_num);
+						*selection = max_population(*selection, opt_num);
 					}
 				}
 			}
 			else if (streq(command, "plot")) {
-				plot(&state_selection, "state");
+				plot(&selection, "state");
+			}
+			else if (streq(command, "repeat")) {
+
 			}
 			else if (streq(command, "quit")) {
 				printx(2, "Exiting");
