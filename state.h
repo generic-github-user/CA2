@@ -18,19 +18,19 @@ struct state {
 };
 typedef struct state state;
 
-state new_state(array data, simulation* sim);
+state* new_state(array data, simulation* sim);
 void update_state(state* s);
-state random_state(int* shape);
+state* random_state(int* shape);
 char* state_summary(state s);
 int count_neighbors(state source, int x, int y, int* cc);
-state map_neighbors(state s, int* cc);
+state* map_neighbors(state s, int* cc);
 void print_state(state s, int unicode, char color);
 state* clone_state(state s);
 void write_state(state s, FILE* fptr);
 int states_equal(state a, state b);
 void mutate_state(state* s);
 
-state min_population(state*, int);
-state max_population(state*, int);
+state* min_population(state*, int);
+state* max_population(state*, int);
 
 #endif

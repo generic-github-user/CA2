@@ -5,12 +5,12 @@
 #include "helpers.h"
 #include "array.h"
 
-#define PTR_REDUCE(name,property,op) state name(state* states, int n) {\
-	state output = states[0];\
+#define PTR_REDUCE(name,property,op) state* name(state* states, int n) {\
+	state* output = states;\
 	for (int i=0; i<n; i++) {\
 		/* if ((states[i] -> property) op (output -> property)) {*/\
-		if (states[i].property op output.property) {\
-			output = states[i];\
+		if (states[i].property op output -> property) {\
+			*output = states[i];\
 		}\
 	}\
 	return output;\
@@ -20,9 +20,10 @@ extern char* COLOR_ORDER[6];
 // char* RESET;
 #define RESET   "\x1b[0m"
 
-state new_state(array data, simulation* sim) {
-	state s = {data, 0, 0, sim};
-	s.shape = s.data.shape;
+state* new_state(array data, simulation* sim) {
+	state* s = malloc(sizeof(state));
+	*s = (state) {data, 0, 0, sim};
+	s -> shape = s -> data.shape;
 	return s;
 }
 
@@ -33,16 +34,16 @@ void update_state(state* s) {
 }
 
 // Generate a random state
-state random_state(int* shape) {
-	state result = {new_array(2, shape), 0, 0, NULL};
+state* random_state(int* shape) {
+	state* result = new_state(new_array(2, shape), NULL);
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
-			array_set(result.data, vec(x, y, 0), rand() % 2);
+			array_set(result -> data, vec(x, y, 0), rand() % 2);
 			// compute ++;
 		}
 	}
-	result.shape = shape;
-	update_state(&result);
+	result -> shape = shape;
+	update_state(result);
 	return result;
 }
 
@@ -83,13 +84,13 @@ int count_neighbors(state source, int x, int y, int* cc) {
 	return neighbors;
 }
 
-state map_neighbors(state s, int* cc) {
+state* map_neighbors(state s, int* cc) {
 	int neighbors;
-	state counts = {new_array(2, s.data.shape)};
+	state* counts = new_state(new_array(2, s.data.shape), NULL);
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
 			neighbors = count_neighbors(s, x, y, cc);
-			array_set(counts.data, vec(x, y, 0), neighbors);
+			array_set(counts -> data, vec(x, y, 0), neighbors);
 			//(*cc) ++;
 		}
 	}
@@ -125,8 +126,7 @@ void print_state(state s, int unicode, char color) {
 
 state* clone_state(state s) {
 	//state clone = (state) {new_array(2, s.data.shape)};
-	state* clone = malloc(sizeof(state));
-	*clone = new_state(new_array(2, s.data.shape), s.sim);
+	state* clone = new_state(new_array(2, s.data.shape), s.sim);
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
 			array_set(clone -> data, vec(x, y, 0), array_get(s.data, vec(x, y, 0)));
@@ -140,7 +140,7 @@ void write_state(state s, FILE* fptr) {
 	fprintf(fptr, "Population: %i \n", array_sum(s.data));
 	fprintf(fptr, "Density: %f \n", (double) array_sum(s.data) / (double) s.data.size);
 	int cc = 0;
-	fprintf(fptr, "Avg. neighbors: %f \n", array_mean(map_neighbors(s, &cc).data));
+	fprintf(fptr, "Avg. neighbors: %f \n", array_mean(map_neighbors(s, &cc) -> data));
 
 	char* summary = state_summary(s);
 	fprintf(fptr, "%s", summary);
