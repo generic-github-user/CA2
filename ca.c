@@ -106,7 +106,7 @@ state* extract_slices(state* s, int limit) {
 				//T.data = {x, y};
 				memcpy(&T, (int[]) {x, y}, sizeof(int));
 				memcpy(&U, (int[]) {x+w, y+w}, sizeof(int));
-				slices[i] = new_state(
+				slices[i] = *new_state(
 					array_slice(s -> data, T, U, 2),
 					s -> sim
 				);
