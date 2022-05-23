@@ -1,0 +1,10 @@
+state* NAME(state* states, int n) {
+	state* output = states;
+	for (int i=0; i<n; i++) {
+		/* if ((states[i] -> PROPERTY) OP (output -> PROPERTY)) {*/
+		if (states[i].PROPERTY OP output -> PROPERTY) {
+			*output = states[i];
+		}
+	}
+	return output;
+}
