@@ -20,9 +20,12 @@ This program includes an interactive mode (i.e., a command shell) for experiment
 
 This is a non-exhaustive list of commands that can be run in the tool's interactive mode:
 
-- `randomstate -n [int] -w [int] -h [int] -t [topology]`: Randomly generate a set of cellular automata states
-- `simulate [rule] -i [int] -r auto -p`
+- `randomstate -n [int >= 1] -w [int >= 0] -h [int >= 0] -t [topology]`: Randomly generate a set of cellular automata states
+- `simulate [rule] -i [int >= 1] -r auto -p`
 - `sort [property]`
+- `rchoice [collection] -n [int >= 0]`: Randomly select the specified number of elements from a collection; for example, passing a simulation will return a subset of that simulation's states
+- `clone -n [int >= 1]`: Create a collection of 
+- `get [property]`: Extracts a property from the current selection, usually generating an array/matrix; as with the other commands, this will be distributed over iterable selections to produce a new axis
 - `write [path]`: Store a human-readable text summary of the data (state(s), simulation(s), etc.) passed to the command at the specified filepath
 - `save [path]`
 - `print`: Display the current selection via `stdout`
@@ -35,6 +38,7 @@ This is a non-exhaustive list of commands that can be run in the tool's interact
 - `max [property]`
 - `help`: Display this list
 - `repeat`: Repeat the last command executed
+- `clear [object]`: Free (deallocate) the memory used to store an object (useful in interactive mode if you no longer need access to an earlier selection you generated)
 - `undo`: Revert previous command (only applicable to commands that mutate the current state/selection)
 - `redo`: Redo an undone command
 
