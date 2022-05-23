@@ -115,3 +115,17 @@ Run 1000 simulations and generate a histogram of the final populations, such tha
 ```
 randomstate -n 1000 > simulate cgol -i 100 > get population > group -n 20 > plot
 ```
+
+## About
+
+### Project structure
+
+The main modules are subdirectories of the repository (`array`, `commands`, etc.); these generally contain a C source file, a corresponding C content file, a header file, and object file; and may have additional scripts or templates. A custom build script, `build.py` transforms each `.c0` file into a `.c` file by inserting templates from `.ct` (C template) files (a sort of fine-tuned pre-preprocessor), which is then used normally by the C compiler and linker.
+
+Plain template files can be used to separate large source files into more manageable modules (see the `commands` directory for an example); these are essentially copied and pasted into the source files like the C preprocessor does with directives and includes, via the following syntax:
+
+```
+{{template_name}}
+```
+
+where `template_name.ct` is a file in the same directory.
