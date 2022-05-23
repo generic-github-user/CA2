@@ -15,14 +15,14 @@ writelog(path)
 with open(path, "r") as f:
     text = f.read()
 #    print(text)
-    sys.stdout.write(text)
+#    sys.stdout.write(text)
     writelog(text)
     data = np.fromstring(text, dtype=int, sep=",")
     
     writelog("Generating plot")
-    plt.style.use("seaborn")
+    plt.style.use("ggplot")
     fig, ax = plt.subplots()
-    ax.imshow(data.reshape(30, 30))
+    ax.imshow(data.reshape(30, 30, order="C"), cmap="GnBu")
     fig.savefig("./ca_plot.png")
     plt.close(fig)
 
