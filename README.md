@@ -19,14 +19,16 @@ This is a non-exhaustive list of commands that can be run in the tool's interact
 - `save [path]`
 - `print`: Display the current selection via `stdout`
 - `render [path]`: Render the selected objects to an image file
+- `plot`: Generate a plot from the current selection (using the Matplotlib wrapper)
 - `abbr short long`: Create an abbreviation that will be expanded before a command is run, similar to preprocessor directives and macros in C
 - `collapse`: Get the last state of one or more simulations
 - `enumerate`: Iterate through possible states of a cellular automaton
 - `min [property]`: Reduce a set of states based on the specified property
 - `max [property]`
 - `help`: Display this list
-- `undo`: Revert previous command
-- `redo`
+- `repeat`: Repeat the last command executed
+- `undo`: Revert previous command (only applicable to commands that mutate the current state/selection)
+- `redo`: Redo an undone command
 
 Here are descriptions of the `[types]` used in the above command descriptions:
 
