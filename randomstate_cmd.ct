@@ -1,0 +1,13 @@
+printx(2, "Generating random state");
+if (opt_num == 1) {
+	*selection = (state*) random_state(opt_shape);
+	selection_type = "state";
+}
+else {
+	selection = calloc(opt_num, sizeof(state));
+	for (int j=0; j<opt_num; j++) {
+		*(selection+j) = random_state(opt_shape);
+	}
+	selection_type = "state_set";
+}
+
