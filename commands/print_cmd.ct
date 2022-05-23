@@ -1,0 +1,8 @@
+if (streq(selection_type, "simulation")) {
+	sim_summary((simulation*) selection);
+}
+else if (streq(selection_type, "simulation_set")) {
+	for (int j=0; j<opt_num; j++) {
+		sim_summary(selection[j]);
+	}
+}

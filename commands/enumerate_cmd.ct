@@ -1,0 +1,29 @@
+printx(2, "Enumerating states...");
+int i = 1;
+int z = 0;
+// TODO
+//if (stateset_selection == NULL) {
+selection = calloc(opt_num, sizeof(state));
+//}
+selection[0] = new_state(new_array(2, opt_shape), NULL);
+// TODO: update stats?
+state* s;
+while (i < opt_num) {
+	printx(3, "");
+	printf("Generating state %i\n", i);
+
+	z = 0;
+	s = selection[i];
+	selection[i] = (state*) clone_state(*((state*) selection[i-1]));
+	while ((s->data).data[z] == 1) {
+		(s->data).data[z] = 0;
+		z ++;
+		if (z >= (s->data).size) {
+			break;
+		}
+	}
+	(s->data).data[z] = 1;
+	i ++;
+}
+selection_type = "state_set";
+

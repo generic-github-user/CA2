@@ -1,0 +1,4 @@
+printx(2, "Rendering selected state to image...");
+if (streq(selection_type, "state")) {
+	write_image(*((state*) selection), opt_color);
+}
