@@ -84,8 +84,34 @@ Find and display the densest state resulting from evolving 5000 random states on
 randomstate -n 5000 -wh 30 -t torus > simulate cgol -i 100 > max density > print
 ```
 
+#### Plotting
+
+Run a simulation and plot the population over each timestep:
+
+```
+randomstate > simulate cgol -i 100 > get population > plot
+```
+
+Run 200 simulations and plot their populations over each timestep:
+
+```
+randomstate -n 200 > simulate cgol -i 100 > get population > plot
+```
+
 Simulate different initial density conditions and simulation lengths and generate a heatmap of the resulting densities:
 
 ```
 randomstate -n 100 -d 0.01:0.99 > simulate cgol -i 100 > plot density
+```
+
+Run 1000 simulations and generate a scatter plot of the final densities and average neighbor counts:
+
+```
+randomstate -n 1000 > simulate cgol -i 100 >
+```
+
+Run 1000 simulations and generate a histogram of the final populations, such that the full range is divided into 20 bins:
+
+```
+randomstate -n 1000 > simulate cgol -i 100 > get population > group -n 20 > plot
 ```
