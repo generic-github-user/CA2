@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
+
 #include "../simulation/simulation.h"
+#include ".././mainheaders.h"
 
 extern FILE* logfile;
 
@@ -9,15 +12,37 @@ int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
 }
 
-//void printx(int level, char* fmt, ...) {
-void printx(int level, char* text) {
+// Loosely based on https://en.cppreference.com/w/c/variadic
+void printx(int level, const char* fmt, ...) {
+//	printf("fmt: %s", fmt);
+//void printx(int level, char* text) {
+	va_list args;
+	va_start(args, fmt);
+
+	char* indent = "  ";
 	for (int i=0; i<level; i++) {
-		printf("  ");
+		printf("%s", indent);
+		fprintf(logfile, "%s", indent);
 	}
-	if (strcmp(text, "") != 0) {
-		printf("%s \n", text);
-		fprintf(logfile, "%s \n", text);
+	int signal = 0;
+	while (*fmt != '\0') {
+//		printf("fmt: %s", fmt);
+		if (*fmt == '%') {
+			signal = 1;
+		}
+		else if (signal && *fmt == 's') {
+			char* text = va_arg(args, char*);
+			if (text == NULL) { text = "NULL"; }
+			printf("%s", text);
+			fprintf(logfile, "%s", text);
+			signal = 0;
+		} else {
+			printf("%c", *fmt);
+			fprintf(logfile, "%c", *fmt);
+		}
+		++fmt;
 	}
+	va_end(args);
 }
 
 char* microplot(simulation s) {
