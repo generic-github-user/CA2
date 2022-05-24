@@ -14,6 +14,7 @@ struct array {
 	int space;
 	int compute;
 	node* indices;
+	char** labels;
 };
 typedef struct array array;
 

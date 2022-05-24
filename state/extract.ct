@@ -7,5 +7,6 @@ array extract_PROPERTY(state* states, int n) {
 	for (int i=0; i<n; i++) {
 		output.data[i] = states[i].PROPERTY;
 	}
+	output.labels[0] = "PROPERTY";
 	return output;
 }
