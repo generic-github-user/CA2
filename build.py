@@ -23,7 +23,7 @@ def expand(m):
     timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
     template = f"/* Imported from {tpath} at {timestamp} */ \n" + template
     return template
-for path in glob.glob("./*/*.c0"):
+for path in glob.glob("./*/*.c0")+glob.glob("./*.c0"):
     print(" "*4+f"Processing source file {path}")
     with open(path, "r") as src:
         content = src.read()
