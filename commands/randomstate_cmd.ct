@@ -1,4 +1,4 @@
-printx(2, "Generating random state");
+printx(2, "Generating random state...\n");
 if (opt_num == 1) {
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";

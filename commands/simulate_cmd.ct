@@ -1,4 +1,4 @@
-printx(2, "Executing simulation");
+printx(2, "Executing simulation\n");
 if (streq(selection_type, "state")) {
 	*selection = new_simulation(*((state*) selection), opt_iterations);
 	selection_type = "simulation";

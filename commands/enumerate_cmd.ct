@@ -9,8 +9,7 @@ selection[0] = new_state(new_array(2, opt_shape), NULL);
 // TODO: update stats?
 state* s;
 while (i < opt_num) {
-	printx(3, "");
-	printf("Generating state %i\n", i);
+	printx(3, "Generating state %i\n", i);
 
 	z = 0;
 	s = selection[i];

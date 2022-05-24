@@ -51,13 +51,12 @@ void process_command(char* cmd, FILE* log) {
 	int complete = 0;
 
 	// Handle command input
-	printx(0, "Processing command...");
+	printx(0, "Processing command...\n");
 	do {
 		if (token != NULL) {
 			token[strcspn(token, "\n")] = 0;
 		}
-		printx(1, "");
-		printf("Handling token [%s] \n", token);
+		printx(1, "Handling token [%s]\n", token);
 
 		if (token == NULL) {
 			if (optionc == 'p') {
@@ -66,8 +65,9 @@ void process_command(char* cmd, FILE* log) {
 		}
 
 		if (token == NULL || streq(token, ">")) {
+			printx(2, "Executing command %s\n", command);
 			if (command == NULL) {
-				printx(2, "No command set");
+				printx(2, "No command set\n");
 			}
 
 			if (streq(command, "randomstate")) {
@@ -95,14 +95,13 @@ void process_command(char* cmd, FILE* log) {
 				{{simulate_cmd}}
 			}
 			else if (streq(command, "collapse")) {
-				printx(2, "Collapsing simulation(s)");
+				printx(2, "Collapsing simulation(s)\n");
 				if (streq(selection_type, "simulation_set")) {
 					selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
 						//simulation sim = simset_selection[j];
 						simulation* sim = selection[j];
-						printx(2, "");
-						printf("Getting state at index %i\n", sim -> time);
+						printx(2, "Getting state at index %i\n", sim -> time);
 						// should this account for the size of a state struct?
 						selection[j] = (sim -> states) + (sim -> time) - 2;
 					}
@@ -113,11 +112,11 @@ void process_command(char* cmd, FILE* log) {
 					*selection = (sim -> states) + (sim -> time) - 2;
 				}
 				else {
-					printx(2, "Command not supported for this data type");
+					printx(2, "Command not supported for this data type\n");
 				}
 			}
 			else if (streq(command, "min")) {
-				printx(2, "Reducing to minimum");
+				printx(2, "Reducing to minimum\n");
 				if (streq(selection_type, "state_set")) {
 					selection_type = "state";
 					if (streq(opt, "population")) {
@@ -127,7 +126,7 @@ void process_command(char* cmd, FILE* log) {
 				}
 			}
 			else if (streq(command, "max")) {
-				printx(2, "Reducing to maximum");
+				printx(2, "Reducing to maximum\n");
 				if (streq(selection_type, "state_set")) {
 					selection_type = "state";
 					if (streq(opt, "population")) {
@@ -143,11 +142,11 @@ void process_command(char* cmd, FILE* log) {
 
 			}
 			else if (streq(command, "quit")) {
-				printx(2, "Exiting");
+				printx(2, "Exiting\n");
 				exit(1);
 			}
 			else {
-				printx(2, "Command not recognized");
+				printx(2, "Command not recognized\n");
 				complete = 1;
 				exit(1);
 			}
@@ -159,18 +158,15 @@ void process_command(char* cmd, FILE* log) {
 		else if (iscommand(token)) {
 			command = strdup(token);
 			command[strcspn(command, "\n")] = 0;
-			printx(2, "");
-			printf("Found command %s \n", command);
+			printx(2, "Found command %s \n", command);
 		}
 		else if (token[0] == '-') {
 			optionc = token[1];
 		}
 		else if (optionc != '\0') {
-			printx(2, "");
-			printf("Received option [-%c] with value %s \n", optionc, token);
+			printx(2, "Received option [-%c] with value %s \n", optionc, token);
 			switch (optionc) {
 				case 'n': {
-					printx(2, "");
 					opt_num = atoi(token);
 					optionc = '\0';
 					break;
@@ -189,13 +185,12 @@ void process_command(char* cmd, FILE* log) {
 			}
 		}
 		else {
-			printx(2, "Found unlabeled option");
+			printx(2, "Found unlabeled option\n");
 			opt = (char*) strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
 
-
-
+		printx(2, "getting next token...\n");
 		token = strtok(NULL, " ");
 		usleep(200000);
 	} while (!complete);

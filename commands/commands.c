@@ -1,4 +1,4 @@
-/* Generated from ./commands/commands.c0 at 05/23/2022, 08:35:13 */ 
+/* Generated from ./commands/commands.c0 at 05/23/2022, 23:02:51 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -53,13 +53,12 @@ void process_command(char* cmd, FILE* log) {
 	int complete = 0;
 
 	// Handle command input
-	printx(0, "Processing command...");
+	printx(0, "Processing command...\n");
 	do {
 		if (token != NULL) {
 			token[strcspn(token, "\n")] = 0;
 		}
-		printx(1, "");
-		printf("Handling token [%s] \n", token);
+		printx(1, "Handling token [%s]\n", token);
 
 		if (token == NULL) {
 			if (optionc == 'p') {
@@ -68,13 +67,14 @@ void process_command(char* cmd, FILE* log) {
 		}
 
 		if (token == NULL || streq(token, ">")) {
+			printx(2, "Executing command %s\n", command);
 			if (command == NULL) {
-				printx(2, "No command set");
+				printx(2, "No command set\n");
 			}
 
 			if (streq(command, "randomstate")) {
-				/* Imported from ./commands/randomstate_cmd.ct at 05/23/2022, 08:35:13 */ 
-printx(2, "Generating random state");
+				/* Imported from ./commands/randomstate_cmd.ct at 05/23/2022, 23:02:51 */ 
+printx(2, "Generating random state...\n");
 if (opt_num == 1) {
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
@@ -103,8 +103,7 @@ selection[0] = new_state(new_array(2, opt_shape), NULL);
 // TODO: update stats?
 state* s;
 while (i < opt_num) {
-	printx(3, "");
-	printf("Generating state %i\n", i);
+	printx(3, "Generating state %i\n", i);
 
 	z = 0;
 	s = selection[i];
@@ -124,17 +123,15 @@ selection_type = "state_set";
 
 			}
 			else if (streq(command, "write")) {
-				/* Imported from ./commands/write_cmd.ct at 05/23/2022, 08:35:13 */ 
-printx(2, "");
-printf("Writing to output file [%s] \n", opt);
+				/* Imported from ./commands/write_cmd.ct at 05/23/2022, 23:02:51 */ 
+printx(2, "Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
 	write_state(*((state*) *selection), outfile);
 	//free(state_selection);
 }
 else if (strcmp(selection_type, "state_set") == 0) {
-	printx(3, "");
-	printf("Writing %i states \n", opt_num);
+	printx(3, "Writing %i states \n", opt_num);
 	for (int j=0; j<opt_num; j++) {
 		write_state(*((state*) selection[j]), outfile);
 		fprintf(outfile, "\n\n");
@@ -148,7 +145,7 @@ complete = 1;
 
 			}
 			else if (streq(command, "print")) {
-				/* Imported from ./commands/print_cmd.ct at 05/23/2022, 08:35:13 */ 
+				/* Imported from ./commands/print_cmd.ct at 05/23/2022, 23:02:51 */ 
 if (streq(selection_type, "simulation")) {
 	sim_summary((simulation*) selection);
 }
@@ -173,8 +170,8 @@ if (streq(selection_type, "state")) {
 				}
 			}
 			else if (streq(command, "simulate")) {
-				/* Imported from ./commands/simulate_cmd.ct at 05/23/2022, 08:35:13 */ 
-printx(2, "Executing simulation");
+				/* Imported from ./commands/simulate_cmd.ct at 05/23/2022, 23:02:51 */ 
+printx(2, "Executing simulation\n");
 if (streq(selection_type, "state")) {
 	*selection = new_simulation(*((state*) selection), opt_iterations);
 	selection_type = "simulation";
@@ -192,14 +189,13 @@ else if (streq(selection_type, "state_set")) {
 
 			}
 			else if (streq(command, "collapse")) {
-				printx(2, "Collapsing simulation(s)");
+				printx(2, "Collapsing simulation(s)\n");
 				if (streq(selection_type, "simulation_set")) {
 					selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
 						//simulation sim = simset_selection[j];
 						simulation* sim = selection[j];
-						printx(2, "");
-						printf("Getting state at index %i\n", sim -> time);
+						printx(2, "Getting state at index %i\n", sim -> time);
 						// should this account for the size of a state struct?
 						selection[j] = (sim -> states) + (sim -> time) - 2;
 					}
@@ -210,11 +206,11 @@ else if (streq(selection_type, "state_set")) {
 					*selection = (sim -> states) + (sim -> time) - 2;
 				}
 				else {
-					printx(2, "Command not supported for this data type");
+					printx(2, "Command not supported for this data type\n");
 				}
 			}
 			else if (streq(command, "min")) {
-				printx(2, "Reducing to minimum");
+				printx(2, "Reducing to minimum\n");
 				if (streq(selection_type, "state_set")) {
 					selection_type = "state";
 					if (streq(opt, "population")) {
@@ -224,7 +220,7 @@ else if (streq(selection_type, "state_set")) {
 				}
 			}
 			else if (streq(command, "max")) {
-				printx(2, "Reducing to maximum");
+				printx(2, "Reducing to maximum\n");
 				if (streq(selection_type, "state_set")) {
 					selection_type = "state";
 					if (streq(opt, "population")) {
@@ -240,11 +236,11 @@ else if (streq(selection_type, "state_set")) {
 
 			}
 			else if (streq(command, "quit")) {
-				printx(2, "Exiting");
+				printx(2, "Exiting\n");
 				exit(1);
 			}
 			else {
-				printx(2, "Command not recognized");
+				printx(2, "Command not recognized\n");
 				complete = 1;
 				exit(1);
 			}
@@ -256,18 +252,15 @@ else if (streq(selection_type, "state_set")) {
 		else if (iscommand(token)) {
 			command = strdup(token);
 			command[strcspn(command, "\n")] = 0;
-			printx(2, "");
-			printf("Found command %s \n", command);
+			printx(2, "Found command %s \n", command);
 		}
 		else if (token[0] == '-') {
 			optionc = token[1];
 		}
 		else if (optionc != '\0') {
-			printx(2, "");
-			printf("Received option [-%c] with value %s \n", optionc, token);
+			printx(2, "Received option [-%c] with value %s \n", optionc, token);
 			switch (optionc) {
 				case 'n': {
-					printx(2, "");
 					opt_num = atoi(token);
 					optionc = '\0';
 					break;
@@ -286,13 +279,12 @@ else if (streq(selection_type, "state_set")) {
 			}
 		}
 		else {
-			printx(2, "Found unlabeled option");
+			printx(2, "Found unlabeled option\n");
 			opt = (char*) strdup(token);
 			opt[strcspn(opt, "\n")] = 0;
 		}
 
-
-
+		printx(2, "getting next token...\n");
 		token = strtok(NULL, " ");
 		usleep(200000);
 	} while (!complete);

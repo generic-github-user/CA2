@@ -1,13 +1,11 @@
-printx(2, "");
-printf("Writing to output file [%s] \n", opt);
+printx(2, "Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
 	write_state(*((state*) *selection), outfile);
 	//free(state_selection);
 }
 else if (strcmp(selection_type, "state_set") == 0) {
-	printx(3, "");
-	printf("Writing %i states \n", opt_num);
+	printx(3, "Writing %i states \n", opt_num);
 	for (int j=0; j<opt_num; j++) {
 		write_state(*((state*) selection[j]), outfile);
 		fprintf(outfile, "\n\n");
