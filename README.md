@@ -129,3 +129,40 @@ Plain template files can be used to separate large source files into more manage
 ```
 
 where `template_name.ct` is a file in the same directory.
+
+Templates may also have arguments:
+
+```
+$template_name(arg_1:value_1,arg_2:value_2,...)$
+```
+
+These will be expanded into the corresponding fields in the template file. For example, the template
+
+```
+TYPE NAME(array a) {
+	TYPE output = INIT;
+	for (int i=0; i<a.size; i++) {
+		output = output OP a.data[i];
+	}
+	return output;
+}
+```
+
+and reference
+
+```
+$ARRAY_REDUCE(name:array_sum,type:int,op:+,init:0)$
+```
+
+will produce an output similar to the following (with the appropriate date and time):
+
+```
+/* Imported from ./array/array_reduce.ct at 05/23/2022, 05:43:02 */ 
+int array_sum(array a) {
+	int output = 0;
+	for (int i=0; i<a.size; i++) {
+		output = output + a.data[i];
+	}
+	return output;
+}
+```
