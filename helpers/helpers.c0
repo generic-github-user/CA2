@@ -34,3 +34,9 @@ char* microplot(simulation s) {
 int streq(char* a, char* b) {
 	return strcmp(a, b) == 0;
 }
+
+void assert(int condition, char* message) {
+	if (!condition) {
+		printf(RED "Warning: " RESET "%s\n", message);
+	}
+}
