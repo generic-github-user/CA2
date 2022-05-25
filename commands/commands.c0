@@ -17,10 +17,11 @@ int iscommand(char* text) {
 		"simulate",
 		"collapse", "min", "max", "get",
 		"write", "print", "render", "table",
+		"reduce",
 		"quit",
 		"plot"
 	};
-	for (int i=0; i<13; i++) {
+	for (int i=0; i<14; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -35,6 +36,9 @@ void array_summary(array* a, int level) {
 		array_min(a), array_max(a), a->size
 	);
 }
+
+
+
 
 // Execute a command string, writing to stdout and the provided log file
 void process_command(char* cmd, FILE* log) {
@@ -161,10 +165,15 @@ void process_command(char* cmd, FILE* log) {
 				}
 			}
 			else if (streq(command, "plot")) {
-				plot(selection, selection_type);
+				plot(selection, selection_type, 2);
 			}
 			else if (streq(command, "repeat")) {
 
+			}
+			else if (streq(command, "reduce")) {
+				if (streq(opt, "mean")) {
+				
+				}
 			}
 			else if (streq(command, "quit")) {
 				printx(2, "Exiting\n");

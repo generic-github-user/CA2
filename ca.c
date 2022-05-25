@@ -1,3 +1,5 @@
+/* Generated from ./ca.c0 at 05/25/2022, 03:26:15 */ 
+/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
 // TODO: provide tools for mutating patterns
@@ -8,18 +10,11 @@
 // TODO: use ndarray structs to store arbitrary collections of states/simulations?
 // TODO: add Collection type?
 // TODO: are nested array structs viable?
+// TODO: add unit handling
+// TODO: track all previous selections to permit deallocation?
 
-// TODO
-#define EXTRACT(name,property) array extract_##property(state* states, int n) {\
-	int* shape = malloc(sizeof(int));\
-	shape[0] = n;\
-	\
-	array output = new_array(1, shape);\
-	for (int i=0; i<n; i++) {\
-		output.data[i] = states[i].property;\
-	}\
-	return output;\
-}
+
+const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 
 // Example commands
 
@@ -67,9 +62,6 @@ session new_session() {
 
 }
 
-void array_summary(array* a) {
-	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
-}
 
 // filter coordinate list?
 
@@ -121,7 +113,6 @@ state* extract_slices(state* s, int limit) {
 	end: return slices;
 }
 
-EXTRACT(extract_population, population);
 
 int main() {
 	printf("ca.c loaded successfully \n");
@@ -132,11 +123,16 @@ int main() {
 	logfile = fopen("ca_log.txt", "a");
 
 
-	char input[200];
+	//char input[200];
+	char* input = calloc(200, sizeof(char));
 	fgets(input, 200, stdin);
 	if (streq(input, "test1\n")) {
 		char* r = "randomstate -n 20 > simulate -i 200 > collapse > write test1.txt";
 		process_command(r, logfile);
+	}
+	else if (streq(input, "ex1\n")) {
+		strcpy(input, "randomstate > simulate > get population > plot");
+		process_command(input, logfile);
 	}
 	else {
 		process_command(input, logfile);

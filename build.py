@@ -5,7 +5,8 @@ import datetime
 
 def ts():
     t = datetime.datetime.now()
-    timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
+#    timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
+    timestamp = t.strftime("%m/%d/%Y")
     return timestamp
 print("Running build script")
 def expand(m):

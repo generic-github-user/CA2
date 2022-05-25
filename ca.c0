@@ -111,7 +111,6 @@ state* extract_slices(state* s, int limit) {
 	end: return slices;
 }
 
-$EXTRACT(property:population)$
 
 int main() {
 	printf("ca.c loaded successfully \n");
