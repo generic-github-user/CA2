@@ -1,4 +1,4 @@
-/* Generated from ./state/state.c0 at 05/25/2022, 03:26:15 */ 
+/* Generated from ./state/state.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,6 +16,7 @@ state* new_state(array data, simulation* sim) {
 	state* s = malloc(sizeof(state));
 	*s = (state) {data, 0, 0, sim};
 	s -> shape = s -> data.shape;
+	s -> size = s -> data.size;
 	return s;
 }
 
@@ -57,7 +58,7 @@ char* state_summary(state s) {
 
 char* state_info(state s) {
 	char* result = calloc(100, sizeof(char));
-	snprintf(result, 100, CYAN "State { population: %i, density: %f }" RESET, s.population, s.density);
+	snprintf(result, 100, CYAN "State { population: %i, density: %f, size: %i }" RESET, s.population, s.density, s.size);
 	return result;
 }
 
@@ -203,7 +204,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 16:02:32 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -215,7 +216,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 16:02:32 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -228,7 +229,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./state/extract.ct at 05/25/2022, 16:02:32 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));

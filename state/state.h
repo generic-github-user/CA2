@@ -15,6 +15,7 @@ struct state {
 	double density;
 	simulation* sim;
 	int* shape;
+	int size;
 };
 typedef struct state state;
 

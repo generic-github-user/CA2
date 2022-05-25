@@ -14,6 +14,7 @@ state* new_state(array data, simulation* sim) {
 	state* s = malloc(sizeof(state));
 	*s = (state) {data, 0, 0, sim};
 	s -> shape = s -> data.shape;
+	s -> size = s -> data.size;
 	return s;
 }
 
@@ -55,7 +56,7 @@ char* state_summary(state s) {
 
 char* state_info(state s) {
 	char* result = calloc(100, sizeof(char));
-	snprintf(result, 100, CYAN "State { population: %i, density: %f }" RESET, s.population, s.density);
+	snprintf(result, 100, CYAN "State { population: %i, density: %f, size: %i }" RESET, s.population, s.density, s.size);
 	return result;
 }
 
