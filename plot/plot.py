@@ -4,7 +4,6 @@ import sys
 import time
 
 # TODO
-time.sleep(1)
 def writelog(content):
     with open("pylog.txt", "a") as log:
         log.write(content+"\n")
@@ -13,16 +12,23 @@ path = sys.argv[1]
 #sys.stdout.write(path)
 writelog(path)
 with open(path, "r") as f:
-    text = f.read()
-#    print(text)
+    text = f.readlines()
+    print(text)
 #    sys.stdout.write(text)
-    writelog(text)
-    data = np.fromstring(text, dtype=int, sep=",")
+    writelog(text[0])
+    data = np.fromstring(text[1], dtype=int, sep=",")
+    axes = text[0].split(",")
+    shape = tuple(int(a.split(":")[1]) for a in axes)
+    print(shape)
     
     writelog("Generating plot")
     plt.style.use("ggplot")
     fig, ax = plt.subplots()
-    ax.imshow(data.reshape(30, 30, order="C"), cmap="GnBu")
+    plt_content = data.reshape(shape, order="C")
+    if len(shape) == 1:
+        plt.plot(plt_content)
+    elif len(shape) == 2:
+        ax.imshow(plt_content, cmap="GnBu")
     fig.savefig("./ca_plot.png")
     plt.close(fig)
 
