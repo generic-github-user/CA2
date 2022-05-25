@@ -54,6 +54,12 @@ char* state_summary(state s) {
 	return output;
 }
 
+char* state_info(state s) {
+	char* result = calloc(100, sizeof(char));
+	snprintf(result, 100, CYAN "State { population: %i, density: %f }" RESET, s.population, s.density);
+	return result;
+}
+
 // Count neighbor cells given a state and coordinate
 int count_neighbors(state source, int x, int y, int* cc) {
 	int neighbors = 0;
