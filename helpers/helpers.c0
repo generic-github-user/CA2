@@ -30,11 +30,15 @@ void printx(int level, const char* fmt, ...) {
 		if (*fmt == '%') {
 			signal = 1;
 		}
-		else if (signal && *fmt == 's') {
+//		else if (signal && *fmt == 's') {
+		else if (strchr("cis", *fmt) != NULL & signal) {
 			char* text = va_arg(args, char*);
 			if (text == NULL) { text = "NULL"; }
-			printf("%s", text);
-			fprintf(logfile, "%s", text);
+			char ft[3];
+			snprintf(ft, 3, "%%%c", *fmt);
+
+			printf(ft, text);
+			fprintf(logfile, ft, text);
 			signal = 0;
 		} else {
 			printf("%c", *fmt);

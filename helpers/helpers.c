@@ -1,4 +1,4 @@
-/* Generated from ./helpers/helpers.c0 at 05/23/2022, 23:02:51 */ 
+/* Generated from ./helpers/helpers.c0 at 05/25/2022, 03:26:15 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,11 +32,15 @@ void printx(int level, const char* fmt, ...) {
 		if (*fmt == '%') {
 			signal = 1;
 		}
-		else if (signal && *fmt == 's') {
+//		else if (signal && *fmt == 's') {
+		else if (strchr("cis", *fmt) != NULL & signal) {
 			char* text = va_arg(args, char*);
 			if (text == NULL) { text = "NULL"; }
-			printf("%s", text);
-			fprintf(logfile, "%s", text);
+			char ft[3];
+			snprintf(ft, 3, "%%%c", *fmt);
+
+			printf(ft, text);
+			fprintf(logfile, ft, text);
 			signal = 0;
 		} else {
 			printf("%c", *fmt);
