@@ -30,6 +30,14 @@ simulation* new_simulation(state s, int steps) {
 	return sim;
 }
 
+// Clear the memory used by a simulation and its constituent members (mainly states)
+void free_sim(simulation* s) {
+	for (int i=0; i<s->time; i++) {
+//		free_state
+	}
+	free(s);
+}
+
 void sim_data(simulation s) {
 	char* headers[] = {"Step", "Population"};
 	printf("%15s\t%15s\n\n", headers[0], headers[1]);
