@@ -1,3 +1,7 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 // A struct representing a generic type; instances of this struct describe specific types, which objects may be sampled from or compared against
 struct type {
 	char* name;
