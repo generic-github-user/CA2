@@ -1,14 +1,23 @@
 printx(2, "Executing simulation\n");
+
+// TODO: simulate dynamic dispatch
 if (streq(selection_type, "state")) {
-	*selection = new_simulation(*((state*) selection), opt_iterations);
+	// why is dereferencing the selection pointer not an issue?
+	*selection = new_simulation(**((state**) selection), opt_iterations);
 	selection_type = "simulation";
 	simulate(*selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
+	// TODO: automatically deallocate strings from heap after printing
+	printx(2, "%s\n", sim_info(*((simulation*) *selection)));
 }
 else if (streq(selection_type, "state_set")) {
-	selection = calloc(opt_num, sizeof(simulation));
+	// !!!!
+	// selection = malloc(opt_num);
 	for (int j=0; j<opt_num; j++) {
 		selection[j] = new_simulation(*((state*) selection[j]), opt_iterations);
-		simulate(selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
+		simulate(
+			(simulation*) selection[j], opt_iterations,
+			opt_print, 2, opt_unicode, opt_color[0], !opt_print
+		);
 	}
 	selection_type = "simulation_set";
 }

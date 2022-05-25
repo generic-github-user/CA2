@@ -1,12 +1,15 @@
 printx(2, "Generating random state...\n");
 if (opt_num == 1) {
+	selection = malloc(1);
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
+	printx(2, "%s\n", state_info(*((state*) *selection)));
 }
 else {
-	selection = calloc(opt_num, sizeof(state));
+	selection = malloc(opt_num);
 	for (int j=0; j<opt_num; j++) {
-		*(selection+j) = random_state(opt_shape);
+		selection[j] = (state*) random_state(opt_shape);
+		printx(3, "%s\n", state_info(*((state*) selection[j])));
 	}
 	selection_type = "state_set";
 }
