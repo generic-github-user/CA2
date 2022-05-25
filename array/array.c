@@ -233,12 +233,13 @@ void fill_slice(array* a, vector j, vector k, int value) {
 	}
 }
 
-void write_array(array a, FILE* fptr) {
-	printf("Writing array (size %i) to file\n", a.size);
+void write_array(array a, FILE* fptr, int level) {
+	printx(level+1, "Writing array (size %i) to file\n", a.size);
 	for (int i=0; i<a.rank; i++) {
 		fprintf(fptr, "%s:%i%s", a.labels[i], a.shape[i], i<a.rank-1?",":"\n");
 	}
 	for (int i=0; i<a.size; i++) {
 		fprintf(fptr, "%i,", a.data[i]);
 	}
+	printx(level+1, "Done\n");
 }

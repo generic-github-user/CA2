@@ -42,6 +42,6 @@ vector array_to_vec(array);
 array array_slice(array, array, array, int);
 
 void fill_slice(array*, vector, vector, int);
-void write_array(array, FILE*);
+void write_array(array, FILE*, int);
 
 #endif

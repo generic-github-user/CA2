@@ -1,4 +1,4 @@
-/* Generated from ./plot/plot.c0 at 05/24/2022, 22:40:57 */ 
+/* Generated from ./plot/plot.c0 at 05/25/2022, 02:40:18 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #define _DEFAULT_SOURCE
 #include <stdio.h>
@@ -8,8 +8,8 @@
 #include "../state/state.h"
 #include "../mainheaders.h"
 
-void plot(void* source, char* type) {
-	printf("Plotting data\n");
+void plot(void* source, char* type, int level) {
+	printx(level, "Plotting data\n");
 	char* dpath = "pltdata.txt";
 	char* template = "python3.9 plot.py %s";
 	int length = snprintf(NULL, 0, template, dpath);
@@ -18,7 +18,7 @@ void plot(void* source, char* type) {
 	char* ex = "python3.9";
 	if (streq(type, "state")) {
 		FILE* fptr = fopen(dpath, "w");
-		write_array(((state*) source) -> data, fptr);
+		write_array(((state*) source) -> data, fptr, level+1);
 		fclose(fptr);
 
 		//FILE* p = popen(buffer, "r");
@@ -27,11 +27,12 @@ void plot(void* source, char* type) {
 		execlp(ex, ex, "plot/plot.py", dpath, (char*) 0);
 	} else if (streq(type, "array")) {
 		FILE* fptr = fopen(dpath, "w");
-		write_array(*((array*) source), fptr);
+		write_array(*((array*) source), fptr, level+1);
 		fclose(fptr);
 		execlp(ex, ex, "plot/plot.py", dpath, (char*) 0);
 	} else {
 		//assert(0, "invalid type");
 	}
 	free(buffer);
+	printx(level, "Done\n");
 }
