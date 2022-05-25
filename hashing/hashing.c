@@ -1,4 +1,4 @@
-/* Generated from ./hashing/hashing.c0 at 05/25/2022, 02:40:18 */ 
+/* Generated from ./hashing/hashing.c0 at 05/25/2022, 03:26:15 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stddef.h>
 
@@ -33,10 +33,10 @@ hashtable new_hashtable(int size) {
 	return h;
 }
 
-state* lookup(hashtable h, state s) {
-	int index = hash_state(s) % h.size;
+void* lookup(hashtable h, int n, void* s) {
+	int index = hash(s, n) % h.size;
 	for (int i=0; i<h.size; i++) {
-		state* value = h.data[index + i];
+		void* value = h.data[index + i];
 		if (value != NULL) {
 			return value;
 		}
@@ -44,12 +44,33 @@ state* lookup(hashtable h, state s) {
 	return NULL;
 }
 
-void insert(hashtable h, state* s) {
-	int index = hash_state(*s) % h.size;
+void* lookup_via(hashtable h, void* v, unsigned long int (*hf)(void*)) {
+	int index = hf(v) % h.size;
 	for (int i=0; i<h.size; i++) {
-		state* value = h.data[index + i];
+		void* value = h.data[index + i];
+		if (value != NULL) {
+			return value;
+		}
+	}
+	return NULL;
+}
+
+void insert(hashtable h, int n, void* s) {
+	int index = hash(s, n) % h.size;
+	for (int i=0; i<h.size; i++) {
+		void* value = h.data[index + i];
 		if (value == NULL) {
 			h.data[index + 1] = s;
+		}
+	}
+}
+
+void insert_via(hashtable h, void* v, unsigned long int (*hf)(void*)) {
+	int index = hf(v) % h.size;
+	for (int i=0; i<h.size; i++) {
+		void* value = h.data[index + i];
+		if (value == NULL) {
+			h.data[index + 1] = v;
 		}
 	}
 }

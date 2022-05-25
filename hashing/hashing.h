@@ -5,14 +5,16 @@
 struct hashtable {
 	unsigned int size;
 	// should we use a double pointer here?
-	state** data;
+	void** data;
 };
 typedef struct hashtable hashtable;
 
 unsigned long hash(unsigned int *values, int n);
 unsigned long int hash_state(state s);
 hashtable new_hashtable(int size);
-state* lookup(hashtable h, state s);
-void insert(hashtable h, state* s);
+void* lookup(hashtable h, int n, void* s);
+void* lookup_via(hashtable, void*, unsigned long int (void*));
+void insert(hashtable h, int n, void* s);
+void insert_via(hashtable, void*, unsigned long int (void*));
 
 #endif
