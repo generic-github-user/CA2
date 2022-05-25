@@ -55,6 +55,16 @@ Here are descriptions of the `[types]` used in the above command descriptions:
 - `property`: One of population, volume, density
 - `path`: A filepath (both relative and absolute are allowed)
 - `command`: A command name (see the list above)
+- `object`: An object that a selection can contain, e.g. a state, simulation, set of unrelated states, etc.
+
+Commands can also be written into scripts using the `.ca` extension; newlines will be interpreted as pipe operators, as in the following example:
+
+```
+randomstate
+simulate -i 300
+get population
+plot
+```
 
 ### Examples
 
@@ -166,3 +176,5 @@ int array_sum(array a) {
 	return output;
 }
 ```
+
+The majority of the project is written in C, for reasons both of control and efficiency. The most notable exceptions are the build scripts and graphing/plotting utilities, both of which benefit greatly from improved concision and do not need to be highly specialized. The C-based command processor interfaces with those scripts using temporary local files to store data (where applicable) and system calls. The most notable example is the plotting code, which writes to `pltdata.txt` and then calls `plot/plot.py`.
