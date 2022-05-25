@@ -1,0 +1,11 @@
+// A struct representing a generic type; instances of this struct describe specific types, which objects may be sampled from or compared against
+struct type {
+	char* name;
+	char** attrs;
+	struct type* types;
+	int n;
+
+	int (*validator)(void*);
+	void* (*generator)();
+};
+typedef struct type type;
