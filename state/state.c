@@ -1,4 +1,4 @@
-/* Generated from ./state/state.c0 at 05/25/2022, 02:40:18 */ 
+/* Generated from ./state/state.c0 at 05/25/2022, 03:26:15 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -161,8 +161,49 @@ void mutate_state(state* s) {
 	array_set(s -> data, vec(rand() % 30, rand() % 30, 0), rand() % 2);
 }
 
+// Separates a state into appropriately sized substates containing the input's connected components (using a modified flood fill algorithm)
+// TODO: prove correctness
+// TODO: add function for simply counting connected components
+// TODO: would a recursive/stack-based solution be more efficient?
+// TODO: handle backtracing
+state* components(state* s) {
+	assert(s != NULL, "Input type was null (expected state*)");
 
-/* Imported from ./state/ptr_reduce.ct at 05/23/2022, 08:35:13 */ 
+	int neighbors = 0;
+	int c, d;
+	int n = 0;
+	array labels = new_array(2, s -> shape);
+	for (int x=0; x<s->shape[0]; x++) { for (int y=0; y<s->shape[1]; y++) {
+		if (array_get(s -> data, vec(x, y, 0)) == 1) {
+			for (int a=-1; a<=1; a++) { for (int b=-1; b<=1; b++) {
+				// Exclude target cell
+				if (a!=0 || b!=0) {
+					c = x+a;
+					d = y+b;
+					if (inrange(c, 0, s->shape[0]-1) && inrange(d, 0, s->shape[1]-1)) {
+						vector v = vec(c, d, 0);
+						int value = array_get(s -> data, v);
+						if (value == 1) {
+							int l = array_get(labels, v);
+							if (l == 0) { l = ++n; }
+							array_set(labels, v, l);
+							goto neighbor_check;
+						}
+					}
+				}
+			} }
+			neighbor_check: ;
+		}
+	} }
+
+	state* result = calloc(n, sizeof(state));
+	array bounds = new_array(3, (int[3]) {n, 2, 2});
+
+	if (n == 0) { return NULL; }
+	return result;
+}
+
+/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 03:26:15 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -174,7 +215,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/23/2022, 08:35:13 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 03:26:15 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -183,6 +224,21 @@ state* min_population(state* states, int n) {
 			*output = states[i];
 		}
 	}
+	return output;
+}
+
+
+/* Imported from ./state/extract.ct at 05/25/2022, 03:26:15 */ 
+// TODO
+array extract_population(state* states, int n) {
+	int* shape = malloc(sizeof(int));
+	shape[0] = n;
+	
+	array output = new_array(1, shape);
+	for (int i=0; i<n; i++) {
+		output.data[i] = states[i].population;
+	}
+	output.labels[0] = "population";
 	return output;
 }
 

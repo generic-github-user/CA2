@@ -159,6 +159,47 @@ void mutate_state(state* s) {
 	array_set(s -> data, vec(rand() % 30, rand() % 30, 0), rand() % 2);
 }
 
+// Separates a state into appropriately sized substates containing the input's connected components (using a modified flood fill algorithm)
+// TODO: prove correctness
+// TODO: add function for simply counting connected components
+// TODO: would a recursive/stack-based solution be more efficient?
+// TODO: handle backtracing
+state* components(state* s) {
+	assert(s != NULL, "Input type was null (expected state*)");
+
+	int neighbors = 0;
+	int c, d;
+	int n = 0;
+	array labels = new_array(2, s -> shape);
+	for (int x=0; x<s->shape[0]; x++) { for (int y=0; y<s->shape[1]; y++) {
+		if (array_get(s -> data, vec(x, y, 0)) == 1) {
+			for (int a=-1; a<=1; a++) { for (int b=-1; b<=1; b++) {
+				// Exclude target cell
+				if (a!=0 || b!=0) {
+					c = x+a;
+					d = y+b;
+					if (inrange(c, 0, s->shape[0]-1) && inrange(d, 0, s->shape[1]-1)) {
+						vector v = vec(c, d, 0);
+						int value = array_get(s -> data, v);
+						if (value == 1) {
+							int l = array_get(labels, v);
+							if (l == 0) { l = ++n; }
+							array_set(labels, v, l);
+							goto neighbor_check;
+						}
+					}
+				}
+			} }
+			neighbor_check: ;
+		}
+	} }
+
+	state* result = calloc(n, sizeof(state));
+	array bounds = new_array(3, (int[3]) {n, 2, 2});
+
+	if (n == 0) { return NULL; }
+	return result;
+}
 
 $ptr_reduce(name:max_population,property:population,op:>)$
 $ptr_reduce(name:min_population,property:population,op:<)$
