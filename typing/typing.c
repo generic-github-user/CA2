@@ -11,3 +11,18 @@ struct type {
 	void* (*generator)();
 };
 typedef struct type type;
+
+char* type_name(type T) {
+	char* result = calloc(100, sizeof(char));
+//	strcat(result, T.name);
+//	strcat(result, " {");
+//	snprintf(result, 100, ""
+	
+	char* c = result;
+	c+=sprintf(c, "%s {", T.name);
+	for (int i=0; i<T.n; i++) {
+		c+=sprintf(c, "%s%s", type_name(T.types[i]), i<T.n-1?", ":"");
+	}
+	c+=sprintf(c, "}");
+	return result;
+}
