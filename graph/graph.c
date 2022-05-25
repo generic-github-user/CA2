@@ -1,4 +1,4 @@
-/* Generated from ./graph/graph.c0 at 05/25/2022, 03:26:15 */ 
+/* Generated from ./graph/graph.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stddef.h>
 #include <stdlib.h>
@@ -12,6 +12,7 @@ node new_node(graph* G, void* data) {
 	// !!!
 	n.indegree = 0;
 	n.outdegree = 0;
+	n.size = 1;
 	return n;
 }
 
@@ -19,6 +20,7 @@ void add_in(node* a, node* b) {
 	a->in = realloc(a->indegree ? a->in : NULL, a->indegree+1);
 	(a->in)[a->indegree] = b;
 	a->indegree ++;
+
 	b->out = realloc(b-> outdegree ? b->out : NULL, b->outdegree+1);
 	(b->out)[b->outdegree] = a;
 	b->outdegree ++;

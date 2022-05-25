@@ -26,8 +26,8 @@ array new_array(int rank, int* shape) {
 	}
 	//printf("Initalizing array with size %i \n", size);
 	int* data = calloc(size, sizeof(int));
-	int space = size * sizeof(int);
-	array a = { rank, shape, size, data, space, 0, NULL };
+
+	array a = { rank, shape, size, data, 0, 0, NULL };
 	// a.indices = new_array(
 	a.indices = new_list(NULL);
 	a.labels = calloc(rank, sizeof(char*));
@@ -35,6 +35,10 @@ array new_array(int rank, int* shape) {
 	fill_array(a, 0);
 	return a;
 };
+
+void update_array(array* a) {
+	a->space = (a->size+a->rank) * sizeof(int) + (a->indices->size);
+}
 
 array vec_to_array(vector v) {
 	int s[1] = {3};
@@ -74,6 +78,7 @@ void array_set(array a, vector z, int value) {
 		*pos = vec(z.x, z.y, z.z);
 		list_add(a.indices, (void*) pos);
 	}
+	update_array(&a);
 }
 
 
