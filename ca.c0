@@ -9,8 +9,10 @@
 // TODO: add Collection type?
 // TODO: are nested array structs viable?
 // TODO: add unit handling
+// TODO: track all previous selections to permit deallocation?
 
 
+const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 
 // Example commands
 
@@ -58,9 +60,6 @@ session new_session() {
 
 }
 
-void array_summary(array* a) {
-	fprintf(stdout, "Array {min: %i, max: %i}", array_min(a), array_max(a));
-}
 
 // filter coordinate list?
 
@@ -123,11 +122,16 @@ int main() {
 	logfile = fopen("ca_log.txt", "a");
 
 
-	char input[200];
+	//char input[200];
+	char* input = calloc(200, sizeof(char));
 	fgets(input, 200, stdin);
 	if (streq(input, "test1\n")) {
 		char* r = "randomstate -n 20 > simulate -i 200 > collapse > write test1.txt";
 		process_command(r, logfile);
+	}
+	else if (streq(input, "ex1\n")) {
+		strcpy(input, "randomstate > simulate > get population > plot");
+		process_command(input, logfile);
 	}
 	else {
 		process_command(input, logfile);

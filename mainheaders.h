@@ -1,3 +1,6 @@
+#ifndef MAINHEADERS_H
+#define MAINHEADERS_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -29,5 +32,5 @@
 #define CYAN    "\x1b[36m"
 #define RESET   "\x1b[0m"
 
-const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 
+#endif

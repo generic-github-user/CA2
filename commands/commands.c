@@ -29,6 +29,14 @@ int iscommand(char* text) {
 	return 0;
 }
 
+void array_summary(array* a, int level) {
+	printx(
+		level+1,
+		"Array {min: %i, max: %i, size: %i}\n",
+		array_min(a), array_max(a), a->size
+	);
+}
+
 // Execute a command string, writing to stdout and the provided log file
 void process_command(char* cmd, FILE* log) {
 	char* token = strtok(cmd, " ");

@@ -1,4 +1,4 @@
-/* Generated from ./array/array.c0 at 05/23/2022, 22:44:51 */ 
+/* Generated from ./array/array.c0 at 05/24/2022, 22:40:57 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
@@ -95,7 +95,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-/* Imported from ./array/array_reduce.ct at 05/23/2022, 22:44:51 */ 
+/* Imported from ./array/array_reduce.ct at 05/24/2022, 22:40:57 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -130,7 +130,7 @@ int array_max(array* a) {
 	return output;
 }
 
-/* Imported from ./array/array_op.ct at 05/23/2022, 22:44:51 */ 
+/* Imported from ./array/array_op.ct at 05/24/2022, 22:40:57 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -139,7 +139,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/23/2022, 22:44:51 */ 
+/* Imported from ./array/array_op.ct at 05/24/2022, 22:40:57 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -148,7 +148,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/23/2022, 22:44:51 */ 
+/* Imported from ./array/array_op.ct at 05/24/2022, 22:40:57 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -157,7 +157,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/23/2022, 22:44:51 */ 
+/* Imported from ./array/array_op.ct at 05/24/2022, 22:40:57 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -166,7 +166,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/23/2022, 22:44:51 */ 
+/* Imported from ./array/array_op.ct at 05/24/2022, 22:40:57 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
