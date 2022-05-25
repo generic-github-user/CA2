@@ -31,7 +31,10 @@ void write_state(state s, FILE* fptr);
 int states_equal(state a, state b);
 void mutate_state(state* s);
 
+state* components(state*);
+
 state* min_population(state*, int);
 state* max_population(state*, int);
+array extract_population(state*, int);
 
 #endif

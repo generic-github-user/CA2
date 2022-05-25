@@ -1,4 +1,4 @@
-/* Generated from ./state/state.c0 at 05/23/2022, 08:35:13 */ 
+/* Generated from ./state/state.c0 at 05/25/2022, 02:40:18 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -6,6 +6,7 @@
 #include "../state/state.h"
 #include "../helpers/helpers.h"
 #include "../array/array.h"
+#include "../mainheaders.h"
 
 extern char* COLOR_ORDER[6];
 // char* RESET;
@@ -20,7 +21,7 @@ state* new_state(array data, simulation* sim) {
 
 void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
-	// should s -> data be a pointer?
+	// TODO: should s -> data be a pointer?
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
 }
 

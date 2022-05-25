@@ -1,4 +1,4 @@
-/* Generated from ./simulation/simulation.c0 at 05/23/2022, 08:35:13 */ 
+/* Generated from ./simulation/simulation.c0 at 05/25/2022, 02:40:18 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,10 +8,12 @@
 
 #include "../state/state.h"
 #include "../helpers/helpers.h"
+#include "../mainheaders.h"
 
 // should s be a state pointer?
 simulation* new_simulation(state s, int steps) {
 	simulation* sim = malloc(sizeof(simulation));
+	s.sim = sim;
 	// TODO: check that we aren't calling sizeof on pointers
 	sim->states = (state*) calloc(steps, sizeof(state));
 	sim->size = steps * sizeof(state);
@@ -48,9 +50,10 @@ void sim_summary(simulation* s) {
 }
 
 char* sim_info(simulation s) {
-	char* result = calloc(50, sizeof(char));
-	strcat(result, "Simulation { Length");
+	char* result = calloc(100, sizeof(char));
+//	strcat(result, "Simulation { Length");
 //	strcat(result, itoa(s.steps));
+	snprintf(result, 100, CYAN "Simulation { length: %i, compute: %i, size: %i }" RESET, s.steps, s.compute, s.size);
 	return result;
 }
 
