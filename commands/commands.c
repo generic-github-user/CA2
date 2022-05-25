@@ -1,4 +1,4 @@
-/* Generated from ./commands/commands.c0 at 05/24/2022, 22:40:57 */ 
+/* Generated from ./commands/commands.c0 at 05/25/2022, 02:00:59 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,6 +10,7 @@
 #include "../helpers/helpers.h"
 #include "../image/image.h"
 #include "../plot/plot.h"
+#include "../mainheaders.h"
 
 // Check if a string is a valid command name
 int iscommand(char* text) {
@@ -39,6 +40,7 @@ void array_summary(array* a, int level) {
 
 // Execute a command string, writing to stdout and the provided log file
 void process_command(char* cmd, FILE* log) {
+	char* cmd_src = strdup(cmd);
 	char* token = strtok(cmd, " ");
 	char* command;
 	char* option;
@@ -61,12 +63,12 @@ void process_command(char* cmd, FILE* log) {
 	int complete = 0;
 
 	// Handle command input
-	printx(0, "Processing command (%s)...\n", cmd);
+	printx(0, "Processing command ("MAGENTA"%s"RESET")...\n", cmd_src);
 	do {
 		if (token != NULL) {
 			token[strcspn(token, "\n")] = 0;
 		}
-		printx(1, "Handling token [%s]\n", token);
+		printx(1, "Handling token "MAGENTA"%s"RESET"\n", token);
 
 		if (token == NULL) {
 			if (optionc == 'p') {
@@ -75,7 +77,7 @@ void process_command(char* cmd, FILE* log) {
 		}
 
 		if (token == NULL || streq(token, ">")) {
-			printx(2, "Executing command %s\n", command);
+			printx(2, "Executing command "MAGENTA"%s"RESET"\n", command);
 			if (command == NULL) {
 				printx(2, "No command set\n");
 			}
@@ -287,13 +289,13 @@ else if (streq(selection_type, "state_set")) {
 		else if (iscommand(token)) {
 			command = strdup(token);
 			command[strcspn(command, "\n")] = 0;
-			printx(2, "Found command %s \n", command);
+			printx(2, "Found command "MAGENTA"%s"RESET" \n", command);
 		}
 		else if (token[0] == '-') {
 			optionc = token[1];
 		}
 		else if (optionc != '\0') {
-			printx(2, "Received option [-%c] with value %s \n", optionc, token);
+			printx(2, "Received option "MAGENTA"-%c"RESET" with value %s \n", optionc, token);
 			switch (optionc) {
 				case 'n': {
 					opt_num = atoi(token);
