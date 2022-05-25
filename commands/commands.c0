@@ -14,12 +14,12 @@ int iscommand(char* text) {
 	char* commands[] = {
 		"randomstate", "enumerate",
 		"simulate",
-		"collapse", "min", "max",
+		"collapse", "min", "max", "get",
 		"write", "print", "render", "table",
 		"quit",
 		"plot"
 	};
-	for (int i=0; i<12; i++) {
+	for (int i=0; i<13; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -59,7 +59,7 @@ void process_command(char* cmd, FILE* log) {
 	int complete = 0;
 
 	// Handle command input
-	printx(0, "Processing command...\n");
+	printx(0, "Processing command (%s)...\n", cmd);
 	do {
 		if (token != NULL) {
 			token[strcspn(token, "\n")] = 0;
@@ -123,6 +123,21 @@ void process_command(char* cmd, FILE* log) {
 					printx(2, "Command not supported for this data type\n");
 				}
 			}
+			else if (streq(command, "get")) {
+				//selection = (void*) malloc(1);
+				selection_type = "array";
+				if (streq(opt, "population")) {
+					// *((array*) selection) = extract_population(*selection, ((simulation*) *selection)->steps);
+					array* a = malloc(sizeof(array));
+					*a = extract_population((state*) ((simulation*) *selection)->states, ((simulation*) *selection) -> steps);
+					array_summary(a, 2);
+					// TODO
+//					selection = (void*) malloc(1);
+					selection = (void*) malloc(sizeof(array));
+					selection = a;
+
+				}
+			}
 			else if (streq(command, "min")) {
 				printx(2, "Reducing to minimum\n");
 				if (streq(selection_type, "state_set")) {
@@ -144,7 +159,7 @@ void process_command(char* cmd, FILE* log) {
 				}
 			}
 			else if (streq(command, "plot")) {
-				plot(&selection, "state");
+				plot(selection, selection_type);
 			}
 			else if (streq(command, "repeat")) {
 
@@ -200,6 +215,5 @@ void process_command(char* cmd, FILE* log) {
 
 		printx(2, "getting next token...\n");
 		token = strtok(NULL, " ");
-		usleep(200000);
 	} while (!complete);
 }

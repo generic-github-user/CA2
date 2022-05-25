@@ -1,4 +1,4 @@
-/* Generated from ./commands/commands.c0 at 05/23/2022, 23:02:51 */ 
+/* Generated from ./commands/commands.c0 at 05/24/2022, 22:40:57 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,12 +16,12 @@ int iscommand(char* text) {
 	char* commands[] = {
 		"randomstate", "enumerate",
 		"simulate",
-		"collapse", "min", "max",
+		"collapse", "min", "max", "get",
 		"write", "print", "render", "table",
 		"quit",
 		"plot"
 	};
-	for (int i=0; i<12; i++) {
+	for (int i=0; i<13; i++) {
 		if (strcmp(text, commands[i]) == 0) {
 			return 1;
 		}
@@ -61,7 +61,7 @@ void process_command(char* cmd, FILE* log) {
 	int complete = 0;
 
 	// Handle command input
-	printx(0, "Processing command...\n");
+	printx(0, "Processing command (%s)...\n", cmd);
 	do {
 		if (token != NULL) {
 			token[strcspn(token, "\n")] = 0;
@@ -81,16 +81,19 @@ void process_command(char* cmd, FILE* log) {
 			}
 
 			if (streq(command, "randomstate")) {
-				/* Imported from ./commands/randomstate_cmd.ct at 05/23/2022, 23:02:51 */ 
+				/* Imported from ./commands/randomstate_cmd.ct at 05/24/2022, 22:40:57 */ 
 printx(2, "Generating random state...\n");
 if (opt_num == 1) {
+	selection = malloc(1);
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
+	printx(2, "%s\n", state_info(*((state*) *selection)));
 }
 else {
-	selection = calloc(opt_num, sizeof(state));
+	selection = malloc(opt_num);
 	for (int j=0; j<opt_num; j++) {
-		*(selection+j) = random_state(opt_shape);
+		selection[j] = (state*) random_state(opt_shape);
+		printx(3, "%s\n", state_info(*((state*) selection[j])));
 	}
 	selection_type = "state_set";
 }
@@ -99,7 +102,7 @@ else {
 			}
 			// TODO: exploit symmetries and pattern components for more compact storage/representation?
 			else if (streq(command, "enumerate")) {
-				/* Imported from ./commands/enumerate_cmd.ct at 05/23/2022, 08:35:13 */ 
+				/* Imported from ./commands/enumerate_cmd.ct at 05/24/2022, 22:40:57 */ 
 printx(2, "Enumerating states...");
 int i = 1;
 int z = 0;
@@ -131,7 +134,7 @@ selection_type = "state_set";
 
 			}
 			else if (streq(command, "write")) {
-				/* Imported from ./commands/write_cmd.ct at 05/23/2022, 23:02:51 */ 
+				/* Imported from ./commands/write_cmd.ct at 05/24/2022, 22:40:57 */ 
 printx(2, "Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
@@ -153,7 +156,7 @@ complete = 1;
 
 			}
 			else if (streq(command, "print")) {
-				/* Imported from ./commands/print_cmd.ct at 05/23/2022, 23:02:51 */ 
+				/* Imported from ./commands/print_cmd.ct at 05/24/2022, 22:40:57 */ 
 if (streq(selection_type, "simulation")) {
 	sim_summary((simulation*) selection);
 }
@@ -165,7 +168,7 @@ else if (streq(selection_type, "simulation_set")) {
 
 			}
 			else if (streq(command, "render")) {
-				/* Imported from ./commands/render_cmd.ct at 05/23/2022, 08:35:13 */ 
+				/* Imported from ./commands/render_cmd.ct at 05/24/2022, 22:40:57 */ 
 printx(2, "Rendering selected state to image...");
 if (streq(selection_type, "state")) {
 	write_image(*((state*) selection), opt_color);
@@ -178,18 +181,27 @@ if (streq(selection_type, "state")) {
 				}
 			}
 			else if (streq(command, "simulate")) {
-				/* Imported from ./commands/simulate_cmd.ct at 05/23/2022, 23:02:51 */ 
+				/* Imported from ./commands/simulate_cmd.ct at 05/24/2022, 22:40:57 */ 
 printx(2, "Executing simulation\n");
+
+// TODO: simulate dynamic dispatch
 if (streq(selection_type, "state")) {
-	*selection = new_simulation(*((state*) selection), opt_iterations);
+	// why is dereferencing the selection pointer not an issue?
+	*selection = new_simulation(**((state**) selection), opt_iterations);
 	selection_type = "simulation";
 	simulate(*selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
+	// TODO: automatically deallocate strings from heap after printing
+	printx(2, "%s\n", sim_info(*((simulation*) *selection)));
 }
 else if (streq(selection_type, "state_set")) {
-	selection = calloc(opt_num, sizeof(simulation));
+	// !!!!
+	// selection = malloc(opt_num);
 	for (int j=0; j<opt_num; j++) {
 		selection[j] = new_simulation(*((state*) selection[j]), opt_iterations);
-		simulate(selection[j], opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
+		simulate(
+			(simulation*) selection[j], opt_iterations,
+			opt_print, 2, opt_unicode, opt_color[0], !opt_print
+		);
 	}
 	selection_type = "simulation_set";
 }
@@ -217,6 +229,21 @@ else if (streq(selection_type, "state_set")) {
 					printx(2, "Command not supported for this data type\n");
 				}
 			}
+			else if (streq(command, "get")) {
+				//selection = (void*) malloc(1);
+				selection_type = "array";
+				if (streq(opt, "population")) {
+					// *((array*) selection) = extract_population(*selection, ((simulation*) *selection)->steps);
+					array* a = malloc(sizeof(array));
+					*a = extract_population((state*) ((simulation*) *selection)->states, ((simulation*) *selection) -> steps);
+					array_summary(a, 2);
+					// TODO
+//					selection = (void*) malloc(1);
+					selection = (void*) malloc(sizeof(array));
+					selection = a;
+
+				}
+			}
 			else if (streq(command, "min")) {
 				printx(2, "Reducing to minimum\n");
 				if (streq(selection_type, "state_set")) {
@@ -238,7 +265,7 @@ else if (streq(selection_type, "state_set")) {
 				}
 			}
 			else if (streq(command, "plot")) {
-				plot(&selection, "state");
+				plot(selection, selection_type);
 			}
 			else if (streq(command, "repeat")) {
 
@@ -294,6 +321,5 @@ else if (streq(selection_type, "state_set")) {
 
 		printx(2, "getting next token...\n");
 		token = strtok(NULL, " ");
-		usleep(200000);
 	} while (!complete);
 }
