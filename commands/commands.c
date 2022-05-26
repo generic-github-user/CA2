@@ -40,6 +40,23 @@ void array_summary(array* a, int level) {
 }
 
 
+//void* reduce(void* values, int n, void*(*f)(void* a, void* b), size_t s) {
+//	char* c = (char*) values;
+//	char* v = c;
+//	for (int i=1; i<n; i++) {
+//		v = f((void*) v, (void*) c);
+//		c += s;
+//	}
+//	return (void*) v;
+//}
+
+void* reduce(void** values, int n, void*(*f)(void* a, void* b)) {
+	void* v = values[0];
+	for (int i=1; i<n; i++) {
+		v = f((void*) v, (void*) values[i]);
+	}
+	return (void*) v;
+}
 
 
 // Execute a command string, writing to stdout and the provided log file
