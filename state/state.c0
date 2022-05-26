@@ -18,7 +18,7 @@ state* new_state(array data, simulation* sim) {
 }
 
 void free_state(state* s) {
-	free_array(s -> data);
+//	free_array(s -> data);
 	free(s);
 }
 

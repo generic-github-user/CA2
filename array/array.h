@@ -20,6 +20,7 @@ typedef struct array array;
 
 array fill_array(array a, int value);
 array new_array(int rank, int* shape);
+void free_array(array* a);
 array vec_to_array(vector v);
 int get_coord(array a, vector z);
 int array_get(array a, vector z);

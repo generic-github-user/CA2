@@ -38,6 +38,15 @@ array new_array(int rank, int* shape) {
 	return a;
 };
 
+void free_array(array* a) {
+	free(a -> shape);
+	free(a -> data);
+	// TODO
+	free(a -> indices);
+	free(a -> labels);
+	free(a);
+}
+
 array vec_to_array(vector v) {
 	int s[1] = {3};
 	array output = new_array(1, s);
@@ -96,7 +105,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-/* Imported from ./array/array_reduce.ct at 05/26/2022, 00:08:29 */ 
+/* Imported from ./array/array_reduce.ct at 05/26/2022, 00:12:17 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -131,7 +140,7 @@ int array_max(array* a) {
 	return output;
 }
 
-/* Imported from ./array/array_op.ct at 05/26/2022, 00:08:29 */ 
+/* Imported from ./array/array_op.ct at 05/26/2022, 00:12:17 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -140,7 +149,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/26/2022, 00:08:29 */ 
+/* Imported from ./array/array_op.ct at 05/26/2022, 00:12:17 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -149,7 +158,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/26/2022, 00:08:29 */ 
+/* Imported from ./array/array_op.ct at 05/26/2022, 00:12:17 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -158,7 +167,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/26/2022, 00:08:29 */ 
+/* Imported from ./array/array_op.ct at 05/26/2022, 00:12:17 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -167,7 +176,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/26/2022, 00:08:29 */ 
+/* Imported from ./array/array_op.ct at 05/26/2022, 00:12:17 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
