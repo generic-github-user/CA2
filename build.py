@@ -3,10 +3,11 @@ import os
 import re
 import datetime
 
+timeformat = "%m/%d/%Y"
 def ts():
     t = datetime.datetime.now()
 #    timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
-    timestamp = t.strftime("%m/%d/%Y")
+    timestamp = t.strftime(timeformat)
     return timestamp
 print("Running build script")
 def expand(m):
@@ -21,7 +22,7 @@ def expand(m):
         a, b = p.split(":")
         template = template.replace(a.upper(), b)
     t = datetime.datetime.now()
-    timestamp = t.strftime("%m/%d/%Y, %H:%M:%S")
+    timestamp = t.strftime(timeformat)
     template = f"/* Imported from {tpath} at {timestamp} */ \n" + template
     return template
 for path in glob.glob("./*/*.c0")+glob.glob("./*.c0"):
