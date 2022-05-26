@@ -3,13 +3,21 @@
 #include <stdio.h>
 #include "graph.h"
 
-//graph new
+graph* new_graph(node* nodes, int size) {
+	graph* G = malloc(sizeof(graph));
+	*G = (graph) {nodes, size};
+	return G;
+}
 
 node new_node(graph* G, void* data) {
 	node n = {data};
 	// !!!
 	n.indegree = 0;
 	n.outdegree = 0;
+	if (G != NULL) {
+		G->nodes = (node*) realloc(G->nodes, (G->size+1)*sizeof(node));
+		(G->nodes)[G->size++] = n;
+	}
 	return n;
 }
 
@@ -17,6 +25,7 @@ void add_in(node* a, node* b) {
 	a->in = realloc(a->indegree ? a->in : NULL, a->indegree+1);
 	(a->in)[a->indegree] = b;
 	a->indegree ++;
+
 	b->out = realloc(b-> outdegree ? b->out : NULL, b->outdegree+1);
 	(b->out)[b->outdegree] = a;
 	b->outdegree ++;
@@ -24,9 +33,9 @@ void add_in(node* a, node* b) {
 
 node* new_list(void* value) {
 //	printf("Initializing list with value from %p\n", value);
-	graph G = {};
+	graph* G = new_graph(NULL, 0);
 	node* n = malloc(sizeof(node));
-	*n = new_node(&G, value);
+	*n = new_node(G, value);
 //	printf("node {indegree: %i, outdegree: %i}\n", n->indegree, n->outdegree);
 	return n;
 }

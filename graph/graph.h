@@ -11,7 +11,7 @@ struct node {
 typedef struct node node;
 
 struct graph {
-	node** nodes;
+	node* nodes;
 	int size;
 };
 typedef struct graph graph;
@@ -20,5 +20,7 @@ node new_node(graph*, void*);
 void add_in(node*, node*);
 node* new_list(void*);
 void list_add(node*, void*);
+
+graph* new_graph(node*, int);
 
 #endif
