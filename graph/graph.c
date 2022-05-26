@@ -5,17 +5,20 @@
 #include <stdio.h>
 #include "graph.h"
 
+// Initialize a new graph object, which wraps node structsreal
 graph* new_graph(node* nodes, int size) {
 	graph* G = malloc(sizeof(graph));
 	*G = (graph) {nodes, size};
 	return G;
 }
 
+// Initialize a node, which stores a (generic) pointer to some data and sets of adjacenct nodes
 node new_node(graph* G, void* data) {
 	node n = {data};
 	// !!!
 	n.indegree = 0;
 	n.outdegree = 0;
+	// Store the new node in the graph, if one is provided
 	if (G != NULL) {
 		G->nodes = (node*) realloc(G->nodes, (G->size+1)*sizeof(node));
 		(G->nodes)[G->size++] = n;
@@ -23,6 +26,8 @@ node new_node(graph* G, void* data) {
 	return n;
 }
 
+// Specify a directed edge from node a to node b,
+// updating the appropriate information for both nodes
 void add_in(node* a, node* b) {
 	a->in = realloc(a->indegree ? a->in : NULL, a->indegree+1);
 	(a->in)[a->indegree] = b;
@@ -33,6 +38,7 @@ void add_in(node* a, node* b) {
 	b->outdegree ++;
 }
 
+// Initialize a linked list based on the graph API
 node* new_list(void* value) {
 //	printf("Initializing list with value from %p\n", value);
 	graph* G = new_graph(NULL, 0);
@@ -43,6 +49,7 @@ node* new_list(void* value) {
 }
 
 // TODO: add direct addressing for hybrid lists?
+// Add a node to the end of a linked list
 void list_add(node* list, void* value) {
 //	printf("Adding data at pointer %p to list with head value %p\n", value, list->data);
 	if (list -> data == NULL) {
