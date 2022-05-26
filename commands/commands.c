@@ -1,4 +1,4 @@
-/* Generated from ./commands/commands.c0 at 05/25/2022, 03:26:15 */ 
+/* Generated from ./commands/commands.c0 at 05/26/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -87,7 +87,7 @@ void process_command(char* cmd, FILE* log) {
 			}
 
 			if (streq(command, "randomstate")) {
-				/* Imported from ./commands/randomstate_cmd.ct at 05/25/2022, 03:26:15 */ 
+				/* Imported from ./commands/randomstate_cmd.ct at 05/26/2022 */ 
 printx(2, "Generating random state...\n");
 if (opt_num == 1) {
 	selection = malloc(1);
@@ -108,7 +108,7 @@ else {
 			}
 			// TODO: exploit symmetries and pattern components for more compact storage/representation?
 			else if (streq(command, "enumerate")) {
-				/* Imported from ./commands/enumerate_cmd.ct at 05/25/2022, 03:26:15 */ 
+				/* Imported from ./commands/enumerate_cmd.ct at 05/26/2022 */ 
 printx(2, "Enumerating states...");
 int i = 1;
 int z = 0;
@@ -140,7 +140,7 @@ selection_type = "state_set";
 
 			}
 			else if (streq(command, "write")) {
-				/* Imported from ./commands/write_cmd.ct at 05/25/2022, 03:26:15 */ 
+				/* Imported from ./commands/write_cmd.ct at 05/26/2022 */ 
 printx(2, "Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
@@ -162,7 +162,7 @@ complete = 1;
 
 			}
 			else if (streq(command, "print")) {
-				/* Imported from ./commands/print_cmd.ct at 05/25/2022, 03:26:15 */ 
+				/* Imported from ./commands/print_cmd.ct at 05/26/2022 */ 
 if (streq(selection_type, "simulation")) {
 	sim_summary((simulation*) selection);
 }
@@ -174,7 +174,7 @@ else if (streq(selection_type, "simulation_set")) {
 
 			}
 			else if (streq(command, "render")) {
-				/* Imported from ./commands/render_cmd.ct at 05/25/2022, 03:26:15 */ 
+				/* Imported from ./commands/render_cmd.ct at 05/26/2022 */ 
 printx(2, "Rendering selected state to image...");
 if (streq(selection_type, "state")) {
 	write_image(*((state*) selection), opt_color);
@@ -187,7 +187,7 @@ if (streq(selection_type, "state")) {
 				}
 			}
 			else if (streq(command, "simulate")) {
-				/* Imported from ./commands/simulate_cmd.ct at 05/25/2022, 03:26:15 */ 
+				/* Imported from ./commands/simulate_cmd.ct at 05/26/2022 */ 
 printx(2, "Executing simulation\n");
 
 // TODO: simulate dynamic dispatch
@@ -239,12 +239,10 @@ else if (streq(selection_type, "state_set")) {
 				//selection = (void*) malloc(1);
 				selection_type = "array";
 				if (streq(opt, "population")) {
-					// *((array*) selection) = extract_population(*selection, ((simulation*) *selection)->steps);
 					array* a = malloc(sizeof(array));
 					*a = extract_population((state*) ((simulation*) *selection)->states, ((simulation*) *selection) -> steps);
 					array_summary(a, 2);
 					// TODO
-//					selection = (void*) malloc(1);
 					selection = (void*) malloc(sizeof(array));
 					selection = a;
 

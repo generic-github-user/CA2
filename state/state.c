@@ -1,4 +1,4 @@
-/* Generated from ./state/state.c0 at 05/25/2022, 03:26:15 */ 
+/* Generated from ./state/state.c0 at 05/26/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,7 +31,6 @@ state* random_state(int* shape) {
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
 			array_set(result -> data, vec(x, y, 0), rand() % 2);
-			// compute ++;
 		}
 	}
 	result -> shape = shape;
@@ -75,7 +74,6 @@ int count_neighbors(state source, int x, int y, int* cc) {
 					neighbors += array_get(source.data, vec(c, d, 0));
 				}
 			}
-			// compute ++;
 			(*cc) ++;
 		}
 	}
@@ -100,7 +98,6 @@ void print_state(state s, int unicode, char color) {
 	printf("Population: %i \n", array_sum(s.data));
 	printf("\n");
 	int c = 0;
-	//int min = array_min(
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
 			c = 0;
@@ -203,7 +200,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 00:46:03 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -215,7 +212,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 00:46:03 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -228,7 +225,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./state/extract.ct at 05/26/2022, 00:46:03 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));

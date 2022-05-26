@@ -29,7 +29,6 @@ state* random_state(int* shape) {
 	for (int x=0; x<shape[0]; x++) {
 		for (int y=0; y<shape[1]; y++) {
 			array_set(result -> data, vec(x, y, 0), rand() % 2);
-			// compute ++;
 		}
 	}
 	result -> shape = shape;
@@ -73,7 +72,6 @@ int count_neighbors(state source, int x, int y, int* cc) {
 					neighbors += array_get(source.data, vec(c, d, 0));
 				}
 			}
-			// compute ++;
 			(*cc) ++;
 		}
 	}
@@ -98,7 +96,6 @@ void print_state(state s, int unicode, char color) {
 	printf("Population: %i \n", array_sum(s.data));
 	printf("\n");
 	int c = 0;
-	//int min = array_min(
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
 			c = 0;
