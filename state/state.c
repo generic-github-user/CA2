@@ -172,7 +172,8 @@ void mutate_state(state* s) {
 // TODO: would a recursive/stack-based solution be more efficient?
 // TODO: handle backtracing
 state* components(state* s) {
-	assert(s != NULL, "Input type was null (expected state*)");
+//	assert(s != NULL, "Input type was null (expected state*)");
+	assert(s != NULL);
 
 	int neighbors = 0;
 	int c, d;

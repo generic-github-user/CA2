@@ -6,6 +6,7 @@
 
 // Based on djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
 unsigned long hash(unsigned int *values, int n) {
+	assert(n > 0);
         unsigned long int hash = 5381;
 
         for (int i=0; i<n; i++) {
@@ -26,6 +27,7 @@ unsigned long int hash_state(state s) {
 // nesting hash tables?
 
 hashtable new_hashtable(int size) {
+	assert(size > 0);
 	hashtable h = {size};
 	for (int i=0; i<size; i++) {
 		h.data[i] = NULL;

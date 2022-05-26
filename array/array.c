@@ -21,6 +21,8 @@ array fill_array(array a, int value) {
 
 // Initialize an array struct
 array new_array(int rank, int* shape) {
+	assert(rank > 0);
+	
 	// int* size = malloc(sizeof(int));
 	int size = 1;
 	for(int i=0; i<rank; i++) {
@@ -39,6 +41,8 @@ array new_array(int rank, int* shape) {
 };
 
 void free_array(array* a) {
+	assert(a != NULL);
+
 	free(a -> shape);
 	free(a -> data);
 	// TODO
@@ -119,6 +123,8 @@ double array_mean(array a) {
 }
 
 int array_min(array* a) {
+	assert(a != NULL);
+
 	int output = a->data[0];
 	for (int i=0; i<a->size; i++) {
 		if (a->data[i] < output) {
@@ -130,6 +136,8 @@ int array_min(array* a) {
 }
 
 int array_max(array* a) {
+	assert(a != NULL);
+
 	int output = a->data[0];
 	for (int i=0; i<a->size; i++) {
 		if (a->data[i] > output) {
@@ -234,6 +242,8 @@ array array_slice(array a, array T, array U, int rank) {
 // Fill every index in the specified region with (a copy of) the given value
 // Note that j_i must be less than or equal to k_i for all i
 void fill_slice(array* a, vector j, vector k, int value) {
+	assert(a != NULL);
+
 	for (int x=j.x; x<k.x; x++) {
 		for (int y=j.y; y<k.y; y++) {
 			if (k.x < a -> shape[0] && k.y < a -> shape[1]) {
@@ -244,6 +254,10 @@ void fill_slice(array* a, vector j, vector k, int value) {
 }
 
 void write_array(array a, FILE* fptr, int level) {
+//	assert(a != NULL);
+	assert(fptr != NULL);
+	assert(level >= 0);
+
 	printx(level+1, "Writing array (size %i) to file\n", a.size);
 	for (int i=0; i<a.rank; i++) {
 		fprintf(fptr, "%s:%i%s", a.labels[i], a.shape[i], i<a.rank-1?",":"\n");
