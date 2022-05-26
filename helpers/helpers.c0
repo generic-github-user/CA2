@@ -64,8 +64,13 @@ int streq(char* a, char* b) {
 	return strcmp(a, b) == 0;
 }
 
-void assert(int condition, char* message) {
+void warn(char* message) {
+	printf(RED "Warning: " RESET "%s\n", message);
+}
+
+//void assert(int condition, char* message) {
+void assert(int condition) {
 	if (!condition) {
-		printf(RED "Warning: " RESET "%s\n", message);
+		warn("Assertion failed");
 	}
 }
