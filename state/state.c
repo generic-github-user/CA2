@@ -208,7 +208,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 18:57:07 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 19:50:51 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -220,7 +220,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 18:57:07 */ 
+/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 19:50:51 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -233,7 +233,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 05/26/2022, 18:57:07 */ 
+/* Imported from ./state/extract.ct at 05/26/2022, 19:50:51 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));

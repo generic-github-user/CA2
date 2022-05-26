@@ -14,13 +14,15 @@ typedef struct node node;
 // A graph data structure containing a collection of nodes
 struct graph {
 	node* nodes;
+	node* (* edges)[2];
 	int size;
+	int e;
 };
 typedef struct graph graph;
 
 // Function headers
 node new_node(graph*, void*);
-void add_in(node*, node*);
+void add_in(node*, node*, graph*);
 node* new_list(void*);
 void list_add(node*, void*);
 

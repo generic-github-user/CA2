@@ -8,7 +8,7 @@
 // Initialize a new graph object, which wraps node structsreal
 graph* new_graph(node* nodes, int size) {
 	graph* G = malloc(sizeof(graph));
-	*G = (graph) {nodes, size};
+	*G = (graph) {nodes, NULL, size, 0};
 	return G;
 }
 
@@ -28,7 +28,7 @@ node new_node(graph* G, void* data) {
 
 // Specify a directed edge from node a to node b,
 // updating the appropriate information for both nodes
-void add_in(node* a, node* b) {
+void add_in(node* a, node* b, graph* G) {
 	a->in = realloc(a->indegree ? a->in : NULL, a->indegree+1);
 	(a->in)[a->indegree] = b;
 	a->indegree ++;
@@ -36,6 +36,10 @@ void add_in(node* a, node* b) {
 	b->out = realloc(b-> outdegree ? b->out : NULL, b->outdegree+1);
 	(b->out)[b->outdegree] = a;
 	b->outdegree ++;
+
+	G->edges = (node*(*)[2]) realloc(G->edges, (size_t) (G->e+1)*2);
+	// TODO: can this be cleaned up? using something like (node(*)[2]) {a, b} threw compiler errors
+	(G->edges)[G -> e ++][0] = a;
 }
 
 // Initialize a linked list based on the graph API
