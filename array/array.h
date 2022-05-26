@@ -43,5 +43,6 @@ array array_slice(array, array, array, int);
 
 void fill_slice(array*, vector, vector, int);
 void write_array(array, FILE*, int);
+char* array_info(array);
 
 #endif

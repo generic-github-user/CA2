@@ -1,4 +1,4 @@
-/* Generated from ./array/array.c0 at 05/25/2022, 03:26:15 */ 
+/* Generated from ./array/array.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +6,7 @@
 // #include "vector.h"
 #include "array.h"
 #include "../helpers/helpers.h"
+#include "../mainheaders.h"
 
 // Create a statically typed function that reduces an array to a single value
 
@@ -78,6 +79,8 @@ void array_set(array a, vector z, int value) {
 	}
 }
 
+//array stack(array* parts) {
+
 
 // array array_from(int rank, int* shape, void* values) {
 
@@ -96,7 +99,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
-/* Imported from ./array/array_reduce.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./array/array_reduce.ct at 05/25/2022, 23:45:14 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -131,7 +134,7 @@ int array_max(array* a) {
 	return output;
 }
 
-/* Imported from ./array/array_op.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./array/array_op.ct at 05/25/2022, 23:45:14 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -140,7 +143,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./array/array_op.ct at 05/25/2022, 23:45:14 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -149,7 +152,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./array/array_op.ct at 05/25/2022, 23:45:14 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -158,7 +161,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./array/array_op.ct at 05/25/2022, 23:45:14 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -167,7 +170,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 05/25/2022, 03:26:15 */ 
+/* Imported from ./array/array_op.ct at 05/25/2022, 23:45:14 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -243,4 +246,10 @@ void write_array(array a, FILE* fptr, int level) {
 		fprintf(fptr, "%i,", a.data[i]);
 	}
 	printx(level+1, "Done\n");
+}
+
+char* array_info(array a) {
+	char* result = calloc(100, sizeof(char));
+	snprintf(result, 100, CYAN "Array { size: %i, space: %i }" RESET, a.size, a.space);
+	return result;
 }
