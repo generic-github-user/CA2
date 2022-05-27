@@ -4,14 +4,16 @@
 
 // TODO: use number ranges for more efficient handling of fragmented lists
 
-
+// Initialize a new list
 list* new_llist(void** data, int size, int block_size) {
 	list* L = malloc(sizeof(list));
 	*L = (list) {data, NULL, 0, size, block_size};
 	return L;
 }
 
+// Clear a list from memory
 void free_llist(list* L, int free_members) {
+	// Iterate over list members and free them individually
 	if (free_members) {
 		for (int i=0; i<L->size; i++) {
 			free(L->data[i]);
@@ -22,7 +24,9 @@ void free_llist(list* L, int free_members) {
 	free(L);
 }
 
+// Insert an element into the provided list
 void llist_add(list* L, void* x) {
+	// Allocate more space if necessary
 	if (L->size % L->block_size == 0) {
 		void** m = realloc(L->data, L->size+L->block_size);
 		if (m == NULL) {
@@ -37,6 +41,7 @@ void llist_add(list* L, void* x) {
 	if (L->ordered) {
 		L->data[L->size++] = x;
 	} else {
+		// Write to the first available cell and update the appropriate counters
 		if (L->nfree == 0) { L->free_cells[L->nfree] = L->size; L->nfree++; }
 		L->data[L->free_cells[L->nfree]] = x;
 		L->nfree --;
