@@ -1,3 +1,5 @@
+/* Generated from ./graph/graph.c0 at 05/25/2022 */ 
+/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -52,6 +54,7 @@ node new_node(graph* G, void* data) {
 		G->nodes = (node*) realloc(G->nodes, (G->size+1)*sizeof(node));
 		(G->nodes)[G->size++] = n;
 	}
+	n.size = 1;
 	return n;
 }
 

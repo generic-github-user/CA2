@@ -1,3 +1,4 @@
+/* Generated from ./simulation/simulation.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -17,6 +18,13 @@ simulation* new_simulation(state* s, int steps) {
 	// TODO: why does malloc(steps) cause problems here?
 	sim->states = (state**) calloc(steps, sizeof(state*));
 	sim->size = steps * sizeof(state);
+
+	// TODO: we will likely need to make the distinction at some point between
+	// storage used by a struct to contain pointers to its members and that used
+	// by a struct which encapsulates complex internal structs (like states)
+	// which most likely are referred to solely by the container object
+
+	//sim->size = steps * sizeof(state);
 	// TODO: sum memory allocated by each state instance
 	sim->states[0] = s;
 
@@ -40,6 +48,13 @@ void free_sim(simulation* s) {
 	free(s);
 }
 
+void update_sim(simulation* s) {
+	s->size = 0;
+	for (int i=0; i<s->time; i++) {
+		s->size += s->states[i].size;
+		s->compute ++;
+	}
+}
 void sim_data(simulation s) {
 	char* headers[] = {"Step", "Population"};
 	printf("%15s\t%15s\n\n", headers[0], headers[1]);
@@ -133,6 +148,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 				prog = q;
 			}
 		}
+		update_sim(sim);
 		(sim -> compute) ++;
 	}
 	if (progress) { printf("]\n"); }

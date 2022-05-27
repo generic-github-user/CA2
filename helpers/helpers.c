@@ -1,3 +1,5 @@
+/* Generated from ./helpers/helpers.c0 at 05/25/2022 */ 
+/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -8,6 +8,7 @@ struct node {
 	struct node** out;
 	unsigned int indegree;
 	unsigned int outdegree;
+	int size;
 };
 typedef struct node node;
 

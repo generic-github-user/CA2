@@ -15,6 +15,7 @@ state* new_state(array data, simulation* sim) {
 	*s = (state) {data, 0, 0, sim, 0};
 	s -> shape = s -> data.shape;
 	update_state(s);
+	s -> size = s -> data.size;
 	return s;
 }
 
