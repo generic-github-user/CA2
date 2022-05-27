@@ -1,4 +1,3 @@
-/* Generated from ./state/state.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,6 +17,11 @@ state* new_state(array data, simulation* sim) {
 	s -> shape = s -> data.shape;
 	update_state(s);
 	return s;
+}
+
+void free_state(state* s) {
+//	free_array(s -> data);
+	free(s);
 }
 
 void update_state(state* s) {
@@ -210,7 +214,6 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 23:59:38 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -222,7 +225,6 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/25/2022, 23:59:38 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -235,7 +237,6 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 05/25/2022, 23:59:38 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));

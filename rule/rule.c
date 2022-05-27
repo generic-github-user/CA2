@@ -1,4 +1,3 @@
-/* Generated from ./rule/rule.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include "rule.h"
@@ -11,6 +10,11 @@ neighborhood new_neighborhood(int ir, int or) {
 	return N;
 }
 
+// Deallocate a manifold struct and its members
+void free_manifold(manifold* m) {
+	free(m -> shape);
+	free(m);
+}
 
 // TODO: type description classes
 manifold random_manifold() {

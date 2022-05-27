@@ -19,6 +19,7 @@ struct state {
 typedef struct state state;
 
 state* new_state(array data, simulation* sim);
+void free_state(state* s);
 void update_state(state* s);
 state* random_state(int* shape);
 char* state_summary(state s);

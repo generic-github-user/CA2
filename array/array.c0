@@ -37,6 +37,15 @@ array new_array(int rank, int* shape) {
 	return a;
 };
 
+void free_array(array* a) {
+	free(a -> shape);
+	free(a -> data);
+	// TODO
+	free(a -> indices);
+	free(a -> labels);
+	free(a);
+}
+
 array vec_to_array(vector v) {
 	int s[1] = {3};
 	array output = new_array(1, s);

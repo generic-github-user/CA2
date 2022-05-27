@@ -18,6 +18,11 @@ state* new_state(array data, simulation* sim) {
 	return s;
 }
 
+void free_state(state* s) {
+//	free_array(s -> data);
+	free(s);
+}
+
 void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// TODO: should s -> data be a pointer?

@@ -1,4 +1,3 @@
-/* Generated from ./simulation/simulation.c0 at 05/25/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,6 +30,14 @@ simulation* new_simulation(state* s, int steps) {
 
 //	printf("Created new simulation
 	return sim;
+}
+
+// Clear the memory used by a simulation and its constituent members (mainly states)
+void free_sim(simulation* s) {
+	for (int i=0; i<s->time; i++) {
+//		free_state
+	}
+	free(s);
 }
 
 void sim_data(simulation s) {
