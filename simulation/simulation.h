@@ -8,11 +8,13 @@ typedef struct state state;
 
 // A series of frames along with a simulation rule that describes the transition from one state to another (possibly contains additional information)
 struct simulation {
-	state** states;
-	int time, steps, compute;
-	array ages;
-	// Amount of space dynamically alloated for members of this struct
-	int size;
+	state** states; // List of states contained in this simulation
+	int time; // Current timestep of the simulation
+	int steps; // Total simulation length
+	int compute; // Number of operations used for this simulation
+	array ages; // Number of steps for which each living cell has been alive
+	int size; // Amount of space dynamically alloated for members of this struct
+
 };
 typedef struct simulation simulation;
 
