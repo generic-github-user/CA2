@@ -5,6 +5,7 @@ struct list {
 	int size;
 	int block_size;
 	int ordered;
+	int compute;
 };
 typedef struct list list;
 

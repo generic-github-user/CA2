@@ -7,7 +7,7 @@
 // Initialize a new list
 list* new_llist(void** data, int size, int block_size) {
 	list* L = malloc(sizeof(list));
-	*L = (list) {data, NULL, 0, size, block_size};
+	*L = (list) {data, NULL, 0, size, block_size, 0};
 	return L;
 }
 
@@ -46,6 +46,7 @@ void llist_add(list* L, void* x) {
 		L->data[L->free_cells[L->nfree]] = x;
 		L->nfree --;
 	}
+	L->compute ++;
 	L->size ++;
 }
 
@@ -54,5 +55,6 @@ void llist_remove(list* L, int index) {
 	// not technically necessary if we store free indices
 	L->data[index] = NULL;
 	L->size --;
+	L->compute ++;
 	L->free_cells[L->nfree++] = index;
 }
