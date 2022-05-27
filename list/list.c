@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "../helpers/helpers.h"
 
+// TODO: use number ranges for more efficient handling of fragmented lists
+
 struct list {
 	void** data;
 	int* free_cells;
@@ -50,6 +52,10 @@ void llist_add(list* L, void* x) {
 	L->size ++;
 }
 
-//void llist_remove(list* L, int index) {
-	//L->data[index] = NULL;
-	// store list of available indices?
+// Remove an item from the list by its index
+void llist_remove(list* L, int index) {
+	// not technically necessary if we store free indices
+	L->data[index] = NULL;
+	L->size --;
+	L->free_cells[L->nfree++] = index;
+}
