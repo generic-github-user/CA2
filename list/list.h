@@ -1,5 +1,5 @@
 struct list {
-	void** data; // the actual container that store's the list's data; a generic pointer
+	void** data; // the actual container that stores the list's data; a generic pointer
 	int* free_cells; // a list (stack) of available indices
 	int nfree; // the number of unused spaces reserved for the data
 	int size; // the number of elements in the list
@@ -8,6 +8,16 @@ struct list {
 	int compute; // number of operations used by this list so far
 };
 typedef struct list list;
+
+// A "view" of a list struct that describes an interface for working with some data stored in a list
+// without modifying the original data source, similar to NumPy array views
+struct listview {
+	list* source;
+	range* spans;
+	struct listview* sublists;
+	int size;
+};
+typedef struct listview listview;
 
 // Function declarations (see list.c for details)
 list* new_llist(void**, int, int);
