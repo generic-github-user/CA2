@@ -140,6 +140,7 @@ int array_max(array* a) {
 	return output;
 }
 
+
 /* Imported from ./array/array_op.ct at 05/27/2022, 00:14:20 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
@@ -148,6 +149,7 @@ array array_bsum(array a, array b) {\
 	}\
 	return output;\
 }
+
 
 /* Imported from ./array/array_op.ct at 05/27/2022, 00:14:20 */ 
 array array_bdiff(array a, array b) {\
@@ -158,6 +160,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
+
 /* Imported from ./array/array_op.ct at 05/27/2022, 00:14:20 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
@@ -167,6 +170,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
+
 /* Imported from ./array/array_op.ct at 05/27/2022, 00:14:20 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
@@ -175,6 +179,7 @@ array array_bdiv(array a, array b) {\
 	}\
 	return output;\
 }
+
 
 /* Imported from ./array/array_op.ct at 05/27/2022, 00:14:20 */ 
 array array_bmod(array a, array b) {\

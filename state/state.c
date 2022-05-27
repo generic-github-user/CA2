@@ -208,6 +208,7 @@ state* components(state* s) {
 	return result;
 }
 
+
 /* Imported from ./state/ptr_reduce.ct at 05/27/2022, 00:14:20 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
@@ -220,6 +221,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
+
 /* Imported from ./state/ptr_reduce.ct at 05/27/2022, 00:14:20 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
@@ -231,6 +233,7 @@ state* min_population(state* states, int n) {
 	}
 	return output;
 }
+
 
 
 /* Imported from ./state/extract.ct at 05/27/2022, 00:14:20 */ 
