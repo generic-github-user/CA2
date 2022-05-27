@@ -1,0 +1,5 @@
+#include "session.h"
+
+session new_session() {
+	return (session) {NULL, 0, 0};
+}

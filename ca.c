@@ -1,4 +1,4 @@
-/* Generated from ./ca.c0 at 05/26/2022 */ 
+/* Generated from ca.c0 at 05/27/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
@@ -53,14 +53,7 @@ subtotalistic random_subtotal() {
 }
 
 
-struct session {
 
-};
-typedef struct session session;
-
-session new_session() {
-
-}
 
 
 // filter coordinate list?
@@ -119,7 +112,7 @@ int main() {
 	// Set random seed
 	srand(time(NULL));
 
-	compute = 0;
+	session mainsession = new_session();
 	logfile = fopen("ca_log.txt", "a");
 
 
