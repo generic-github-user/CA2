@@ -50,7 +50,7 @@ void free_sim(simulation* s) {
 void update_sim(simulation* s) {
 	s->size = 0;
 	for (int i=0; i<s->time; i++) {
-		s->size += s->states[i].size;
+		s->size += s->states[i]->size;
 		s->compute ++;
 	}
 }
