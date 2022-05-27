@@ -6,6 +6,7 @@
 // #include "vector.h"
 #include "array.h"
 #include "../helpers/helpers.h"
+#include "../mainheaders.h"
 
 
 
@@ -27,8 +28,8 @@ array new_array(int rank, int* shape) {
 	}
 	//printf("Initalizing array with size %i \n", size);
 	int* data = calloc(size, sizeof(int));
-	int space = size * sizeof(int);
-	array a = { rank, shape, size, data, space, 0, NULL };
+
+	array a = { rank, shape, size, data, 0, 0, NULL };
 	// a.indices = new_array(
 	a.indices = new_list(NULL);
 	a.labels = calloc(rank, sizeof(char*));
@@ -36,6 +37,19 @@ array new_array(int rank, int* shape) {
 	fill_array(a, 0);
 	return a;
 };
+
+void free_array(array* a) {
+	free(a -> shape);
+	free(a -> data);
+	// TODO
+	free(a -> indices);
+	free(a -> labels);
+	free(a);
+}
+
+void update_array(array* a) {
+	a->space = (a->size+a->rank) * sizeof(int) + (a->indices->size);
+}
 
 array vec_to_array(vector v) {
 	int s[1] = {3};
@@ -75,7 +89,10 @@ void array_set(array a, vector z, int value) {
 		*pos = vec(z.x, z.y, z.z);
 		list_add(a.indices, (void*) pos);
 	}
+	update_array(&a);
 }
+
+//array stack(array* parts) {
 
 
 // array array_from(int rank, int* shape, void* values) {
@@ -95,8 +112,12 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
+<<<<<<< HEAD
+/* Imported from ./array/array_reduce.ct at 05/25/2022, 16:02:32 */ 
+=======
 // Create a statically typed function that reduces an array to a single value
 /* Imported from ./array/array_reduce.ct at 05/26/2022, 00:46:03 */ 
+>>>>>>> 589df3e6c6635e36e114bfc26eca29118d6c1aaf
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -243,4 +264,10 @@ void write_array(array a, FILE* fptr, int level) {
 		fprintf(fptr, "%i,", a.data[i]);
 	}
 	printx(level+1, "Done\n");
+}
+
+char* array_info(array a) {
+	char* result = calloc(100, sizeof(char));
+	snprintf(result, 100, CYAN "Array { size: %i, space: %i }" RESET, a.size, a.space);
+	return result;
 }

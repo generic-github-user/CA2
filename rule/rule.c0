@@ -9,6 +9,11 @@ neighborhood new_neighborhood(int ir, int or) {
 	return N;
 }
 
+// Deallocate a manifold struct and its members
+void free_manifold(manifold* m) {
+	free(m -> shape);
+	free(m);
+}
 
 // TODO: type description classes
 manifold random_manifold() {

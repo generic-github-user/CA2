@@ -12,9 +12,16 @@ extern char* COLOR_ORDER[6];
 
 state* new_state(array data, simulation* sim) {
 	state* s = malloc(sizeof(state));
-	*s = (state) {data, 0, 0, sim};
+	*s = (state) {data, 0, 0, sim, 0};
 	s -> shape = s -> data.shape;
+	update_state(s);
+	s -> size = s -> data.size;
 	return s;
+}
+
+void free_state(state* s) {
+//	free_array(s -> data);
+	free(s);
 }
 
 void update_state(state* s) {
@@ -54,7 +61,7 @@ char* state_summary(state s) {
 
 char* state_info(state s) {
 	char* result = calloc(100, sizeof(char));
-	snprintf(result, 100, CYAN "State { population: %i, density: %f }" RESET, s.population, s.density);
+	snprintf(result, 100, CYAN "State { population: %i, density: %f, data: %s }" RESET, s.population, s.density, array_info(s.data));
 	return result;
 }
 
@@ -138,6 +145,12 @@ void write_state(state s, FILE* fptr) {
 	char* summary = state_summary(s);
 	fprintf(fptr, "%s", summary);
 	free(summary);
+}
+
+state* state_sum(state* a, state* b) {
+	array* x = malloc(sizeof(array));
+	*x = array_bsum(a->data, b->data);
+	return new_state(*x, a->sim);
 }
 
 int states_equal(state a, state b) {
