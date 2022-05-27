@@ -1,17 +1,9 @@
 #include <stdlib.h>
+#include "list.h"
 #include "../helpers/helpers.h"
 
 // TODO: use number ranges for more efficient handling of fragmented lists
 
-struct list {
-	void** data;
-	int* free_cells;
-	int nfree;
-	int size;
-	int block_size;
-	int ordered;
-};
-typedef struct list list;
 
 list* new_llist(void** data, int size, int block_size) {
 	list* L = malloc(sizeof(list));
