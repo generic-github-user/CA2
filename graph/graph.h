@@ -20,6 +20,7 @@ struct graph {
 	node* (* edges)[2];
 	int size;
 	int e;
+	int compute;
 };
 typedef struct graph graph;
 
