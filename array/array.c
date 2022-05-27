@@ -6,6 +6,7 @@
 // #include "vector.h"
 #include "array.h"
 #include "../helpers/helpers.h"
+#include "../mainheaders.h"
 
 // Create a statically typed function that reduces an array to a single value
 
@@ -37,6 +38,15 @@ array new_array(int rank, int* shape) {
 	fill_array(a, 0);
 	return a;
 };
+
+void free_array(array* a) {
+	free(a -> shape);
+	free(a -> data);
+	// TODO
+	free(a -> indices);
+	free(a -> labels);
+	free(a);
+}
 
 void update_array(array* a) {
 	a->space = (a->size+a->rank) * sizeof(int) + (a->indices->size);
@@ -82,6 +92,8 @@ void array_set(array a, vector z, int value) {
 	}
 	update_array(&a);
 }
+
+//array stack(array* parts) {
 
 
 // array array_from(int rank, int* shape, void* values) {
@@ -248,4 +260,10 @@ void write_array(array a, FILE* fptr, int level) {
 		fprintf(fptr, "%i,", a.data[i]);
 	}
 	printx(level+1, "Done\n");
+}
+
+char* array_info(array a) {
+	char* result = calloc(100, sizeof(char));
+	snprintf(result, 100, CYAN "Array { size: %i, space: %i }" RESET, a.size, a.space);
+	return result;
 }

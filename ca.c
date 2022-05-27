@@ -134,6 +134,10 @@ int main() {
 		strcpy(input, "randomstate > simulate > get population > plot");
 		process_command(input, logfile);
 	}
+	else if (streq(input, "ex2\n")) {
+		strcpy(input, "randomstate > simulate > reduce sum > plot");
+		process_command(input, logfile);
+	}
 	else {
 		process_command(input, logfile);
 	}

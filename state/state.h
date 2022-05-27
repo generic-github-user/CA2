@@ -20,6 +20,7 @@ struct state {
 typedef struct state state;
 
 state* new_state(array data, simulation* sim);
+void free_state(state* s);
 void update_state(state* s);
 state* random_state(int* shape);
 char* state_summary(state s);
@@ -29,6 +30,8 @@ state* map_neighbors(state s, int* cc);
 void print_state(state s, int unicode, char color);
 state* clone_state(state s);
 void write_state(state s, FILE* fptr);
+
+state* state_sum(state* a, state* b);
 int states_equal(state a, state b);
 void mutate_state(state* s);
 

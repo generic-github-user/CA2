@@ -11,11 +11,13 @@
 #include "../mainheaders.h"
 
 // should s be a state pointer?
-simulation* new_simulation(state s, int steps) {
+simulation* new_simulation(state* s, int steps) {
 	simulation* sim = malloc(sizeof(simulation));
-	s.sim = sim;
+	s->sim = sim;
 	// TODO: check that we aren't calling sizeof on pointers
-	sim->states = (state*) calloc(steps, sizeof(state));
+	// TODO: why does malloc(steps) cause problems here?
+	sim->states = (state**) calloc(steps, sizeof(state*));
+	sim->size = steps * sizeof(state);
 
 	// TODO: we will likely need to make the distinction at some point between
 	// storage used by a struct to contain pointers to its members and that used
@@ -30,12 +32,20 @@ simulation* new_simulation(state s, int steps) {
 	sim->steps = steps;
 	sim->compute = 0;
 
-	sim->ages = new_array(2, s.data.shape);
+	sim->ages = new_array(2, s->data.shape);
 	// TODO: check this
 	//s.sim = &sim;
 
 //	printf("Created new simulation
 	return sim;
+}
+
+// Clear the memory used by a simulation and its constituent members (mainly states)
+void free_sim(simulation* s) {
+	for (int i=0; i<s->time; i++) {
+//		free_state
+	}
+	free(s);
 }
 
 void update_sim(simulation* s) {
@@ -49,8 +59,8 @@ void sim_data(simulation s) {
 	char* headers[] = {"Step", "Population"};
 	printf("%15s\t%15s\n\n", headers[0], headers[1]);
 	for (int i=0; i<s.steps; i++) {
-		state st = s.states[i];
-		printf("%15d\t%15d\n", i+1, st.population);
+		state* st = s.states[i];
+		printf("%15d\t%15d\n", i+1, st->population);
 	}
 }
 
@@ -58,7 +68,7 @@ void sim_summary(simulation* s) {
 	fprintf(stdout, "Simulation (%i steps) \n\n", s -> steps);
 	fprintf(stdout, "Population -- %s\n", microplot(*s));
 	for (int i=0; i<s -> steps; i++) {
-		fprintf(stdout, "  Step %i: %i \n", i, (s -> states)[i].population);
+		fprintf(stdout, "  Step %i: %i \n", i, (s -> states)[i] -> population);
 	}
 }
 
@@ -119,14 +129,16 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 void simulate(simulation* sim, int n, int show, int level, int unicode, char color, int progress) {
 	int prog = 0;
 	printx(level+1, "");
-	printf("Simulating %i iterations\n", n-1);
+	printf("Simulating %i iterations\n", n);
 	printx(level+1, "");
+
 	if (progress) { printf("["); }
 	for (int i=0; i<n-1; i++) {
 		//state* p = &(sim->states)[(sim->time)-1];
-		state* p = &(sim->states)[(sim->time)-1];
-		(sim -> states)[sim -> time] = *new_state(new_array(2, p -> data.shape), sim);
-		step(&(sim->states)[sim->time], p, i, show, &(sim -> compute), *sim, unicode, color);
+		state* p = (sim->states)[(sim->time)-1];
+		(sim -> states)[sim -> time] = new_state(new_array(2, p -> data.shape), sim);
+		step((sim->states)[sim->time], p,
+			i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
 		if (progress) {

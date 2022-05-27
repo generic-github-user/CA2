@@ -40,7 +40,25 @@ void array_summary(array* a, int level) {
 }
 
 
-//void* reduce(
+//void* reduce(void* values, int n, void*(*f)(void* a, void* b), size_t s) {
+//	char* c = (char*) values;
+//	char* v = c;
+//	for (int i=1; i<n; i++) {
+//		v = f((void*) v, (void*) c);
+//		c += s;
+//	}
+//	return (void*) v;
+//}
+
+void* reduce(void** values, int n, void*(*f)(void* a, void* b)) {
+	void* v = values[0];
+	for (int i=1; i<n; i++) {
+		v = f((void*) v, (void*) values[i]);
+	}
+	return (void*) v;
+}
+
+// array sim_to_array(simulation* s) {
 
 // Execute a command string, writing to stdout and the provided log file
 void process_command(char* cmd, FILE* log) {
@@ -193,7 +211,7 @@ printx(2, "Executing simulation\n");
 // TODO: simulate dynamic dispatch
 if (streq(selection_type, "state")) {
 	// why is dereferencing the selection pointer not an issue?
-	*selection = new_simulation(**((state**) selection), opt_iterations);
+	*selection = new_simulation(*((state**) selection), opt_iterations);
 	selection_type = "simulation";
 	simulate(*selection, opt_iterations, opt_print, 2, opt_unicode, opt_color[0], !opt_print);
 	// TODO: automatically deallocate strings from heap after printing
@@ -203,7 +221,7 @@ else if (streq(selection_type, "state_set")) {
 	// !!!!
 	// selection = malloc(opt_num);
 	for (int j=0; j<opt_num; j++) {
-		selection[j] = new_simulation(*((state*) selection[j]), opt_iterations);
+		selection[j] = new_simulation((state*) selection[j], opt_iterations);
 		simulate(
 			(simulation*) selection[j], opt_iterations,
 			opt_print, 2, opt_unicode, opt_color[0], !opt_print
@@ -277,8 +295,14 @@ else if (streq(selection_type, "state_set")) {
 
 			}
 			else if (streq(command, "reduce")) {
-				if (streq(opt, "mean")) {
-				
+				if (streq(selection_type, "simulation")) {
+					if (streq(opt, "sum")) {
+						simulation* s = ((simulation*) *selection);
+						printx(2, "Summing over %s\n", sim_info(*s));
+						selection = reduce((void*) (s -> states), s -> time, state_sum);
+						selection_type = "state";
+						printx(2, "Result: %s\n", state_info(*((state*) selection)));
+					}
 				}
 			}
 			else if (streq(command, "quit")) {
