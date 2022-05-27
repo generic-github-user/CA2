@@ -1,4 +1,4 @@
-/* Generated from ./simulation/simulation.c0 at 05/25/2022 */ 
+/* Generated from ./simulation/simulation.c0 at 05/26/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -74,8 +74,6 @@ void sim_summary(simulation* s) {
 
 char* sim_info(simulation s) {
 	char* result = calloc(100, sizeof(char));
-//	strcat(result, "Simulation { Length");
-//	strcat(result, itoa(s.steps));
 	snprintf(result, 100, CYAN "Simulation { length: %i, compute: %i, size: %i }" RESET, s.steps, s.compute, s.size);
 	return result;
 }
@@ -92,7 +90,6 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 		for (int y=0; y<s->shape[1]; y++) {
 			array_set(s -> data, vec(x, y, 0), array_get(p -> data, vec(x, y, 0)));
 			sim.ages.data[get_coord(sim.ages, vec(x, y, 0))] ++;
-//			compute ++;
 			(*cc) ++;
 		}
 	}
@@ -122,9 +119,6 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 	}
 }
 
-
-
-// note: don't pass by value?!?!
 // Simulate n steps of a cellular automaton (last four arguments are print settings)
 void simulate(simulation* sim, int n, int show, int level, int unicode, char color, int progress) {
 	int prog = 0;
@@ -156,5 +150,4 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 	char temp[50];
 	sprintf(temp, "Simulation complete; compute usage was %i \n", sim -> compute);
 	printx(level+1, temp);
-//	free(temp);
 }

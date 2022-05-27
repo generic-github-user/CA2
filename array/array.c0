@@ -6,7 +6,6 @@
 #include "../helpers/helpers.h"
 #include "../mainheaders.h"
 
-// Create a statically typed function that reduces an array to a single value
 
 
 
@@ -111,6 +110,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
+// Create a statically typed function that reduces an array to a single value
 $ARRAY_REDUCE(name:array_sum,type:int,op:+,init:0)$
 double array_mean(array a) {
 	return (double) array_sum(a) / (double) a.size;

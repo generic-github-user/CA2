@@ -151,12 +151,10 @@ void process_command(char* cmd, FILE* log) {
 				//selection = (void*) malloc(1);
 				selection_type = "array";
 				if (streq(opt, "population")) {
-					// *((array*) selection) = extract_population(*selection, ((simulation*) *selection)->steps);
 					array* a = malloc(sizeof(array));
 					*a = extract_population((state*) ((simulation*) *selection)->states, ((simulation*) *selection) -> steps);
 					array_summary(a, 2);
 					// TODO
-//					selection = (void*) malloc(1);
 					selection = (void*) malloc(sizeof(array));
 					selection = a;
 
