@@ -1,8 +1,9 @@
-/* Generated from ./graph/graph.c0 at 05/26/2022 */ 
+/* Generated from ./graph/graph.c0 at 05/27/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "graph.h"
 
 // Initialize a new graph object, which wraps node structsreal
@@ -11,6 +12,36 @@ graph* new_graph(node* nodes, int size) {
 	*G = (graph) {nodes, NULL, size, 0};
 	return G;
 }
+
+int graph_contains(graph* G, node* n) {
+	for (int i=0; i<G->size; i++) {
+//		if (G->nodes[i] == n) {
+		if (memcmp(G->nodes+i, n, sizeof(node)) == 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+graph* graph_neighborhood(graph* G, node* n, int degree) {
+	// we could also recursively or iteratively go through each node's adjacency list
+	graph* H = new_graph(n, 1);
+	for (int r=0; r<degree; r++) {
+		for (int i=0; i<G->e; i++) {
+			if (
+				graph_contains(H, (G->edges[i][0])) &&
+				!graph_contains(H, (G->edges[i][1]))
+			) {
+//				new_node(H, n->data);
+				H->nodes = (node*) realloc(H->nodes, (H->size+1)*sizeof(node));
+				(H->nodes)[H->size++] = *(G->edges[i][1]);
+			}
+		}
+	}
+	return H;
+}
+
+	
 
 // Initialize a node, which stores a (generic) pointer to some data and sets of adjacenct nodes
 node new_node(graph* G, void* data) {
@@ -66,7 +97,7 @@ void list_add(node* list, void* value) {
 		}
 		node* n = malloc(sizeof(node));
 		*n = new_node(NULL, value);
-		add_in(n, c);
+		add_in(n, c, NULL);
 	}
 }
 
