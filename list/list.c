@@ -3,14 +3,17 @@
 
 struct list {
 	void** data;
+	int* free_cells;
+	int nfree;
 	int size;
 	int block_size;
+	int ordered;
 };
 typedef struct list list;
 
 list* new_llist(void** data, int size, int block_size) {
 	list* L = malloc(sizeof(list));
-	*L = (list) {data, size, block_size};
+	*L = (list) {data, NULL, 0, size, block_size};
 	return L;
 }
 
@@ -20,6 +23,7 @@ void free_llist(list* L, int free_members) {
 			free(L->data[i]);
 		}
 	}
+	free(L->free_cells);
 	free(L->data);
 	free(L);
 }
@@ -32,6 +36,20 @@ void llist_add(list* L, void* x) {
 			exit(1);
 		}
 		L->data = m;
+
+		L->free_cells = realloc(L->free_cells, L->size+L->block_size);
 	}
-	L->data[L->size++] = x;
+
+	if (L->ordered) {
+		L->data[L->size++] = x;
+	} else {
+		if (L->nfree == 0) { L->free_cells[L->nfree] = L->size; L->nfree++; }
+		L->data[L->free_cells[L->nfree]] = x;
+		L->nfree --;
+	}
+	L->size ++;
 }
+
+//void llist_remove(list* L, int index) {
+	//L->data[index] = NULL;
+	// store list of available indices?
