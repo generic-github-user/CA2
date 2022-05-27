@@ -7,8 +7,8 @@ ca: $(obj)
 	rm -f $@
 	gcc -g -c $< -o $@
 commands.c: $(wildcard *.ct)
-%.c: %.c0# $(templates)
-	python3.9 build.py $@
+%.c: %.c0 $(templates)
+	python3.9 build.py
 
 # TinyPngOut.o: TinyPngOut.c TinyPngOut.h
 # 	gcc -g -c TinyPngOut.c TinyPngOut.h -o TinyPngOut.o

@@ -112,7 +112,12 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
+<<<<<<< HEAD
+/* Imported from ./array/array_reduce.ct at 05/25/2022, 16:02:32 */ 
+=======
+// Create a statically typed function that reduces an array to a single value
 /* Imported from ./array/array_reduce.ct at 05/26/2022, 00:46:03 */ 
+>>>>>>> 589df3e6c6635e36e114bfc26eca29118d6c1aaf
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
