@@ -1,4 +1,3 @@
-/* Generated from ./ca.c0 at 05/27/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
@@ -132,6 +131,10 @@ int main() {
 	}
 	else if (streq(input, "ex1\n")) {
 		strcpy(input, "randomstate > simulate > get population > plot");
+		process_command(input, logfile);
+	}
+	else if (streq(input, "ex2\n")) {
+		strcpy(input, "randomstate > simulate > reduce sum > plot");
 		process_command(input, logfile);
 	}
 	else {
