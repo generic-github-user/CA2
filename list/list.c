@@ -14,6 +14,16 @@ list* new_llist(void** data, int size, int block_size) {
 	return L;
 }
 
+void free_llist(list* L, int free_members) {
+	if (free_members) {
+		for (int i=0; i<L->size; i++) {
+			free(L->data[i]);
+		}
+	}
+	free(L->data);
+	free(L);
+}
+
 void llist_add(list* L, void* x) {
 	if (L->size % L->block_size == 0) {
 		void** m = realloc(L->data, L->size+L->block_size);
