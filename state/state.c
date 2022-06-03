@@ -23,6 +23,7 @@ state* new_state(array data, simulation* sim) {
 
 void free_state(state* s) {
 //	free_array(s -> data);
+	free(s -> name);
 	free(s);
 }
 
@@ -30,6 +31,7 @@ void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// TODO: should s -> data be a pointer?
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
+	s -> name = state_name(s);
 }
 
 // Generate a random state
@@ -102,7 +104,7 @@ char* state_name(state* s) {
 	char* name = malloc(30);
 	int j = 0;
 	while (N > 0) {
-		name[j] = char_ranges[0][N % (base ** 2)];
+		name[j] = char_ranges[0][0] + (N % (base * base));
 		N /= base;
 		j ++;
 	}
@@ -257,7 +259,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 02:33:43 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 02:43:34 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -269,7 +271,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 02:33:43 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 02:43:34 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -282,7 +284,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 06/03/2022, 02:33:43 */ 
+/* Imported from ./state/extract.ct at 06/03/2022, 02:43:34 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));

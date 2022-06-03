@@ -16,6 +16,7 @@ struct state {
 	simulation* sim;
 	int* shape;
 	int size;
+	char* name;
 };
 typedef struct state state;
 
@@ -25,6 +26,7 @@ void update_state(state* s);
 state* random_state(int* shape);
 char* state_summary(state s);
 char* state_info(state s);
+char* state_name(state* s);
 int count_neighbors(state source, int x, int y, int* cc);
 state* map_neighbors(state s, int* cc);
 void print_state(state s, int unicode, char color);
