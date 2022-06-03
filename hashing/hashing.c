@@ -1,8 +1,9 @@
-/* Generated from ./hashing/hashing.c0 at 05/26/2022 */ 
+/* Generated from ./hashing/hashing.c0 at 06/03/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stddef.h>
 
 #include "hashing.h"
+#include "assert.h"
 
 // Based on djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
 unsigned long hash(unsigned int *values, int n) {

@@ -65,6 +65,7 @@ void process_command(char* cmd, FILE* log) {
 	int complete = 0;
 
 	// Handle command input
+	print_timestamp();
 	printx(0, "Processing command ("MAGENTA"%s"RESET")...\n", cmd_src);
 	do {
 		if (token != NULL) {

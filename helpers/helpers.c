@@ -1,9 +1,10 @@
-/* Generated from ./helpers/helpers.c0 at 05/26/2022 */ 
+/* Generated from ./helpers/helpers.c0 at 06/03/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include "../simulation/simulation.h"
 #include ".././mainheaders.h"
@@ -12,6 +13,12 @@ extern FILE* logfile;
 
 int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
+}
+
+// Based on https://stackoverflow.com/a/9596994
+void print_timestamp() {
+    time_t ltime = time(NULL);
+    printf("[%s]",asctime( localtime(&ltime) ) );
 }
 
 // Loosely based on https://en.cppreference.com/w/c/variadic

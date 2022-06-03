@@ -1,6 +1,7 @@
 #include <stddef.h>
 
 #include "hashing.h"
+#include "assert.h"
 
 // Based on djb2 hash function from http://www.cse.yorku.ca/~oz/hash.html
 unsigned long hash(unsigned int *values, int n) {
