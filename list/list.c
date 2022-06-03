@@ -19,8 +19,10 @@ void free_llist(list* L, int free_members) {
 			free(L->data[i]);
 		}
 	}
+	// Free pointers to other properties
 	free(L->free_cells);
 	free(L->data);
+	// Free enclosing struct
 	free(L);
 }
 
