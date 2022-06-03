@@ -1,4 +1,4 @@
-/* Generated from ./state/state.c0 at 05/26/2022 */ 
+/* Generated from state/state.c0 at 06/03/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -65,6 +65,50 @@ char* state_info(state s) {
 	char* result = calloc(100, sizeof(char));
 	snprintf(result, 100, CYAN "State { population: %i, density: %f, data: %s }" RESET, s.population, s.density, array_info(s.data));
 	return result;
+}
+
+// From https://stackoverflow.com/a/34035474
+char *str_reverse_in_place(char *str, int len)
+{
+    char *p1 = str;
+    char *p2 = str + len - 1;
+
+    while (p1 < p2) {
+        char tmp = *p1;
+        *p1++ = *p2;
+        *p2-- = tmp;
+    }
+
+    return str;
+}
+
+char* state_name(state* s) {
+	unsigned long int N = 0;
+	unsigned long int deg = 1;
+	for (int a=0; a<s->shape[0]; a++) {
+		for (int b=0; b<s->shape[1]; b++) {
+			N += array_get(s->data, vec(a, b, 0)) * deg;
+			deg *= 2;
+		}
+	}
+	// All alphanumeric ASCII characters; specify additional ranges as needed
+	// int char_ranges[3][2] = { {48, 57}, {65, 90}, {97, 122} };
+	int char_ranges[1][2] = {{65,90}};
+	int base = 0;
+	for (int i=0; i<1; i++) {
+		base += char_ranges[i][1] - char_ranges[i][0] + 1;
+	}
+
+	char* name = malloc(30);
+	int j = 0;
+	while (N > 0) {
+		name[j] = char_ranges[0][N % (base ** 2)];
+		N /= base;
+		j ++;
+	}
+	name[j] = '\0';
+	str_reverse_in_place(name, j-1);
+	return name;
 }
 
 // Count neighbor cells given a state and coordinate
@@ -213,7 +257,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 00:46:03 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 02:33:43 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -225,7 +269,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 00:46:03 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 02:33:43 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -238,7 +282,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 05/26/2022, 00:46:03 */ 
+/* Imported from ./state/extract.ct at 06/03/2022, 02:33:43 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));
