@@ -25,6 +25,7 @@ void free_state(state* s) {
 	free(s);
 }
 
+// Recompute state statistics and generated fields
 void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// TODO: should s -> data be a pointer?
@@ -82,7 +83,9 @@ char *str_reverse_in_place(char *str, int len)
     return str;
 }
 
+// Generate a string representing the given state
 char* state_name(state* s) {
+	// Convert the state to a compact integer representation
 	unsigned long int N = 0;
 	unsigned long int deg = 1;
 	for (int a=0; a<s->shape[0]; a++) {
@@ -91,6 +94,7 @@ char* state_name(state* s) {
 			deg *= 2;
 		}
 	}
+
 	// All alphanumeric ASCII characters; specify additional ranges as needed
 	// int char_ranges[3][2] = { {48, 57}, {65, 90}, {97, 122} };
 	int char_ranges[1][2] = {{65,90}};
@@ -99,6 +103,7 @@ char* state_name(state* s) {
 		base += char_ranges[i][1] - char_ranges[i][0] + 1;
 	}
 
+	// Generate the name string
 	char* name = malloc(30);
 	int j = 0;
 	while (N > 0) {
@@ -108,6 +113,7 @@ char* state_name(state* s) {
 	}
 	name[j] = '\0';
 	str_reverse_in_place(name, j-1);
+
 	return name;
 }
 
@@ -131,6 +137,7 @@ int count_neighbors(state source, int x, int y, int* cc) {
 	return neighbors;
 }
 
+// Generate a new state where each position in the output corresponds to the number of neighbors that cell has in the input (s)
 state* map_neighbors(state s, int* cc) {
 	int neighbors;
 	state* counts = new_state(new_array(2, s.data.shape), NULL);
