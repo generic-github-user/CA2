@@ -2,19 +2,10 @@
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
-// TODO: provide tools for mutating patterns
-// TODO: log files
-// TODO: add support for long-term experiment databases
-// TODO: add function for backtracing cellular automata states
-// TODO: add array views & semi-mutable data structures
-// TODO: use ndarray structs to store arbitrary collections of states/simulations?
-// TODO: add Collection type?
-// TODO: are nested array structs viable?
-// TODO: add unit handling
-// TODO: track all previous selections to permit deallocation?
 
 
 const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
+FILE* logfile = NULL;
 
 // Example commands
 
@@ -27,7 +18,6 @@ const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // snowflake > trace cgol > select -n 20 > write backtracking.txt
 
 int compute;
-FILE* logfile;
 
 // Clip an integer to a range (modify in-place)
 int bound(int* x, int a, int b) {
@@ -149,11 +139,21 @@ int main(int argc, char** argv) {
 	char* optvalue = NULL;
 	char opt;
 
-	while ((opt = getopt(argc, argv, "i")) != -1 ) {
+	while ((opt = getopt(argc, argv, "ic:")) != -1 ) {
 		switch (opt) {
 			case 'i': {
 				interactive();
 				break;
+			}
+			case 'c': {
+//				process_command(optarg, NULL);
+				optvalue = optarg;
+//				optvalue = argopt;
+				process_command(optvalue, NULL);
+				break;
+			}
+			default: {
+				exit(1);
 			}
 		}
 	}

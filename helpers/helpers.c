@@ -1,4 +1,4 @@
-/* Generated from ./helpers/helpers.c0 at 05/26/2022 */ 
+/* Generated from helpers/helpers.c0 at 06/03/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +24,7 @@ void printx(int level, const char* fmt, ...) {
 	char* indent = "  ";
 	for (int i=0; i<level; i++) {
 		printf("%s", indent);
-		fprintf(logfile, "%s", indent);
+		if (logfile != NULL) { fprintf(logfile, "%s", indent); }
 	}
 	int signal = 0;
 	while (*fmt != '\0') {
@@ -40,11 +40,11 @@ void printx(int level, const char* fmt, ...) {
 			snprintf(ft, 3, "%%%c", *fmt);
 
 			printf(ft, text);
-			fprintf(logfile, ft, text);
+			if (logfile != NULL) { fprintf(logfile, ft, text); }
 			signal = 0;
 		} else {
 			printf("%c", *fmt);
-			fprintf(logfile, "%c", *fmt);
+			if (logfile != NULL) { fprintf(logfile, "%c", *fmt); }
 		}
 		++fmt;
 	}

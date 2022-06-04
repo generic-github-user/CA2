@@ -3,6 +3,7 @@
 
 
 const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
+FILE* logfile = NULL;
 
 // Example commands
 
@@ -15,7 +16,6 @@ const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // snowflake > trace cgol > select -n 20 > write backtracking.txt
 
 int compute;
-FILE* logfile;
 
 // Clip an integer to a range (modify in-place)
 int bound(int* x, int a, int b) {
@@ -137,11 +137,21 @@ int main(int argc, char** argv) {
 	char* optvalue = NULL;
 	char opt;
 
-	while ((opt = getopt(argc, argv, "i")) != -1 ) {
+	while ((opt = getopt(argc, argv, "ic:")) != -1 ) {
 		switch (opt) {
 			case 'i': {
 				interactive();
 				break;
+			}
+			case 'c': {
+//				process_command(optarg, NULL);
+				optvalue = optarg;
+//				optvalue = argopt;
+				process_command(optvalue, NULL);
+				break;
+			}
+			default: {
+				exit(1);
 			}
 		}
 	}
