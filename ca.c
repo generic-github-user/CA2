@@ -1,4 +1,4 @@
-/* Generated from ca.c0 at 06/03/2022 */ 
+/* Generated from ca.c0 at 06/04/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
@@ -107,6 +107,12 @@ void interactive() {
 	printf("ca.c loaded successfully \n");
 	printf("Entering interactive mode \n");
 
+	char* ex[] = {
+		"randomstate -n 20 > simulate -i 200 > collapse > write test1.txt",
+		"randomstate > simulate > get population > plot",
+		"randomstate > simulate > reduce sum > plot"
+	};
+
 	// Set random seed
 	srand(time(NULL));
 
@@ -117,19 +123,10 @@ void interactive() {
 	//char input[200];
 	char* input = calloc(200, sizeof(char));
 	fgets(input, 200, stdin);
-	if (streq(input, "test1\n")) {
-		char* r = "randomstate -n 20 > simulate -i 200 > collapse > write test1.txt";
-		process_command(r, logfile);
-	}
-	else if (streq(input, "ex1\n")) {
-		strcpy(input, "randomstate > simulate > get population > plot");
+	if (strncmp("ex", input, 2) == 0) {
+		strcpy(input, ex[atoi(input+2)]);
 		process_command(input, logfile);
-	}
-	else if (streq(input, "ex2\n")) {
-		strcpy(input, "randomstate > simulate > reduce sum > plot");
-		process_command(input, logfile);
-	}
-	else {
+	} else {
 		process_command(input, logfile);
 	}
 	fclose(logfile);
