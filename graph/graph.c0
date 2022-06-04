@@ -70,9 +70,11 @@ void add_in(node* a, node* b, graph* G) {
 	(b->out)[b->outdegree] = a;
 	b->outdegree ++;
 
-	G->edges = (node*(*)[2]) realloc(G->edges, (size_t) (G->e+1)*2);
-	// TODO: can this be cleaned up? using something like (node(*)[2]) {a, b} threw compiler errors
-	(G->edges)[G -> e ++][0] = a;
+	if (G != NULL) {
+		G->edges = (node*(*)[2]) realloc(G->edges, (size_t) (G->e+1)*2);
+		// TODO: can this be cleaned up? using something like (node(*)[2]) {a, b} threw compiler errors
+		(G->edges)[G -> e ++][0] = a;
+	}
 }
 
 // Initialize a linked list based on the graph API
