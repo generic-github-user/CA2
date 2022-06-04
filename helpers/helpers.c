@@ -1,4 +1,4 @@
-/* Generated from helpers/helpers.c0 at 06/03/2022 */ 
+/* Generated from helpers/helpers.c0 at 06/04/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +9,7 @@
 #include ".././mainheaders.h"
 
 extern FILE* logfile;
+extern int verbosity;
 
 int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
@@ -18,6 +19,10 @@ int inrange(int x, int n, int m) {
 void printx(int level, const char* fmt, ...) {
 //	printf("fmt: %s", fmt);
 //void printx(int level, char* text) {
+	if (level >= verbosity) {
+		return;
+	}
+
 	va_list args;
 	va_start(args, fmt);
 

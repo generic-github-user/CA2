@@ -6,6 +6,7 @@
 
 const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 FILE* logfile = NULL;
+int verbosity = 6;
 
 // Example commands
 
@@ -140,7 +141,7 @@ int main(int argc, char** argv) {
 	char opt;
 
 	// Loop through command-line arguments
-	while ((opt = getopt(argc, argv, "ic:h")) != -1 ) {
+	while ((opt = getopt(argc, argv, "ic:hv:")) != -1 ) {
 		switch (opt) {
 			case 'i': {
 				interactive();
@@ -155,6 +156,11 @@ int main(int argc, char** argv) {
 			}
 			case 'h': {
 				printx(0, "Documentation of available commands can be found in the project README: https://github.com/generic-github-user/CA2/blob/master/README.md. The file also has subsections with more information about command options, types, and the structure of CA2. \n");
+				break;
+			}
+			case 'v': {
+				verbosity = atoi(optarg);
+				break;
 			}
 			default: {
 				exit(1);

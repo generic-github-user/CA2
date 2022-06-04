@@ -7,6 +7,7 @@
 #include ".././mainheaders.h"
 
 extern FILE* logfile;
+extern int verbosity;
 
 int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
@@ -16,6 +17,10 @@ int inrange(int x, int n, int m) {
 void printx(int level, const char* fmt, ...) {
 //	printf("fmt: %s", fmt);
 //void printx(int level, char* text) {
+	if (level >= verbosity) {
+		return;
+	}
+
 	va_list args;
 	va_start(args, fmt);
 
