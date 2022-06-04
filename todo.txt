@@ -1,0 +1,11 @@
+// TODO: provide tools for mutating patterns
+// TODO: log files
+// TODO: add support for long-term experiment databases
+// TODO: add function for backtracing cellular automata states
+// TODO: add array views & semi-mutable data structures
+// TODO: use ndarray structs to store arbitrary collections of states/simulations?
+// TODO: add Collection type?
+// TODO: are nested array structs viable?
+// TODO: add unit handling
+// TODO: track all previous selections to permit deallocation?
+
