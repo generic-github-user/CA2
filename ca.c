@@ -103,10 +103,12 @@ state* extract_slices(state* s, int limit) {
 	end: return slices;
 }
 
+// Start "interactive mode", a REPL-style command shell in which the user can enter commands to create, view, and manipulate objects
 void interactive() {
 	printf("ca.c loaded successfully \n");
 	printf("Entering interactive mode \n");
 
+	// Example commands that can be run with "ex#"
 	char* ex[] = {
 		"randomstate -n 20 > simulate -i 200 > collapse > write test1.txt",
 		"randomstate > simulate > get population > plot",
@@ -121,6 +123,7 @@ void interactive() {
 
 
 	//char input[200];
+	// Get command from stdin
 	char* input = calloc(200, sizeof(char));
 	fgets(input, 200, stdin);
 	if (strncmp("ex", input, 2) == 0) {
@@ -136,6 +139,7 @@ int main(int argc, char** argv) {
 	char* optvalue = NULL;
 	char opt;
 
+	// Loop through command-line arguments
 	while ((opt = getopt(argc, argv, "ic:h")) != -1 ) {
 		switch (opt) {
 			case 'i': {
