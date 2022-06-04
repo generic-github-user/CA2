@@ -4,6 +4,7 @@ if (opt_num == 1) {
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
 	printx(2, "%s\n", state_info(*((state*) *selection)));
+	print_state(stdout, *((state*) *selection), 1, 'a');
 }
 else {
 	selection = malloc(opt_num);

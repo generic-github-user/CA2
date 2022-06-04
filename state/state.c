@@ -1,4 +1,4 @@
-/* Generated from state/state.c0 at 06/03/2022 */ 
+/* Generated from state/state.c0 at 06/04/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -153,10 +153,12 @@ state* map_neighbors(state s, int* cc) {
 	return counts;
 }
 
-void print_state(state s, int unicode, char color) {
+void print_state(FILE* target, state s, int unicode, char color) {
 	// printf("Total compute: %i \n", compute);
-	printf("Population: %i \n", array_sum(s.data));
-	printf("\n");
+	fprintf(target, "Name: %s \n", s.name);
+	fprintf(target, "Population: %i \n", s.population);
+	fprintf(target, "Density: %f \n", s.density);
+	fprintf(target, "\n");
 	int c = 0;
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
@@ -166,16 +168,16 @@ void print_state(state s, int unicode, char color) {
 				if (age > 1) {
 					if (age > 7) { age = 7; }
 					c = 1;
-					printf("%s", COLOR_ORDER[age-2]);
+					fprintf(target, "%s", COLOR_ORDER[age-2]);
 				}
 			}
-			printf(
+			fprintf(target,
 				array_get(s.data, vec(x, y, 0)) ?
 				(unicode ? "██" : "*") :
 				(unicode ? "  " : " "));
-			if (c) { printf("%s", RESET); }
+			if (c) { fprintf(target, "%s", RESET); }
 		}
-		printf("\n");
+		fprintf(target, "\n");
 	}
 }
 
@@ -266,7 +268,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 21:33:17 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/04/2022, 18:50:19 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -278,7 +280,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 06/03/2022, 21:33:17 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/04/2022, 18:50:19 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -291,7 +293,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 06/03/2022, 21:33:17 */ 
+/* Imported from ./state/extract.ct at 06/04/2022, 18:50:19 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));

@@ -1,4 +1,4 @@
-/* Generated from ./commands/commands.c0 at 05/26/2022 */ 
+/* Generated from commands/commands.c0 at 06/04/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -105,13 +105,14 @@ void process_command(char* cmd, FILE* log) {
 			}
 
 			if (streq(command, "randomstate")) {
-				/* Imported from ./commands/randomstate_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/randomstate_cmd.ct at 06/04/2022 */ 
 printx(2, "Generating random state...\n");
 if (opt_num == 1) {
 	selection = malloc(1);
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
 	printx(2, "%s\n", state_info(*((state*) *selection)));
+	print_state(stdout, *((state*) *selection), 1, 'a');
 }
 else {
 	selection = malloc(opt_num);
@@ -126,7 +127,7 @@ else {
 			}
 			// TODO: exploit symmetries and pattern components for more compact storage/representation?
 			else if (streq(command, "enumerate")) {
-				/* Imported from ./commands/enumerate_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/enumerate_cmd.ct at 06/04/2022 */ 
 printx(2, "Enumerating states...");
 int i = 1;
 int z = 0;
@@ -158,7 +159,7 @@ selection_type = "state_set";
 
 			}
 			else if (streq(command, "write")) {
-				/* Imported from ./commands/write_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/write_cmd.ct at 06/04/2022 */ 
 printx(2, "Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
@@ -180,7 +181,7 @@ complete = 1;
 
 			}
 			else if (streq(command, "print")) {
-				/* Imported from ./commands/print_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/print_cmd.ct at 06/04/2022 */ 
 if (streq(selection_type, "simulation")) {
 	sim_summary((simulation*) selection);
 }
@@ -192,7 +193,7 @@ else if (streq(selection_type, "simulation_set")) {
 
 			}
 			else if (streq(command, "render")) {
-				/* Imported from ./commands/render_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/render_cmd.ct at 06/04/2022 */ 
 printx(2, "Rendering selected state to image...");
 if (streq(selection_type, "state")) {
 	write_image(*((state*) selection), opt_color);
@@ -205,7 +206,7 @@ if (streq(selection_type, "state")) {
 				}
 			}
 			else if (streq(command, "simulate")) {
-				/* Imported from ./commands/simulate_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/simulate_cmd.ct at 06/04/2022 */ 
 printx(2, "Executing simulation\n");
 
 // TODO: simulate dynamic dispatch
