@@ -1,4 +1,4 @@
-/* Generated from ./ca.c0 at 05/26/2022 */ 
+/* Generated from ca.c0 at 06/03/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
@@ -113,9 +113,10 @@ state* extract_slices(state* s, int limit) {
 	end: return slices;
 }
 
-
-int main() {
+void interactive() {
 	printf("ca.c loaded successfully \n");
+	printf("Entering interactive mode \n");
+
 	// Set random seed
 	srand(time(NULL));
 
@@ -142,4 +143,18 @@ int main() {
 		process_command(input, logfile);
 	}
 	fclose(logfile);
+}
+
+int main(int argc, char** argv) {
+	char* optvalue = NULL;
+	char opt;
+
+	while ((opt = getopt(argc, argv, "i")) != -1 ) {
+		switch (opt) {
+			case 'i': {
+				interactive();
+				break;
+			}
+		}
+	}
 }
