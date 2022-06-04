@@ -13,7 +13,7 @@ typedef struct list list;
 // without modifying the original data source, similar to NumPy array views
 struct listview {
 	list* source;
-	range* spans;
+	//range* spans;
 	struct listview* sublists;
 	int size;
 };

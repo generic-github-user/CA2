@@ -7,6 +7,9 @@ test*.*
 ca_plot*
 ca
 
+node_modules/*
+package*.json
+
 ca_log.txt
 pylog.txt
 pltdata.txt
