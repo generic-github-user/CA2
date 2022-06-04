@@ -38,7 +38,7 @@ void printx(int level, const char* fmt, ...) {
 			signal = 1;
 		}
 //		else if (signal && *fmt == 's') {
-		else if (strchr("cis", *fmt) != NULL & signal) {
+		else if (strchr("cisp", *fmt) != NULL & signal) {
 			char* text = va_arg(args, char*);
 			if (text == NULL) { text = "NULL"; }
 			char ft[3];

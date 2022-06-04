@@ -112,7 +112,6 @@ if (opt_num == 1) {
 	*selection = (state*) random_state(opt_shape);
 	selection_type = "state";
 	printx(2, "%s\n", state_info(*((state*) *selection)));
-	print_state(stdout, *((state*) *selection), 1, 'a');
 }
 else {
 	selection = malloc(opt_num);
@@ -234,7 +233,9 @@ else if (streq(selection_type, "state_set")) {
 
 			}
 			else if (streq(command, "collapse")) {
-				printx(2, "Collapsing simulation(s)\n");
+				printx(2, "Collapsing simulation(s) at %p\n", selection);
+				printx(2, "Selection type: %s \n", selection_type);
+
 				if (streq(selection_type, "simulation_set")) {
 					selection = calloc(opt_num, sizeof(state));
 					for (int j=0; j<opt_num; j++) {
@@ -248,7 +249,11 @@ else if (streq(selection_type, "state_set")) {
 				}
 				else if (streq(selection_type, "simulation")) {
 					simulation* sim = *selection;
-					*selection = (sim -> states) + (sim -> time) - 2;
+					// ?
+					selection = malloc(sizeof(state*));
+					//*selection = (sim -> states) + (sim -> time) - 2;
+					*selection = *((sim -> states) + (sim -> time) - 2);
+					selection_type = "state";
 				}
 				else {
 					printx(2, "Command not supported for this data type\n");
@@ -314,6 +319,7 @@ else if (streq(selection_type, "state_set")) {
 				exit(1);
 			}
 
+
 			if (token == NULL) {
 				complete = 1;
 			}
@@ -356,4 +362,8 @@ else if (streq(selection_type, "state_set")) {
 		printx(2, "getting next token...\n");
 		token = strtok(NULL, " ");
 	} while (!complete);
+
+	if (streq(selection_type, "state")) {
+		print_state(stdout, *((state*) *selection), 1, 'a');
+	}
 }
