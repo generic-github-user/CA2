@@ -17,8 +17,12 @@ commands.c: $(wildcard *.ct)
 
 # %.md: %.src.md
 #%.md:# %.src.md# FORCE
-$(md): .FORCE
+#$(md): .FORCE
+%.md: %.src.md
 	echo $@
+	cp $< $@
+	echo "### Statistics\n" >> $@
+	cloc * --exclude-dir node_modules --exclude-ext txt --md --hide-rate --quiet >> $@
 	markdown-toc -i $@
 #	markdown-toc $< > $@
 .FORCE: ;
