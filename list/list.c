@@ -58,3 +58,16 @@ void llist_remove(list* L, int index) {
 	L->compute ++;
 	L->free_cells[L->nfree++] = index;
 }
+
+list* llist_map(list* L, void* (*f)(void*), int output) {
+	list* result = NULL;
+	if (output) { result = new_llist(NULL, 0, L->block_size); }
+//	else { result = NULL; };
+	for (int i=0; i<L->size; i++) {
+		if (output) { llist_add(result, f(L->data[i])); }
+		else { *f(L->data[i]); }
+	}
+	return result;
+}
+
+
