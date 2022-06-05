@@ -141,8 +141,8 @@ while (i < opt_num) {
 	printx(3, "Generating state %i\n", i);
 
 	z = 0;
-	s = selection[i];
 	selection[i] = (state*) clone_state(*((state*) selection[i-1]));
+	s = selection[i];
 	while ((s->data).data[z] == 1) {
 		(s->data).data[z] = 0;
 		z ++;
@@ -151,6 +151,7 @@ while (i < opt_num) {
 		}
 	}
 	(s->data).data[z] = 1;
+	update_state(s);
 	i ++;
 }
 selection_type = "state_set";
@@ -237,14 +238,15 @@ else if (streq(selection_type, "state_set")) {
 				printx(2, "Selection type: %s \n", selection_type);
 
 				if (streq(selection_type, "simulation_set")) {
-					selection = calloc(opt_num, sizeof(state));
+					void** nselection = calloc(opt_num, sizeof(state*));
 					for (int j=0; j<opt_num; j++) {
 						//simulation sim = simset_selection[j];
 						simulation* sim = selection[j];
 						printx(2, "Getting state at index %i\n", sim -> time);
 						// should this account for the size of a state struct?
-						selection[j] = (sim -> states) + (sim -> time) - 2;
+						nselection[j] = *((sim -> states) + (sim -> time) - 2);
 					}
+					selection = nselection;
 					selection_type = "state_set";
 				}
 				else if (streq(selection_type, "simulation")) {
@@ -365,5 +367,10 @@ else if (streq(selection_type, "state_set")) {
 
 	if (streq(selection_type, "state")) {
 		print_state(stdout, *((state*) *selection), 1, 'a');
+	}
+	if (streq(selection_type, "state_set")) {
+		for (int i=0; i<opt_num; i++) {
+			print_state(stdout, *((state*) selection[i]), 1, 'a');
+		}
 	}
 }
