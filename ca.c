@@ -137,11 +137,15 @@ void interactive() {
 }
 
 int main(int argc, char** argv) {
+	static struct option long_options[] = {
+		{"about", no_argument, 0, 0}
+	};
 	char* optvalue = NULL;
 	char opt;
+	int option_index = 0;
 
 	// Loop through command-line arguments
-	while ((opt = getopt(argc, argv, "ic:hv:")) != -1 ) {
+	while ((opt = getopt_long(argc, argv, "ic:hv:", long_options, &option_index)) != -1 ) {
 		switch (opt) {
 			case 'i': {
 				interactive();
@@ -162,6 +166,12 @@ int main(int argc, char** argv) {
 				verbosity = atoi(optarg);
 				break;
 			}
+
+			case 0: {
+				printx(0, "CA2, under development from 2022 to ?. GitHub repository is https://github.com/generic-github-user/CA2. \n");
+				break;
+			}
+
 			default: {
 				exit(1);
 			}
