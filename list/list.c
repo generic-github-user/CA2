@@ -5,9 +5,9 @@
 // TODO: use number ranges for more efficient handling of fragmented lists
 
 // Initialize a new list
-list* new_llist(void** data, int size, int block_size) {
+list* new_llist(void** data, int size, int block_size, void (*pfunc)(void*)) {
 	list* L = malloc(sizeof(list));
-	*L = (list) {data, NULL, 0, size, block_size, 0};
+	*L = (list) {data, NULL, 0, size, block_size, 0, 0, pfunc};
 	return L;
 }
 
@@ -59,4 +59,19 @@ void llist_remove(list* L, int index) {
 	L->size --;
 	L->compute ++;
 	L->free_cells[L->nfree++] = index;
+}
+
+list* llist_map(list* L, void* (*f)(void*), int output) {
+	list* result = NULL;
+	if (output) { result = new_llist(NULL, 0, L->block_size, L->pfunc); }
+//	else { result = NULL; };
+	for (int i=0; i<L->size; i++) {
+		if (output) { llist_add(result, f(L->data[i])); }
+		else { f(L->data[i]); }
+	}
+	return result;
+}
+
+void llist_print(FILE* target, list* L) {
+	llist_map(L, (void*(*)(void*)) L->pfunc, 0);
 }
