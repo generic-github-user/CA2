@@ -9,7 +9,7 @@
 #include "../mainheaders.h"
 
 // should s be a state pointer?
-simulation* new_simulation(state* s, int steps) {
+simulation* new_simulation(state* s, int steps, manifold* world, rule* rule) {
 	simulation* sim = malloc(sizeof(simulation));
 	s->sim = sim;
 	// TODO: check that we aren't calling sizeof on pointers
@@ -34,6 +34,9 @@ simulation* new_simulation(state* s, int steps) {
 	sim->ages = new_array(2, s->data.shape);
 	// TODO: check this
 	//s.sim = &sim;
+
+	sim->world = world;
+	sim->rule = rule;
 
 //	printf("Created new simulation
 	return sim;

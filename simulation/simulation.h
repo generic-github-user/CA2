@@ -2,6 +2,7 @@
 #define SIMULATION_H
 // #include "state.h"
 #include "../array/array.h"
+#include "../rule/rule.h"
 
 struct state;
 typedef struct state state;
@@ -15,10 +16,12 @@ struct simulation {
 	array ages; // Number of steps for which each living cell has been alive
 	int size; // Amount of space dynamically alloated for members of this struct
 
+	manifold* world;
+	rule* rule;
 };
 typedef struct simulation simulation;
 
-simulation* new_simulation(state* s, int steps);
+simulation* new_simulation(state* s, int steps, manifold* world, rule* rule);
 void sim_data(simulation s);
 
 void free_sim(simulation*);
