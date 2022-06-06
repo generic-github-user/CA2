@@ -1,6 +1,6 @@
 struct session {
-	void** selection;
-	int space, compute;
+	void** selection; // The user's current selection
+	int space, compute; // Memory and operations used during this session
 };
 typedef struct session session;
 
