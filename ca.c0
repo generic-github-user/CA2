@@ -42,31 +42,6 @@ subtotalistic random_subtotal() {
 
 }
 
-
-
-
-
-// filter coordinate list?
-
-// A (relatively) tidy iterative solution using an array of counters is also possible
-
-//void slice_helper(array source, array target, array T, array U,
-//		array shape, array count, int i, int n) {
-//	if (i < n-1) {
-//		for (int j=T.data[i]; j<U.data[i]; j++) {
-//			slice_helper(source, target, T, U, i+1, n);
-//		}
-//	}
-//	else {
-//		for (int j=0; j<shape[i]; j++) {
-//			array_set(target, count, array_get(source,
-//			count.data[j] ++;
-//		}
-//	}
-//}
-
-
-
 // Generate geometrically defined chunks from a state
 state* extract_slices(state* s, int limit) {
 	// TODO
