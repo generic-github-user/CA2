@@ -16,7 +16,6 @@ This toolkit (titled CA2 for the time being) is a software framework to assist i
 - [About](#about)
   * [Project structure](#project-structure)
   * [More pedantic details](#more-pedantic-details)
-  * [Statistics](#statistics)
 
 <!-- tocstop -->
 
@@ -217,19 +216,3 @@ Generally, the following terms refer to the corresponding definitions specified 
 - *state*: A "frame" of a cellular automata simulation; sometimes also referred to as a pattern
 - *simulation*: A collection of states and associated information that allows the simulator to generate future states
 
-### Statistics
-
-
-cloc|github.com/AlDanial/cloc v 1.82
---- | ---
-
-Language|files|blank|comment|code
-:-------|-------:|-------:|-------:|-------:
-C|16|256|313|1499
-JSON|2|0|0|1014
-C/C++ Header|16|155|84|720
-Markdown|2|131|0|307
-Python|2|8|9|65
-make|1|5|6|20
---------|--------|--------|--------|--------
-SUM:|39|555|412|3625

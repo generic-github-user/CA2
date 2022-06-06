@@ -13,3 +13,5 @@ package*.json
 ca_log.txt
 pylog.txt
 pltdata.txt
+
+cloc-report.*
