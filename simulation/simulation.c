@@ -1,7 +1,9 @@
-/* Generated from simulation/simulation.c0 at 06/04/2022 */ 
+/* Generated from simulation/simulation.c0 at 06/05/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
+
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -9,6 +11,7 @@
 #include "../state/state.h"
 #include "../helpers/helpers.h"
 #include "../mainheaders.h"
+#include "../progress/progress.h"
 
 // should s be a state pointer?
 simulation* new_simulation(state* s, int steps) {
@@ -49,6 +52,8 @@ void free_sim(simulation* s) {
 	free(s);
 }
 
+// Update the computed fields of a simulation struct
+// (typically after evolving the simulation)
 void update_sim(simulation* s) {
 	s->size = 0;
 	for (int i=0; i<s->time; i++) {
@@ -88,6 +93,9 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 		printf("Simulating frame %i \n", i+1);
 	}
 	int neighbors = 0;
+
+	// Make a copy of the previous state to modify; this allows us to assume that
+	// a cell's value will persist unless explicitly modified by a rule
 	for (int x=0; x<s->shape[0]; x++) {
 		for (int y=0; y<s->shape[1]; y++) {
 			array_set(s -> data, vec(x, y, 0), array_get(p -> data, vec(x, y, 0)));
@@ -96,6 +104,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 		}
 	}
 
+	// Apply the simulation rule to the current state(s) to generate the next one
 	for (int x=0; x<s->shape[0]; x++) {
 		for (int y=0; y<s->shape[1]; y++) {
 			neighbors = count_neighbors(*p, x, y, cc);
@@ -111,6 +120,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 	}
 	update_state(s);
 
+	// Display current state
 	if (show) {
 		print_state(stdout, *s, unicode, color);
 		printf("\n");
@@ -122,13 +132,14 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 }
 
 // Simulate n steps of a cellular automaton (last four arguments are print settings)
-void simulate(simulation* sim, int n, int show, int level, int unicode, char color, int progress) {
-	int prog = 0;
+void simulate(simulation* sim, int n, int show, int level, int unicode, char color, int prog) {
 	printx(level+1, "");
 	printf("Simulating %i iterations\n", n);
 	printx(level+1, "");
 
-	if (progress) { printf("["); }
+	progress* P = malloc(sizeof(progress));
+	if (prog) { *P = new_progress((float) n-1, 50, level+1, 0); }
+
 	for (int i=0; i<n-1; i++) {
 		//state* p = &(sim->states)[(sim->time)-1];
 		state* p = (sim->states)[(sim->time)-1];
@@ -137,17 +148,10 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 			i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
-		if (progress) {
-			int q = 40 * ((double) i / (double) n);
-			if (q > prog) {
-				printf("#");
-				prog = q;
-			}
-		}
+		if (prog) { pstep(P, 1.0); }
 		update_sim(sim);
 		(sim -> compute) ++;
 	}
-	if (progress) { printf("]\n"); }
 
 	char temp[50];
 	sprintf(temp, "Simulation complete; compute usage was %i \n", sim -> compute);
