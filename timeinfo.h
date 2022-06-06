@@ -1,5 +1,4 @@
 #include <sys/time.h>
-#include <stdlib.h>
 
 struct timeinfo {
 	struct timeval created;
@@ -7,8 +6,4 @@ struct timeinfo {
 };
 typedef struct timeinfo timeinfo;
 
-timeinfo* init_time() {
-	timeinfo* t = (timeinfo*) malloc(sizeof(timeinfo));
-	gettimeofday(&t->created, NULL);
-	return t;
-}
+timeinfo* init_time();
