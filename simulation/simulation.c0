@@ -136,7 +136,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 	printx(level+1, "");
 
 	progress* P = malloc(sizeof(progress));
-	if (prog) { *P = new_progress((float) n-1, 50, level+1, unicode); }
+	if (prog) { *P = new_progress((float) n-1, 50, level+1, 0); }
 
 	for (int i=0; i<n-1; i++) {
 		//state* p = &(sim->states)[(sim->time)-1];

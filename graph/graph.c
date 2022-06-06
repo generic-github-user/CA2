@@ -1,6 +1,4 @@
-/* Generated from graph/graph.c at 06/03/2022 */ 
-/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
-/* Generated from ./graph/graph.c0 at 05/26/2022 */ 
+/* Generated from graph/graph.c0 at 06/05/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stddef.h>
 #include <stdlib.h>
@@ -15,6 +13,7 @@ graph* new_graph(node* nodes, int size) {
 	return G;
 }
 
+// Check if a graph struct contains a node
 int graph_contains(graph* G, node* n) {
 	for (int i=0; i<G->size; i++) {
 //		if (G->nodes[i] == n) {
@@ -26,6 +25,7 @@ int graph_contains(graph* G, node* n) {
 	return 0;
 }
 
+// Returns a new graph containing all the nodes within the specified distance of root node n
 graph* graph_neighborhood(graph* G, node* n, int degree) {
 	// we could also recursively or iteratively go through each node's adjacency list
 	graph* H = new_graph(n, 1);
