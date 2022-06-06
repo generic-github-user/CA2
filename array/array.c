@@ -111,10 +111,18 @@ void* reduce_array(array* a, void* (F)(void*, void*), void* init) {
 	return output;
 }
 
+array binop_array(array a, array b, void* (op)(void*, void*)) {
+	array output = new_array(a.rank, a.shape);
+	for (int i=0; i<a.size; i++) {
+		output.data[i] = (long) op((void*) (long) a.data[i], (void*) (long) b.data[i]);
+	}
+	return output;
+}
+
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
 // Create a statically typed function that reduces an array to a single value
-/* Imported from ./array/array_reduce.ct at 06/06/2022, 14:05:29 */ 
+/* Imported from ./array/array_reduce.ct at 06/06/2022, 14:25:53 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -139,7 +147,7 @@ void* array_max(array* a) {
 	return reduce_array(a, max_x, (void*) (long) a->data[0]);
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -148,7 +156,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -157,7 +165,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -166,7 +174,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -175,7 +183,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\

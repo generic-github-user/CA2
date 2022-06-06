@@ -109,6 +109,14 @@ void* reduce_array(array* a, void* (F)(void*, void*), void* init) {
 	return output;
 }
 
+array binop_array(array a, array b, void* (op)(void*, void*)) {
+	array output = new_array(a.rank, a.shape);
+	for (int i=0; i<a.size; i++) {
+		output.data[i] = (long) op((void*) (long) a.data[i], (void*) (long) b.data[i]);
+	}
+	return output;
+}
+
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
 // Create a statically typed function that reduces an array to a single value

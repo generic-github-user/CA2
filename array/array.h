@@ -27,6 +27,7 @@ int array_get(array a, vector z);
 void array_set(array a, vector z, int value);
 
 void* reduce_array(array* a, void* (F)(void*, void*), void* init);
+array binop_array(array, array, void*(op)(void*, void*));
 
 int array_sum(array a);
 double array_mean(array a);
