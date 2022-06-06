@@ -13,7 +13,7 @@ ca: $(obj)
 	gcc -g -c $< -o $@
 commands.c: $(wildcard *.ct)
 %.c: %.c0# $(templates)
-	python3.9 build.py $@
+	python3.9 build.py $<
 
 # %.md: %.src.md
 #%.md:# %.src.md# FORCE
