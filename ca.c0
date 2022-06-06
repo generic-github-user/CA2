@@ -1,18 +1,10 @@
 #include "mainheaders.h"
 
-// TODO: provide tools for mutating patterns
-// TODO: log files
-// TODO: add support for long-term experiment databases
-// TODO: add function for backtracing cellular automata states
-// TODO: add array views & semi-mutable data structures
-// TODO: use ndarray structs to store arbitrary collections of states/simulations?
-// TODO: add Collection type?
-// TODO: are nested array structs viable?
-// TODO: add unit handling
-// TODO: track all previous selections to permit deallocation?
 
 
 const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
+FILE* logfile = NULL;
+int verbosity = 6;
 
 // Example commands
 
@@ -25,7 +17,6 @@ const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 // snowflake > trace cgol > select -n 20 > write backtracking.txt
 
 int compute;
-FILE* logfile;
 
 // Clip an integer to a range (modify in-place)
 int bound(int* x, int a, int b) {
@@ -111,9 +102,18 @@ state* extract_slices(state* s, int limit) {
 	end: return slices;
 }
 
-
-int main() {
+// Start "interactive mode", a REPL-style command shell in which the user can enter commands to create, view, and manipulate objects
+void interactive() {
 	printf("ca.c loaded successfully \n");
+	printf("Entering interactive mode \n");
+
+	// Example commands that can be run with "ex#"
+	char* ex[] = {
+		"randomstate -n 20 > simulate -i 200 > collapse > write test1.txt",
+		"randomstate > simulate > get population > plot",
+		"randomstate > simulate > reduce sum > plot"
+	};
+
 	// Set random seed
 	srand(time(NULL));
 
@@ -122,22 +122,57 @@ int main() {
 
 
 	//char input[200];
+	// Get command from stdin
 	char* input = calloc(200, sizeof(char));
 	fgets(input, 200, stdin);
-	if (streq(input, "test1\n")) {
-		char* r = "randomstate -n 20 > simulate -i 200 > collapse > write test1.txt";
-		process_command(r, logfile);
-	}
-	else if (streq(input, "ex1\n")) {
-		strcpy(input, "randomstate > simulate > get population > plot");
+	if (strncmp("ex", input, 2) == 0) {
+		strcpy(input, ex[atoi(input+2)]);
 		process_command(input, logfile);
-	}
-	else if (streq(input, "ex2\n")) {
-		strcpy(input, "randomstate > simulate > reduce sum > plot");
-		process_command(input, logfile);
-	}
-	else {
+	} else {
 		process_command(input, logfile);
 	}
 	fclose(logfile);
+}
+
+int main(int argc, char** argv) {
+	static struct option long_options[] = {
+		{"about", no_argument, 0, 0}
+	};
+	char* optvalue = NULL;
+	char opt;
+	int option_index = 0;
+
+	// Loop through command-line arguments
+	while ((opt = getopt_long(argc, argv, "ic:hv:", long_options, &option_index)) != -1 ) {
+		switch (opt) {
+			case 'i': {
+				interactive();
+				break;
+			}
+			case 'c': {
+//				process_command(optarg, NULL);
+				optvalue = optarg;
+//				optvalue = argopt;
+				process_command(optvalue, NULL);
+				break;
+			}
+			case 'h': {
+				printx(0, "Documentation of available commands can be found in the project README: https://github.com/generic-github-user/CA2/blob/master/README.md. The file also has subsections with more information about command options, types, and the structure of CA2. \n");
+				break;
+			}
+			case 'v': {
+				verbosity = atoi(optarg);
+				break;
+			}
+
+			case 0: {
+				printx(0, "CA2, under development from 2022 to ?. GitHub repository is https://github.com/generic-github-user/CA2. \n");
+				break;
+			}
+
+			default: {
+				exit(1);
+			}
+		}
+	}
 }

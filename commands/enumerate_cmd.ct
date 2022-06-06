@@ -12,8 +12,8 @@ while (i < opt_num) {
 	printx(3, "Generating state %i\n", i);
 
 	z = 0;
-	s = selection[i];
 	selection[i] = (state*) clone_state(*((state*) selection[i-1]));
+	s = selection[i];
 	while ((s->data).data[z] == 1) {
 		(s->data).data[z] = 0;
 		z ++;
@@ -22,6 +22,7 @@ while (i < opt_num) {
 		}
 	}
 	(s->data).data[z] = 1;
+	update_state(s);
 	i ++;
 }
 selection_type = "state_set";

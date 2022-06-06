@@ -107,7 +107,7 @@ void process_command(char* cmd, FILE* log) {
 			}
 
 			if (streq(command, "randomstate")) {
-				/* Imported from ./commands/randomstate_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/randomstate_cmd.ct at 06/04/2022 */ 
 printx(2, "Generating random state...\n");
 if (opt_num == 1) {
 	selection = malloc(1);
@@ -128,7 +128,7 @@ else {
 			}
 			// TODO: exploit symmetries and pattern components for more compact storage/representation?
 			else if (streq(command, "enumerate")) {
-				/* Imported from ./commands/enumerate_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/enumerate_cmd.ct at 06/04/2022 */ 
 printx(2, "Enumerating states...");
 int i = 1;
 int z = 0;
@@ -143,8 +143,8 @@ while (i < opt_num) {
 	printx(3, "Generating state %i\n", i);
 
 	z = 0;
-	s = selection[i];
 	selection[i] = (state*) clone_state(*((state*) selection[i-1]));
+	s = selection[i];
 	while ((s->data).data[z] == 1) {
 		(s->data).data[z] = 0;
 		z ++;
@@ -153,6 +153,7 @@ while (i < opt_num) {
 		}
 	}
 	(s->data).data[z] = 1;
+	update_state(s);
 	i ++;
 }
 selection_type = "state_set";
@@ -160,7 +161,7 @@ selection_type = "state_set";
 
 			}
 			else if (streq(command, "write")) {
-				/* Imported from ./commands/write_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/write_cmd.ct at 06/04/2022 */ 
 printx(2, "Writing to output file [%s] \n", opt);
 FILE* outfile = fopen(opt, "w");
 if (strcmp(selection_type, "state") == 0) {
@@ -182,7 +183,7 @@ complete = 1;
 
 			}
 			else if (streq(command, "print")) {
-				/* Imported from ./commands/print_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/print_cmd.ct at 06/04/2022 */ 
 if (streq(selection_type, "simulation")) {
 	sim_summary((simulation*) selection);
 }
@@ -194,7 +195,7 @@ else if (streq(selection_type, "simulation_set")) {
 
 			}
 			else if (streq(command, "render")) {
-				/* Imported from ./commands/render_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/render_cmd.ct at 06/04/2022 */ 
 printx(2, "Rendering selected state to image...");
 if (streq(selection_type, "state")) {
 	write_image(*((state*) selection), opt_color);
@@ -207,7 +208,7 @@ if (streq(selection_type, "state")) {
 				}
 			}
 			else if (streq(command, "simulate")) {
-				/* Imported from ./commands/simulate_cmd.ct at 05/26/2022 */ 
+				/* Imported from ./commands/simulate_cmd.ct at 06/04/2022 */ 
 printx(2, "Executing simulation\n");
 
 // TODO: simulate dynamic dispatch
@@ -235,21 +236,28 @@ else if (streq(selection_type, "state_set")) {
 
 			}
 			else if (streq(command, "collapse")) {
-				printx(2, "Collapsing simulation(s)\n");
+				printx(2, "Collapsing simulation(s) at %p\n", selection);
+				printx(2, "Selection type: %s \n", selection_type);
+
 				if (streq(selection_type, "simulation_set")) {
-					selection = calloc(opt_num, sizeof(state));
+					void** nselection = calloc(opt_num, sizeof(state*));
 					for (int j=0; j<opt_num; j++) {
 						//simulation sim = simset_selection[j];
 						simulation* sim = selection[j];
 						printx(2, "Getting state at index %i\n", sim -> time);
 						// should this account for the size of a state struct?
-						selection[j] = (sim -> states) + (sim -> time) - 2;
+						nselection[j] = *((sim -> states) + (sim -> time) - 2);
 					}
+					selection = nselection;
 					selection_type = "state_set";
 				}
 				else if (streq(selection_type, "simulation")) {
 					simulation* sim = *selection;
-					*selection = (sim -> states) + (sim -> time) - 2;
+					// ?
+					selection = malloc(sizeof(state*));
+					//*selection = (sim -> states) + (sim -> time) - 2;
+					*selection = *((sim -> states) + (sim -> time) - 2);
+					selection_type = "state";
 				}
 				else {
 					printx(2, "Command not supported for this data type\n");
@@ -315,6 +323,7 @@ else if (streq(selection_type, "state_set")) {
 				exit(1);
 			}
 
+
 			if (token == NULL) {
 				complete = 1;
 			}
@@ -357,4 +366,13 @@ else if (streq(selection_type, "state_set")) {
 		printx(2, "getting next token...\n");
 		token = strtok(NULL, " ");
 	} while (!complete);
+
+	if (streq(selection_type, "state")) {
+		print_state(stdout, *((state*) *selection), 1, 'a');
+	}
+	if (streq(selection_type, "state_set")) {
+		for (int i=0; i<opt_num; i++) {
+			print_state(stdout, *((state*) selection[i]), 1, 'a');
+		}
+	}
 }

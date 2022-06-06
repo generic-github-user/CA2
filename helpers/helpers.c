@@ -11,6 +11,7 @@
 #include ".././mainheaders.h"
 
 extern FILE* logfile;
+extern int verbosity;
 
 int inrange(int x, int n, int m) {
 	return x >= n && x <= m;
@@ -20,13 +21,17 @@ int inrange(int x, int n, int m) {
 void printx(int level, const char* fmt, ...) {
 //	printf("fmt: %s", fmt);
 //void printx(int level, char* text) {
+	if (level >= verbosity) {
+		return;
+	}
+
 	va_list args;
 	va_start(args, fmt);
 
 	char* indent = "  ";
 	for (int i=0; i<level; i++) {
 		printf("%s", indent);
-		fprintf(logfile, "%s", indent);
+		if (logfile != NULL) { fprintf(logfile, "%s", indent); }
 	}
 	int signal = 0;
 	while (*fmt != '\0') {
@@ -35,18 +40,18 @@ void printx(int level, const char* fmt, ...) {
 			signal = 1;
 		}
 //		else if (signal && *fmt == 's') {
-		else if (strchr("cis", *fmt) != NULL & signal) {
+		else if (strchr("cisp", *fmt) != NULL & signal) {
 			char* text = va_arg(args, char*);
 			if (text == NULL) { text = "NULL"; }
 			char ft[3];
 			snprintf(ft, 3, "%%%c", *fmt);
 
 			printf(ft, text);
-			fprintf(logfile, ft, text);
+			if (logfile != NULL) { fprintf(logfile, ft, text); }
 			signal = 0;
 		} else {
 			printf("%c", *fmt);
-			fprintf(logfile, "%c", *fmt);
+			if (logfile != NULL) { fprintf(logfile, "%c", *fmt); }
 		}
 		++fmt;
 	}

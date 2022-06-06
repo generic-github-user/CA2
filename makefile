@@ -11,9 +11,10 @@ ca: $(obj)
 %.o: %.c
 	rm -f $@
 	gcc -g -c $< -o $@
-commands.c: $(wildcard *.ct)
+commands/commands.c: $(wildcard commands/*.ct)
 %.c: %.c0# $(templates)
-	python3.9 build.py $@
+	python3.9 build.py $<
+
 
 # %.md: %.src.md
 #%.md:# %.src.md# FORCE

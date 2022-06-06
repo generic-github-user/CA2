@@ -11,7 +11,7 @@
 // Initialize a new graph object, which wraps node structsreal
 graph* new_graph(node* nodes, int size) {
 	graph* G = malloc(sizeof(graph));
-	*G = (graph) {nodes, NULL, size, 0};
+	*G = (graph) {nodes, NULL, size, 0, 0};
 	return G;
 }
 
@@ -21,6 +21,7 @@ int graph_contains(graph* G, node* n) {
 		if (memcmp(G->nodes+i, n, sizeof(node)) == 0) {
 			return 1;
 		}
+		G->compute ++;
 	}
 	return 0;
 }
@@ -38,6 +39,8 @@ graph* graph_neighborhood(graph* G, node* n, int degree) {
 				H->nodes = (node*) realloc(H->nodes, (H->size+1)*sizeof(node));
 				(H->nodes)[H->size++] = *(G->edges[i][1]);
 			}
+			G->compute ++;
+			H->compute ++;
 		}
 	}
 	return H;
@@ -71,9 +74,11 @@ void add_in(node* a, node* b, graph* G) {
 	(b->out)[b->outdegree] = a;
 	b->outdegree ++;
 
-	G->edges = (node*(*)[2]) realloc(G->edges, (size_t) (G->e+1)*2);
-	// TODO: can this be cleaned up? using something like (node(*)[2]) {a, b} threw compiler errors
-	(G->edges)[G -> e ++][0] = a;
+	if (G != NULL) {
+		G->edges = (node*(*)[2]) realloc(G->edges, (size_t) (G->e+1)*2);
+		// TODO: can this be cleaned up? using something like (node(*)[2]) {a, b} threw compiler errors
+		(G->edges)[G -> e ++][0] = a;
+	}
 }
 
 // Initialize a linked list based on the graph API

@@ -1,6 +1,4 @@
-/* Generated from state/state.c at 06/03/2022 */ 
-/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
-/* Generated from ./state/state.c0 at 05/26/2022 */ 
+/* Generated from state/state.c0 at 06/04/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,13 +23,16 @@ state* new_state(array data, simulation* sim) {
 
 void free_state(state* s) {
 //	free_array(s -> data);
+	free(s -> name);
 	free(s);
 }
 
+// Recompute state statistics and generated fields
 void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// TODO: should s -> data be a pointer?
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
+	s -> name = state_name(s);
 }
 
 // Generate a random state
@@ -64,9 +65,58 @@ char* state_summary(state s) {
 }
 
 char* state_info(state s) {
-	char* result = calloc(100, sizeof(char));
-	snprintf(result, 100, CYAN "State { population: %i, density: %f, data: %s }" RESET, s.population, s.density, array_info(s.data));
+	char* result = calloc(150, sizeof(char));
+	snprintf(result, 150, CYAN "State { name: %s, population: %i, density: %f, data: %s }" RESET, s.name, s.population, s.density, array_info(s.data));
 	return result;
+}
+
+// From https://stackoverflow.com/a/34035474
+char *str_reverse_in_place(char *str, int len)
+{
+    char *p1 = str;
+    char *p2 = str + len - 1;
+
+    while (p1 < p2) {
+        char tmp = *p1;
+        *p1++ = *p2;
+        *p2-- = tmp;
+    }
+
+    return str;
+}
+
+// Generate a string representing the given state
+char* state_name(state* s) {
+	// Convert the state to a compact integer representation
+	unsigned long int N = 0;
+	unsigned long int deg = 1;
+	for (int a=0; a<s->shape[0]; a++) {
+		for (int b=0; b<s->shape[1]; b++) {
+			N += array_get(s->data, vec(a, b, 0)) * deg;
+			deg *= 2;
+		}
+	}
+
+	// All alphanumeric ASCII characters; specify additional ranges as needed
+	// int char_ranges[3][2] = { {48, 57}, {65, 90}, {97, 122} };
+	unsigned int char_ranges[1][2] = {{65,90}};
+	unsigned int base = 0;
+	for (int i=0; i<1; i++) {
+		base += char_ranges[i][1] - char_ranges[i][0] + 1;
+	}
+
+	// Generate the name string
+	char* name = malloc(30);
+	int j = 0;
+	while (N > 0) {
+		name[j] = char_ranges[0][0] + (unsigned int) (N % base);
+		N /= base;
+		j ++;
+	}
+	name[j] = '\0';
+	str_reverse_in_place(name, j-1);
+
+	return name;
 }
 
 // Count neighbor cells given a state and coordinate
@@ -89,6 +139,7 @@ int count_neighbors(state source, int x, int y, int* cc) {
 	return neighbors;
 }
 
+// Generate a new state where each position in the output corresponds to the number of neighbors that cell has in the input (s)
 state* map_neighbors(state s, int* cc) {
 	int neighbors;
 	state* counts = new_state(new_array(2, s.data.shape), NULL);
@@ -102,10 +153,12 @@ state* map_neighbors(state s, int* cc) {
 	return counts;
 }
 
-void print_state(state s, int unicode, char color) {
+void print_state(FILE* target, state s, int unicode, char color) {
 	// printf("Total compute: %i \n", compute);
-	printf("Population: %i \n", array_sum(s.data));
-	printf("\n");
+	fprintf(target, "Name: %s \n", s.name);
+	fprintf(target, "Population: %i \n", s.population);
+	fprintf(target, "Density: %f \n", s.density);
+	fprintf(target, "\n");
 	int c = 0;
 	for (int x=0; x<s.shape[0]; x++) {
 		for (int y=0; y<s.shape[1]; y++) {
@@ -115,16 +168,16 @@ void print_state(state s, int unicode, char color) {
 				if (age > 1) {
 					if (age > 7) { age = 7; }
 					c = 1;
-					printf("%s", COLOR_ORDER[age-2]);
+					fprintf(target, "%s", COLOR_ORDER[age-2]);
 				}
 			}
-			printf(
+			fprintf(target,
 				array_get(s.data, vec(x, y, 0)) ?
 				(unicode ? "██" : "*") :
 				(unicode ? "  " : " "));
-			if (c) { printf("%s", RESET); }
+			if (c) { fprintf(target, "%s", RESET); }
 		}
-		printf("\n");
+		fprintf(target, "\n");
 	}
 }
 
@@ -215,7 +268,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 00:46:03 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/04/2022, 18:50:19 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -227,7 +280,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 05/26/2022, 00:46:03 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/04/2022, 18:50:19 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -240,7 +293,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 05/26/2022, 00:46:03 */ 
+/* Imported from ./state/extract.ct at 06/04/2022, 18:50:19 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));
