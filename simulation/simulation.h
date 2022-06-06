@@ -2,6 +2,7 @@
 #define SIMULATION_H
 // #include "state.h"
 #include "../array/array.h"
+#include "../timeinfo.h"
 
 struct state;
 typedef struct state state;
@@ -13,6 +14,7 @@ struct simulation {
 	array ages;
 	// Amount of space dynamically alloated for members of this struct
 	int size;
+	timeinfo t;
 };
 typedef struct simulation simulation;
 
