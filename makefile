@@ -15,11 +15,14 @@ commands/commands.c: $(wildcard commands/*.ct)
 %.c: %.c0# $(templates)
 	python3.9 build.py $<
 
-
 # %.md: %.src.md
 #%.md:# %.src.md# FORCE
-$(md): .FORCE
+#$(md): .FORCE
+%.md: %.src.md
 	echo $@
+	cp $< $@
+	echo "### Statistics\n" >> $@
+	cloc * --exclude-dir node_modules --exclude-ext txt --md --hide-rate --quiet >> $@
 	markdown-toc -i $@
 #	markdown-toc $< > $@
 .FORCE: ;

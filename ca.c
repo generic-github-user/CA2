@@ -44,14 +44,7 @@ subtotalistic random_subtotal() {
 }
 
 
-struct session {
 
-};
-typedef struct session session;
-
-session new_session() {
-
-}
 
 
 // filter coordinate list?
@@ -119,7 +112,7 @@ void interactive() {
 	// Set random seed
 	srand(time(NULL));
 
-	compute = 0;
+	session mainsession = new_session();
 	logfile = fopen("ca_log.txt", "a");
 
 

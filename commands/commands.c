@@ -11,6 +11,9 @@
 #include "../image/image.h"
 #include "../plot/plot.h"
 #include "../mainheaders.h"
+#include "../session.h"
+
+extern session mainsession;
 
 // Check if a string is a valid command name
 int iscommand(char* text) {
@@ -69,12 +72,12 @@ void process_command(char* cmd, FILE* log) {
 	char optionc = '\0';
 
 	// could this be a single [void] pointer?
-	void** selection;
-	void** set_selection;
-
+	// void** selection;
+	void** selection = mainsession.selection; // to avoid insanity
 	char* selection_type;
 
 	char* opt;
+	// TODO: find better way to organize option variables
 	int opt_shape[2] = {30, 30};
 	int opt_num = 1;
 	int opt_iterations = 100;

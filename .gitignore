@@ -14,4 +14,4 @@ ca_log.txt
 pylog.txt
 pltdata.txt
 
-cloc*
+cloc-report.*

@@ -23,6 +23,7 @@
 #include "rule/rule.h"
 #include "helpers/helpers.h"
 #include "commands/commands.h"
+#include "session.h"
 
 // Based on code from https://stackoverflow.com/a/3219471
 #define RED     "\x1b[31m"

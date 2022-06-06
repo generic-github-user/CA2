@@ -2,8 +2,10 @@
 #define STATE_H
 
 #include <stdio.h>
+#include <sys/time.h>
 #include "../simulation/simulation.h"
 #include "../array/array.h"
+#include "../timeinfo.h"
 
 // struct simulation;
 // typedef struct simulation simulation;
@@ -17,6 +19,8 @@ struct state {
 	int* shape;
 	int size;
 	char* name;
+//	timeinfo* t;
+	timeinfo* time;
 };
 typedef struct state state;
 
