@@ -9,4 +9,4 @@ struct progress {
 typedef struct progress progress;
 
 progress new_progress(float, int, int, int);
-progress pstep(progress, float);
+progress* pstep(progress*, float);

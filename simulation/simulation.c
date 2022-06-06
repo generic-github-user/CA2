@@ -133,11 +133,12 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 
 // Simulate n steps of a cellular automaton (last four arguments are print settings)
 void simulate(simulation* sim, int n, int show, int level, int unicode, char color, int prog) {
-	progress* P = malloc(sizeof(progress));
-	if (prog) { *P = new_progress((float) n-1, 50, level+1, unicode); }
 	printx(level+1, "");
 	printf("Simulating %i iterations\n", n);
 	printx(level+1, "");
+
+	progress* P = malloc(sizeof(progress));
+	if (prog) { *P = new_progress((float) n-1, 50, level+1, unicode); }
 
 	for (int i=0; i<n-1; i++) {
 		//state* p = &(sim->states)[(sim->time)-1];
@@ -147,7 +148,7 @@ void simulate(simulation* sim, int n, int show, int level, int unicode, char col
 			i, show, &(sim -> compute), *sim, unicode, color);
 
 		(sim -> time) ++;
-		if (prog) { pstep(*P, 1); }
+		if (prog) { pstep(P, 1.0); }
 		update_sim(sim);
 		(sim -> compute) ++;
 	}
