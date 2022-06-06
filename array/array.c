@@ -126,7 +126,7 @@ array binop_array(array a, array b, void* (op)(void*, void*)) {
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
 // Create a statically typed function that reduces an array to a single value
-/* Imported from ./array/array_reduce.ct at 06/06/2022, 14:31:19 */ 
+/* Imported from ./array/array_reduce.ct at 06/06/2022, 15:10:59 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -151,7 +151,7 @@ void* array_max(array* a) {
 	return reduce_array(a, max_x, (void*) (long) a->data[0]);
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 15:10:59 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -160,7 +160,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 15:10:59 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -169,7 +169,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 15:10:59 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -178,7 +178,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 15:10:59 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -187,7 +187,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 15:10:59 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -213,30 +213,17 @@ array array_slice(array a, array T, array U, int rank) {
 	array shape = array_bdiff(U, T);
 	array slice = new_array(rank, shape.data);
 
-	//int* s = malloc(sizeof(int));
-	array counta = new_array(1, &rank);
-	array countb = copy_array(T);
-//	slice_helper(a, slice, T, U, shape, count, 0, rank);
-	int i=0;
-	//int j=0;
-	// are two counters/an inner while-loop needed?
+	array count = copy_array(T);
+	int i = 0;
 	while (i < rank) {
-		if (counta.data[i] < shape.data[i]) {
-			counta.data[i] ++; countb.data[i] ++;
-			array_set(
-				slice,
-				array_to_vec(counta),
-				array_get(a, array_to_vec(countb))
-			);
+		if (count.data[i] < U.data[i]) {
+			count.data[i] ++;
+			array_set(slice, array_to_vec(array_bdiff(count, T)),
+				array_get(a, array_to_vec(count)));
+			i = 0;
 		} else {
-			counta.data[i] = 0;
-			countb.data[i] = T.data[i];
-			for (int j=0; j<rank; j++) {
-				if (counta.data[j] < shape.data[i]) {
-					counta.data[j] ++; countb.data[j] ++;
-					break;
-				}
-			}
+			count.data[i] = T.data[i];
+			i ++;
 		}
 	}
 	return slice;

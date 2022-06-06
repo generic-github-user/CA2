@@ -163,30 +163,17 @@ array array_slice(array a, array T, array U, int rank) {
 	array shape = array_bdiff(U, T);
 	array slice = new_array(rank, shape.data);
 
-	//int* s = malloc(sizeof(int));
-	array counta = new_array(1, &rank);
-	array countb = copy_array(T);
-//	slice_helper(a, slice, T, U, shape, count, 0, rank);
-	int i=0;
-	//int j=0;
-	// are two counters/an inner while-loop needed?
+	array count = copy_array(T);
+	int i = 0;
 	while (i < rank) {
-		if (counta.data[i] < shape.data[i]) {
-			counta.data[i] ++; countb.data[i] ++;
-			array_set(
-				slice,
-				array_to_vec(counta),
-				array_get(a, array_to_vec(countb))
-			);
+		if (count.data[i] < U.data[i]) {
+			count.data[i] ++;
+			array_set(slice, array_to_vec(array_bdiff(count, T)),
+				array_get(a, array_to_vec(count)));
+			i = 0;
 		} else {
-			counta.data[i] = 0;
-			countb.data[i] = T.data[i];
-			for (int j=0; j<rank; j++) {
-				if (counta.data[j] < shape.data[i]) {
-					counta.data[j] ++; countb.data[j] ++;
-					break;
-				}
-			}
+			count.data[i] = T.data[i];
+			i ++;
 		}
 	}
 	return slice;
