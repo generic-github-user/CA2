@@ -10,6 +10,7 @@
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <getopt.h>
 
 #include <inttypes.h>
 #include "misc2/spng.h"

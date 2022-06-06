@@ -1,4 +1,4 @@
-/* Generated from simulation/simulation.c at 06/05/2022 */
+/* Generated from simulation/simulation.c0 at 06/04/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -112,7 +112,7 @@ void step(state* s, state* p, int i, int show, int* cc, simulation sim, int unic
 	update_state(s);
 
 	if (show) {
-		print_state(*s, unicode, color);
+		print_state(stdout, *s, unicode, color);
 		printf("\n");
 	}
 	fflush(stdout);
