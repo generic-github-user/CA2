@@ -1,4 +1,6 @@
-/* Generated from ca.c0 at 06/04/2022 */ 
+/* Generated from ca.c at 06/03/2022 */ 
+/* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
+/* Generated from ./ca.c0 at 05/26/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include "mainheaders.h"
 
@@ -137,11 +139,15 @@ void interactive() {
 }
 
 int main(int argc, char** argv) {
+	static struct option long_options[] = {
+		{"about", no_argument, 0, 0}
+	};
 	char* optvalue = NULL;
 	char opt;
+	int option_index = 0;
 
 	// Loop through command-line arguments
-	while ((opt = getopt(argc, argv, "ic:hv:")) != -1 ) {
+	while ((opt = getopt_long(argc, argv, "ic:hv:", long_options, &option_index)) != -1 ) {
 		switch (opt) {
 			case 'i': {
 				interactive();
@@ -162,6 +168,12 @@ int main(int argc, char** argv) {
 				verbosity = atoi(optarg);
 				break;
 			}
+
+			case 0: {
+				printx(0, "CA2, under development from 2022 to ?. GitHub repository is https://github.com/generic-github-user/CA2. \n");
+				break;
+			}
+
 			default: {
 				exit(1);
 			}
