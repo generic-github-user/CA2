@@ -2,11 +2,13 @@
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 // #include "vector.h"
 #include "array.h"
 #include "../helpers/helpers.h"
 #include "../mainheaders.h"
+#include "../timeinfo.h"
 
 
 
@@ -33,6 +35,7 @@ array new_array(int rank, int* shape) {
 	// a.indices = new_array(
 	a.indices = new_list(NULL);
 	a.labels = calloc(rank, sizeof(char*));
+	a.time = init_time();
 
 	fill_array(a, 0);
 	return a;
@@ -49,6 +52,7 @@ void free_array(array* a) {
 
 void update_array(array* a) {
 	a->space = (a->size+a->rank) * sizeof(int) + (a->indices->size);
+	gettimeofday(&a->time->modified, NULL);
 }
 
 array vec_to_array(vector v) {
@@ -122,7 +126,7 @@ array binop_array(array a, array b, void* (op)(void*, void*)) {
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
 // Create a statically typed function that reduces an array to a single value
-/* Imported from ./array/array_reduce.ct at 06/06/2022, 14:25:53 */ 
+/* Imported from ./array/array_reduce.ct at 06/06/2022, 14:31:19 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -147,7 +151,7 @@ void* array_max(array* a) {
 	return reduce_array(a, max_x, (void*) (long) a->data[0]);
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -156,7 +160,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -165,7 +169,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -174,7 +178,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -183,7 +187,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/06/2022, 14:25:53 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:31:19 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\

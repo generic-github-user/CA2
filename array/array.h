@@ -4,6 +4,7 @@
 
 #include "../vector/vector.h"
 #include "../graph/graph.h"
+#include "../timeinfo.h"
 
 // A general array struct for multidimensional arrays
 struct array {
@@ -15,6 +16,7 @@ struct array {
 	int compute;
 	node* indices;
 	char** labels;
+	timeinfo* time;
 };
 typedef struct array array;
 

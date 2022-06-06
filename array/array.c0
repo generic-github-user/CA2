@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 // #include "vector.h"
 #include "array.h"
 #include "../helpers/helpers.h"
 #include "../mainheaders.h"
+#include "../timeinfo.h"
 
 
 
@@ -31,6 +33,7 @@ array new_array(int rank, int* shape) {
 	// a.indices = new_array(
 	a.indices = new_list(NULL);
 	a.labels = calloc(rank, sizeof(char*));
+	a.time = init_time();
 
 	fill_array(a, 0);
 	return a;
@@ -47,6 +50,7 @@ void free_array(array* a) {
 
 void update_array(array* a) {
 	a->space = (a->size+a->rank) * sizeof(int) + (a->indices->size);
+	gettimeofday(&a->time->modified, NULL);
 }
 
 array vec_to_array(vector v) {
