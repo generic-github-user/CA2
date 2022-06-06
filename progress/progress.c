@@ -18,6 +18,9 @@ progress new_progress(float total, int size, int level, int unicode) {
 
 void prender(progress* P, int pct) {
 	printf("\r");
+	if (pct) {
+		snprintf(P->text + P->size*usize + 3, 8, "%.2f%%", P->current / P->total * 100);
+	}
 	printx(P->level, "%s", P->text);
 	fflush(stdout);
 }
