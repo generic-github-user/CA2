@@ -6,6 +6,7 @@
 
 const char* COLOR_ORDER[6] = { RED, YELLOW, GREEN, CYAN, BLUE, MAGENTA };
 FILE* logfile = NULL;
+session mainsession;
 int verbosity = 6;
 
 // Example commands
@@ -112,7 +113,6 @@ void interactive() {
 	// Set random seed
 	srand(time(NULL));
 
-	session mainsession = new_session();
 	logfile = fopen("ca_log.txt", "a");
 
 
@@ -130,6 +130,8 @@ void interactive() {
 }
 
 int main(int argc, char** argv) {
+	mainsession = new_session();
+
 	static struct option long_options[] = {
 		{"about", no_argument, 0, 0}
 	};
