@@ -25,12 +25,13 @@ array vec_to_array(vector v);
 int get_coord(array a, vector z);
 int array_get(array a, vector z);
 void array_set(array a, vector z, int value);
-void* reduce_array(array a, void* (F)(void*, void*), void* init);
+
+void* reduce_array(array* a, void* (F)(void*, void*), void* init);
 
 int array_sum(array a);
 double array_mean(array a);
-int array_min(array* a);
-int array_max(array* a);
+void* array_min(array* a);
+void* array_max(array* a);
 
 array array_bsum(array a, array b);
 array array_bdiff(array a, array b);

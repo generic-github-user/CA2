@@ -100,10 +100,11 @@ void array_set(array a, vector z, int value) {
 
 // void map_array(array a, )
 
-void* reduce_array(array a, void* (F)(void*, void*), void* init) {
+void* reduce_array(array* a, void* (F)(void*, void*), void* init) {
 	void* output = init;
-	for (int i=0; i<a.size; i++) {
-		output = F(output, &a.data[i]);
+	for (int i=0; i<a->size; i++) {
+		output = F(output, a->data+i);
+		a->compute ++;
 	}
 	return output;
 }
@@ -116,26 +117,16 @@ double array_mean(array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
-int array_min(array* a) {
-	int output = a->data[0];
-	for (int i=0; i<a->size; i++) {
-		if (a->data[i] < output) {
-			output = a->data[i];
-		}
-		a -> compute ++;
-	}
-	return output;
+void* min_x(void* a, void* b) { return a < b ? a : b; }
+void* max_x(void* a, void* b) { return a > b ? a : b; }
+
+void* array_min(array* a) {
+	// evil casting hack that will definitely bite me later
+	return reduce_array(a, min_x, (void*) (long) a->data[0]);
 }
 
-int array_max(array* a) {
-	int output = a->data[0];
-	for (int i=0; i<a->size; i++) {
-		if (a->data[i] > output) {
-			output = a->data[i];
-		}
-		a -> compute ++;
-	}
-	return output;
+void* array_max(array* a) {
+	return reduce_array(a, max_x, (void*) (long) a->data[0]);
 }
 
 $ARRAY_OP(name:array_bsum,op:+)$

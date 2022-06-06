@@ -1,4 +1,4 @@
-/* Generated from array/array.c0 at 06/05/2022 */ 
+/* Generated from array/array.c0 at 06/06/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdio.h>
 #include <stdlib.h>
@@ -102,10 +102,11 @@ void array_set(array a, vector z, int value) {
 
 // void map_array(array a, )
 
-void* reduce_array(array a, void* (F)(void*, void*), void* init) {
+void* reduce_array(array* a, void* (F)(void*, void*), void* init) {
 	void* output = init;
-	for (int i=0; i<a.size; i++) {
-		output = F(output, &a.data[i]);
+	for (int i=0; i<a->size; i++) {
+		output = F(output, a->data+i);
+		a->compute ++;
 	}
 	return output;
 }
@@ -113,7 +114,7 @@ void* reduce_array(array a, void* (F)(void*, void*), void* init) {
 // void* sum(int a, int b) { return (void*) a + b; }
 // int array_sum(array a) { return (int) reduce_array(a, sum, 0); }
 // Create a statically typed function that reduces an array to a single value
-/* Imported from ./array/array_reduce.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./array/array_reduce.ct at 06/06/2022, 14:05:29 */ 
 int array_sum(array a) {
 	int output = 0;
 	for (int i=0; i<a.size; i++) {
@@ -126,29 +127,19 @@ double array_mean(array a) {
 	return (double) array_sum(a) / (double) a.size;
 }
 
-int array_min(array* a) {
-	int output = a->data[0];
-	for (int i=0; i<a->size; i++) {
-		if (a->data[i] < output) {
-			output = a->data[i];
-		}
-		a -> compute ++;
-	}
-	return output;
+void* min_x(void* a, void* b) { return a < b ? a : b; }
+void* max_x(void* a, void* b) { return a > b ? a : b; }
+
+void* array_min(array* a) {
+	// evil casting hack that will definitely bite me later
+	return reduce_array(a, min_x, (void*) (long) a->data[0]);
 }
 
-int array_max(array* a) {
-	int output = a->data[0];
-	for (int i=0; i<a->size; i++) {
-		if (a->data[i] > output) {
-			output = a->data[i];
-		}
-		a -> compute ++;
-	}
-	return output;
+void* array_max(array* a) {
+	return reduce_array(a, max_x, (void*) (long) a->data[0]);
 }
 
-/* Imported from ./array/array_op.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
 array array_bsum(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -157,7 +148,7 @@ array array_bsum(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
 array array_bdiff(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -166,7 +157,7 @@ array array_bdiff(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
 array array_bprod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -175,7 +166,7 @@ array array_bprod(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
 array array_bdiv(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
@@ -184,7 +175,7 @@ array array_bdiv(array a, array b) {\
 	return output;\
 }
 
-/* Imported from ./array/array_op.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./array/array_op.ct at 06/06/2022, 14:05:29 */ 
 array array_bmod(array a, array b) {\
 	array output = new_array(a.rank, a.shape);\
 	for (int i=0; i<a.size; i++) {\
