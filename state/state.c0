@@ -31,6 +31,7 @@ void update_state(state* s) {
 	(s -> population) = array_sum(s -> data);
 	// TODO: should s -> data be a pointer?
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
+	gettimeofday(&s->time->modified, NULL);
 }
 
 // Generate a random state
@@ -170,6 +171,7 @@ int states_equal(state a, state b) {
 
 void mutate_state(state* s) {
 	array_set(s -> data, vec(rand() % 30, rand() % 30, 0), rand() % 2);
+	gettimeofday(&s->time->modified, NULL);
 }
 
 // Separates a state into appropriately sized substates containing the input's connected components (using a modified flood fill algorithm)

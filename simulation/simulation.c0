@@ -7,6 +7,7 @@
 #include "../state/state.h"
 #include "../helpers/helpers.h"
 #include "../mainheaders.h"
+#include "../timeinfo.h"
 
 // should s be a state pointer?
 simulation* new_simulation(state* s, int steps) {
@@ -35,6 +36,8 @@ simulation* new_simulation(state* s, int steps) {
 	// TODO: check this
 	//s.sim = &sim;
 
+	s->t = time_info();
+
 //	printf("Created new simulation
 	return sim;
 }
@@ -53,6 +56,7 @@ void update_sim(simulation* s) {
 		s->size += s->states[i]->size;
 		s->compute ++;
 	}
+	gettimeofday(&s->t->modified, NULL);
 }
 
 void sim_data(simulation s) {
