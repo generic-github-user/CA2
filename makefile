@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 
 src = $(wildcard */*.c *.c)
 obj = $(patsubst %.c,%.o,$(src))
@@ -18,11 +19,18 @@ commands/commands.c: $(wildcard commands/*.ct)
 # %.md: %.src.md
 #%.md:# %.src.md# FORCE
 #$(md): .FORCE
+bq = "\`\`\`"
 %.md: %.src.md
 	echo $@
 	cp $< $@
-	echo "### Statistics\n" >> $@
+
+	echo -e "### Statistics\n" >> $@
 	cloc * --exclude-dir node_modules --exclude-ext txt --md --hide-rate --quiet >> $@
+	echo -e "\n\n" >> $@
+
+	echo -e "### File tree\n${bq}" >> $@
+	tree -aI "node_modules|misc*|.git|cloc*" | cat - <(echo -ne "\n${bq}") >> $@
+
 	markdown-toc -i $@
 #	markdown-toc $< > $@
 .FORCE: ;

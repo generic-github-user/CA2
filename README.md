@@ -17,6 +17,7 @@ This toolkit (titled CA2 for the time being) is a software framework to assist i
   * [Project structure](#project-structure)
   * [More pedantic details](#more-pedantic-details)
   * [Statistics](#statistics)
+  * [File tree](#file-tree)
 
 <!-- tocstop -->
 
@@ -225,11 +226,139 @@ cloc|github.com/AlDanial/cloc v 1.82
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-C|16|256|313|1499
+C|19|285|311|1657
 JSON|2|0|0|1014
-C/C++ Header|16|155|84|720
+C/C++ Header|19|165|85|767
 Markdown|2|131|0|307
 Python|2|8|9|65
-make|1|5|6|20
+make|1|8|6|25
 --------|--------|--------|--------|--------
-SUM:|39|555|412|3625
+SUM:|45|597|411|3835
+
+
+
+### File tree
+```
+.
+├── abbrs.txt
+├── array
+│   ├── array.c
+│   ├── array.c0
+│   ├── array.h
+│   ├── array.o
+│   ├── array_op.ct
+│   └── array_reduce.ct
+├── build.py
+├── ca
+├── ca.c
+├── ca.c0
+├── ca_log.txt
+├── ca.o
+├── ca_plot (copy).png
+├── ca_plot.png
+├── colors
+│   ├── colors.c
+│   ├── colors.c0
+│   └── colors.o
+├── commands
+│   ├── commands.c
+│   ├── commands.c0
+│   ├── commands.h
+│   ├── commands.o
+│   ├── enumerate_cmd.ct
+│   ├── print_cmd.ct
+│   ├── randomstate_cmd.ct
+│   ├── render_cmd.ct
+│   ├── simulate_cmd.ct
+│   └── write_cmd.ct
+├── .gitignore
+├── graph
+│   ├── graph.c
+│   ├── graph.c0
+│   ├── graph.h
+│   └── graph.o
+├── hashing
+│   ├── hashing.c
+│   ├── hashing.c0
+│   ├── hashing.h
+│   └── hashing.o
+├── helpers
+│   ├── helpers.c
+│   ├── helpers.c0
+│   ├── helpers.h
+│   └── helpers.o
+├── image
+│   ├── image.c
+│   ├── image.c0
+│   ├── image.h
+│   └── image.o
+├── list
+│   ├── list.c
+│   ├── list.h
+│   └── list.o
+├── mainheaders.h
+├── makefile
+├── package.json
+├── package-lock.json
+├── plot
+│   ├── plot.c
+│   ├── plot.c0
+│   ├── plot.h
+│   ├── plot.o
+│   └── plot.py
+├── pltdata.txt
+├── progress
+│   ├── progress.c
+│   ├── progress.h
+│   └── progress.o
+├── pylog.txt
+├── README.md
+├── README.src.md
+├── rule
+│   ├── rule.c
+│   ├── rule.c0
+│   ├── rule.h
+│   └── rule.o
+├── session.c
+├── session.h
+├── session.o
+├── simulate
+├── simulation
+│   ├── simulation.c
+│   ├── simulation.c0
+│   └── simulation.h
+├── spng.h.gch
+├── state
+│   ├── extract.ct
+│   ├── ptr_reduce.ct
+│   ├── state.c
+│   ├── state.c0
+│   ├── state.h
+│   └── state.o
+├── test
+│   └── test.h
+├── test1.txt
+├── test.png
+├── timeinfo.c
+├── timeinfo.h
+├── timeinfo.o
+├── tinypng
+│   ├── TinyPngOut.c
+│   ├── TinyPngOut.h
+│   ├── TinyPngOut.h.gch
+│   └── TinyPngOut.o
+├── todo.txt
+├── typing
+│   ├── typing.c
+│   ├── typing.c0
+│   ├── typing.h
+│   └── typing.o
+└── vector
+    ├── vector.c
+    ├── vector.c0
+    ├── vector.h
+    └── vector.o
+
+17 directories, 101 files
+
+```
