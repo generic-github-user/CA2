@@ -162,12 +162,12 @@ void process_command(char* cmd, FILE* log) {
 				selection_type = "array";
 				if (streq(opt, "population")) {
 					array* a = malloc(sizeof(array));
-					*a = extract_population((state*) ((simulation*) *selection)->states, ((simulation*) *selection) -> steps);
+					*a = extract_population(
+						(state*) ((simulation*) *selection) -> states,
+						((simulation*) *selection) -> steps
+					);
 					array_summary(a, 2);
-					// TODO
-					selection = (void*) malloc(sizeof(array));
 					selection = a;
-
 				}
 			}
 			else if (streq(command, "min")) {

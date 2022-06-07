@@ -45,6 +45,6 @@ state* components(state*);
 
 state* min_population(state*, int);
 state* max_population(state*, int);
-array extract_population(state*, int);
+array extract_population(state**, int);
 
 #endif
