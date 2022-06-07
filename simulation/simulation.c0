@@ -39,7 +39,7 @@ simulation* new_simulation(state* s, int steps) {
 	// TODO: check this
 	//s.sim = &sim;
 
-	s->t = time_info();
+	sim->t = init_time();
 
 //	printf("Created new simulation
 	return sim;

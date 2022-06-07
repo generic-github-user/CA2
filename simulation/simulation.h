@@ -15,7 +15,7 @@ struct simulation {
 	int compute; // Number of operations used for this simulation
 	array ages; // Number of steps for which each living cell has been alive
 	int size; // Amount of space dynamically alloated for members of this struct
-  timeinfo t;
+	timeinfo* t;
 };
 typedef struct simulation simulation;
 

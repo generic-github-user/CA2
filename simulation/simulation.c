@@ -1,4 +1,4 @@
-/* Generated from simulation/simulation.c0 at 06/05/2022 */ 
+/* Generated from simulation/simulation.c0 at 06/07/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,6 +12,7 @@
 #include "../helpers/helpers.h"
 #include "../mainheaders.h"
 #include "../progress/progress.h"
+#include "../timeinfo.h"
 
 // should s be a state pointer?
 simulation* new_simulation(state* s, int steps) {
@@ -40,6 +41,8 @@ simulation* new_simulation(state* s, int steps) {
 	// TODO: check this
 	//s.sim = &sim;
 
+	sim->t = init_time();
+
 //	printf("Created new simulation
 	return sim;
 }
@@ -60,6 +63,7 @@ void update_sim(simulation* s) {
 		s->size += s->states[i]->size;
 		s->compute ++;
 	}
+	gettimeofday(&s->t->modified, NULL);
 }
 
 void sim_data(simulation s) {
