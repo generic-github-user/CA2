@@ -16,9 +16,9 @@ state* new_state(array data, simulation* sim) {
 	state* s = malloc(sizeof(state));
 	*s = (state) {data, 0, 0, sim, 0};
 	s -> shape = s -> data.shape;
-	update_state(s);
 	s -> size = s -> data.size;
 	s -> time = init_time();
+	update_state(s);
 	return s;
 }
 
@@ -92,11 +92,15 @@ char* state_name(state* s) {
 	// Convert the state to a compact integer representation
 	unsigned long int N = 0;
 	unsigned long int deg = 1;
-	for (int a=0; a<s->shape[0]; a++) {
-		for (int b=0; b<s->shape[1]; b++) {
-			N += array_get(s->data, vec(a, b, 0)) * deg;
-			deg *= 2;
-		}
+//	for (int a=0; a<s->shape[0]; a++) {
+//		for (int b=0; b<s->shape[1]; b++) {
+//			N += array_get(s->data, vec(a, b, 0)) * deg;
+//			deg *= 2;
+//		}
+//	}
+	for (int i=0; i<s->data.size; i++) {
+		N += s->data.data[i] * deg;
+		deg *= 2;
 	}
 
 	// All alphanumeric ASCII characters; specify additional ranges as needed

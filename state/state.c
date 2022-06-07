@@ -1,11 +1,13 @@
-/* Generated from state/state.c0 at 06/05/2022 */ 
+/* Generated from state/state.c0 at 06/07/2022 */ 
 /* This is a content file generated from a source (.c0) file; you should edit that file instead */ 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #include "../state/state.h"
 #include "../helpers/helpers.h"
 #include "../array/array.h"
+#include "../timeinfo.h"
 #include "../mainheaders.h"
 
 extern char* COLOR_ORDER[6];
@@ -16,8 +18,9 @@ state* new_state(array data, simulation* sim) {
 	state* s = malloc(sizeof(state));
 	*s = (state) {data, 0, 0, sim, 0};
 	s -> shape = s -> data.shape;
-	update_state(s);
 	s -> size = s -> data.size;
+	s -> time = init_time();
+	update_state(s);
 	return s;
 }
 
@@ -33,6 +36,7 @@ void update_state(state* s) {
 	// TODO: should s -> data be a pointer?
 	(s -> density) = (double) array_sum(s -> data) / (double) (s -> data).size;
 	s -> name = state_name(s);
+	gettimeofday(&s->time->modified, NULL);
 }
 
 // Generate a random state
@@ -90,11 +94,15 @@ char* state_name(state* s) {
 	// Convert the state to a compact integer representation
 	unsigned long int N = 0;
 	unsigned long int deg = 1;
-	for (int a=0; a<s->shape[0]; a++) {
-		for (int b=0; b<s->shape[1]; b++) {
-			N += array_get(s->data, vec(a, b, 0)) * deg;
-			deg *= 2;
-		}
+//	for (int a=0; a<s->shape[0]; a++) {
+//		for (int b=0; b<s->shape[1]; b++) {
+//			N += array_get(s->data, vec(a, b, 0)) * deg;
+//			deg *= 2;
+//		}
+//	}
+	for (int i=0; i<s->data.size; i++) {
+		N += s->data.data[i] * deg;
+		deg *= 2;
 	}
 
 	// All alphanumeric ASCII characters; specify additional ranges as needed
@@ -224,6 +232,7 @@ int states_equal(state a, state b) {
 
 void mutate_state(state* s) {
 	array_set(s -> data, vec(rand() % 30, rand() % 30, 0), rand() % 2);
+	gettimeofday(&s->time->modified, NULL);
 }
 
 // Separates a state into appropriately sized substates containing the input's connected components (using a modified flood fill algorithm)
@@ -268,7 +277,7 @@ state* components(state* s) {
 	return result;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/07/2022, 01:29:27 */ 
 state* max_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -280,7 +289,7 @@ state* max_population(state* states, int n) {
 	return output;
 }
 
-/* Imported from ./state/ptr_reduce.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./state/ptr_reduce.ct at 06/07/2022, 01:29:27 */ 
 state* min_population(state* states, int n) {
 	state* output = states;
 	for (int i=0; i<n; i++) {
@@ -293,7 +302,7 @@ state* min_population(state* states, int n) {
 }
 
 
-/* Imported from ./state/extract.ct at 06/05/2022, 22:59:00 */ 
+/* Imported from ./state/extract.ct at 06/07/2022, 01:29:27 */ 
 // TODO
 array extract_population(state* states, int n) {
 	int* shape = malloc(sizeof(int));
